@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 416 67" role="img" aria-label="XAYTHEON">
+	<!-- This SVG wraps the raster logo so we can keep the same file name in HTML -->
+	<!-- Place your attached logo as assets/logo.png (or update href if you prefer .jpg) -->
+	<image href="logo.png" x="0" y="0" width="416" height="67" preserveAspectRatio="xMidYMid meet" />
+</svg>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAYTHEON - Collaborative Innovation Platform</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <div class="canvas-container">
+        <canvas id="three-canvas"></canvas>
+        
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loader"></div>
+            <p>Initializing XAYTHEON...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a class="logo" href="#home" aria-label="XAYTHEON home">
+                    <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+                </a>
+                
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="title-line">Welcome to</span>
+                    <span class="title-main title-main--logo">
+                        <img src="assets/logo/thelogo.png" alt="XAYTHEON" class="title-logo-img" />
+                    </span>
+                    <span class="title-subtitle">Where <span class="accent-glow">INNOVATION</span> Meets <span class="accent-glow">COLLAB</span>ORATION</span>
+                </h1>
+                
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <span class="logo-text">XAYTHEON</span>
+                        <p>Empowering the next generation of innovators</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls for camera interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- GLTF Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Our custom script -->
+    <script src="script.js"></script>
+</body>
+</html>
