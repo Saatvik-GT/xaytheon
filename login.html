@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: 'Eightgon', 'Researcher', 'OriginTech', sans-serif; }
+    .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 40px 16px; }
+    .auth-card { width: 100%; max-width: 420px; background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); padding: 24px; }
+    .auth-title { font-size: 1.8em; margin-bottom: 8px; }
+    .auth-sub { opacity: 0.7; margin-bottom: 20px; }
+    .auth-form { display: grid; gap: 12px; }
+    .auth-form label { font-weight: 600; }
+    .auth-form input { padding: 12px 14px; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; outline: none; font-size: 1em; }
+    .auth-form input:focus { border-color: #000; }
+    .auth-actions { display: flex; gap: 10px; align-items: center; }
+    .muted { opacity: 0.75; font-size: 0.95em; }
+    .status { min-height: 1.2em; margin-top: 10px; }
+    .center { text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title">Sign in</div>
+      <div class="auth-sub">Use your email to get a magic link</div>
+      <form id="magic-form" class="auth-form" autocomplete="email">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" placeholder="you@example.com" required />
+        <div class="auth-actions">
+          <button class="btn btn-primary" type="submit">Send magic link</button>
+          <a class="btn btn-outline" href="index.html">Back</a>
+        </div>
+        <div id="login-status" class="status muted" aria-live="polite"></div>
+      </form>
+      <div class="center muted" style="margin-top:12px;">We’ll email you a secure sign-in link.</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const form = document.getElementById('magic-form');
+    const emailEl = document.getElementById('login-email');
+    const statusEl = document.getElementById('login-status');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = 'Sending magic link…';
+      try {
+        await window.XAYTHEON_AUTH.sendMagicLink(emailEl.value.trim());
+        statusEl.textContent = 'Check your email for the sign-in link.';
+      } catch (err) {
+        statusEl.textContent = 'Failed to send link: ' + (err?.message || 'unknown error');
+      }
+    });
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script defer src="auth.js"></script>
+  <style>
+    .auth-card { max-width: 420px; margin: 140px auto 40px; padding: 24px; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); background: #fff; }
+    .auth-card h1 { font-size: 1.8em; margin-bottom: 16px; }
+    .auth-card .muted { margin-top: 8px; }
+    .auth-actions { display: grid; gap: 10px; margin-top: 16px; }
+    .auth-status { margin-top: 12px; min-height: 1.2em; }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sb = window.sb; // from auth.js
+      const emailInput = document.getElementById('auth-email');
+      const sendLinkBtn = document.getElementById('auth-send-link');
+      const statusEl = document.getElementById('auth-status');
+
+      const redirectTo = (() => {
+        try {
+          const u = new URL(document.referrer || location.origin + '/index.html');
+          // Ensure it points back to our Pages site paths
+          return u.origin + u.pathname;
+        } catch { return location.origin + '/index.html'; }
+      })();
+
+      function setStatus(msg, isError=false) {
+        statusEl.textContent = msg || '';
+        statusEl.style.color = isError ? '#b91c1c' : '#111827';
+      }
+
+      sendLinkBtn.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        if (!email) { setStatus('Enter your email to receive a magic link.', true); return; }
+        setStatus('Sending magic link...');
+        try {
+          const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
+          if (error) throw error;
+          setStatus('Check your email for the sign-in link.');
+        } catch (e) {
+          setStatus(e.message || 'Failed to send link', true);
+        }
+      });
+    });
+  </script>
+  </head>
+<body>
+  <div class="content">
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="logo" href="index.html" aria-label="Back to Home">
+          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="index.html#home">Home</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <section class="auth-card">
+      <h1>Sign in</h1>
+      <label for="auth-email">Email for magic link</label>
+      <input id="auth-email" type="email" placeholder="you@example.com" style="padding:12px;border:1px solid rgba(0,0,0,0.2);border-radius:8px;width:100%;margin-top:6px;" />
+      <div class="auth-actions">
+        <button id="auth-send-link" class="btn btn-primary" type="button">Send magic link</button>
+      </div>
+      <div id="auth-status" class="auth-status muted"></div>
+      <p class="muted">We’ll send a login link to your email. After clicking it, you’ll be redirected back.</p>
+    </section>
+  </div>
+</body>
+</html>

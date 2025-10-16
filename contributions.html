@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributions — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase SDK & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script defer src="auth.js"></script>
+</head>
+<body class="eightgon-page">
+  <div class="content">
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="logo" href="index.html" aria-label="Back to Home">
+          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="index.html#home">Home</a></li>
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+          <li id="auth-area"></li>
+        </ul>
+      </div>
+    </nav>
+
+    <section class="github-section">
+      <div class="container">
+        <h2 class="section-title" style="font-family:'Eightgon',sans-serif;">Your Open Source Contributions</h2>
+
+        <div data-requires-guest class="muted" style="margin-top:10px;">
+          Please <a href="login.html">sign in</a> to add and view your contributions.
+        </div>
+
+        <section id="user-contrib" data-requires-auth style="display:none; margin-top:10px;">
+          <div class="card" style="grid-column: 1 / -1;">
+            <div class="card-header"><h3>Manage Contributions</h3></div>
+            <div class="card-body">
+              <form id="contrib-form" class="github-form" autocomplete="off" style="margin-bottom:20px;">
+                <div class="field-group" style="grid-column: span 4;">
+                  <label>Project Name</label>
+                  <input id="cf-project" type="text" placeholder="e.g. Chat-Real" required />
+                </div>
+                <div class="field-group" style="grid-column: span 4;">
+                  <label>Repository / PR Link</label>
+                  <input id="cf-link" type="url" placeholder="https://github.com/owner/repo or PR URL" required />
+                </div>
+                <div class="field-group" style="grid-column: span 4;">
+                  <label>Event / Program</label>
+                  <input id="cf-program" type="text" placeholder="Hacktoberfest, GSSoC, ..." />
+                </div>
+                <div class="field-group" style="grid-column: span 6;">
+                  <label>Date</label>
+                  <input id="cf-date" type="date" />
+                </div>
+                <div class="field-group" style="grid-column: span 6;">
+                  <label>Type</label>
+                  <input id="cf-type" type="text" placeholder="Bug fix, Docs, Feature, Design" />
+                </div>
+                <div class="field-group" style="grid-column: span 12;">
+                  <label>Description</label>
+                  <input id="cf-desc" type="text" placeholder="What did you contribute?" />
+                </div>
+                <div class="field-group" style="grid-column: span 8;">
+                  <label>Tech Stack</label>
+                  <input id="cf-tech" type="text" placeholder="React, Node, Python..." />
+                </div>
+                <div class="field-group" style="grid-column: span 4;">
+                  <label>Screenshot</label>
+                  <input id="cf-shot" type="file" accept="image/*" />
+                </div>
+                <button class="btn btn-primary" type="submit" style="grid-column: span 3;">Save Contribution</button>
+                <div id="contrib-status" class="github-status" style="grid-column: 1 / -1;"></div>
+              </form>
+
+              <div id="contrib-list" class="repo-list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo-text">XAYTHEON</span>
+            <p>Empowering the next generation of innovators</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="contributions.js"></script>
+</body>
+</html>

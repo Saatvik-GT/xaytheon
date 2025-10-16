@@ -6,6 +6,9 @@
     <title>XAYTHEON - Collaborative Innovation Platform</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
+    <!-- Supabase SDK & auth bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+    <script defer src="auth.js"></script>
 </head>
 <body>
     <!-- 3D Background Canvas -->
@@ -29,6 +32,8 @@
                 </a>
                 <ul class="nav-menu">
                     <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+                    <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+                    <li id="auth-area"></li>
                 </ul>
             </div>
         </nav>
@@ -44,6 +49,13 @@
                     <span class="title-subtitle">Where <span class="accent-glow">INNOVATION</span> Meets <span class="accent-glow">COLLAB</span>ORATION</span>
                 </h1>
                 
+            </div>
+        </section>
+
+        <!-- Gated content placeholder -->
+        <section data-requires-auth style="display:none; padding-top:0;">
+            <div class="container" style="text-align:center; margin-top:-40px;">
+                <div class="muted">You are signed in. Future advanced features will appear here.</div>
             </div>
         </section>
 

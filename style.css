@@ -200,6 +200,19 @@ body.eightgon-page {
     width: 100%;
 }
 
+/* Auth user dropdown */
+.user-menu { position: relative; display: flex; align-items: center; }
+.user-button { background: transparent; border: none; border-radius: 999px; padding: 4px 6px; cursor: pointer; font: inherit; display: inline-flex; align-items: center; gap: 6px; }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; display: inline-block; object-fit: cover; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+.user-email { margin-right: 6px; display:none; }
+.user-dropdown { position: absolute; right: 0; top: calc(100% + 6px); background: #fff; border: 1px solid rgba(0,0,0,0.15); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 6px; min-width: 160px; z-index: 200; }
+.dropdown-item { width: 100%; text-align: left; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; }
+.dropdown-item:hover { background: rgba(0,0,0,0.05); }
+
+/* Align nav items cleanly */
+.nav-menu { align-items: center; }
+.nav-menu > li { display: flex; align-items: center; }
+
 /* Hamburger Menu */
 .hamburger {
     display: none;

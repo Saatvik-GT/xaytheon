@@ -6,6 +6,9 @@
   <title>GitHub Dashboard — XAYTHEON</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css" />
+  <!-- Supabase SDK & auth bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script defer src="auth.js"></script>
 </head>
 <body class="eightgon-page">
   <div class="content">
@@ -16,6 +19,8 @@
         </a>
         <ul class="nav-menu">
           <li><a class="nav-link" href="index.html#home">Home</a></li>
+          <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+          <li id="auth-area"></li>
         </ul>
       </div>
     </nav>
@@ -72,7 +77,7 @@
             </div>
           </div>
 
-          <div class="card repos-card" id="gh-repos">
+          <div class="card repos-card" id="gh-repos" data-requires-auth style="display:none;">
             <div class="card-header">
               <h3>Top Repositories</h3>
               <div class="muted small">Sorted by stars</div>
@@ -82,7 +87,7 @@
             </div>
           </div>
 
-          <div class="card activity-card" id="gh-activity">
+          <div class="card activity-card" id="gh-activity" data-requires-auth style="display:none;">
             <div class="card-header">
               <h3>Recent Activity</h3>
               <div class="muted small">Public events</div>
@@ -92,6 +97,7 @@
             </div>
           </div>
         </div>
+        
       </div>
     </section>
 
@@ -110,9 +116,12 @@
     </footer>
   </div>
 
+  <!-- Contributions module -->
+  <script src="contributions.js"></script>
   <!-- Three.js for mini viewer -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- Auth & app scripts -->
   <script src="script.js"></script>
 </body>
 </html>
