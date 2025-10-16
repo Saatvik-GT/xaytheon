@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Dashboard — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="eightgon-page">
+  <div class="content">
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="logo" href="index.html" aria-label="Back to Home">
+          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="index.html#home">Home</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <section id="github" class="github-section">
+      <div class="container">
+        <div class="github-header">
+          <h2 class="section-title">GitHub Dashboard</h2>
+          <div class="mini-3d" aria-hidden="true">
+            <canvas id="mini-3d-canvas"></canvas>
+            <div class="mini-3d-loading">Loading…</div>
+          </div>
+        </div>
+
+        <form id="github-form" class="github-form" autocomplete="off">
+          <div class="field-group" style="grid-column: span 6;">
+            <label for="gh-username">Username</label>
+            <input id="gh-username" name="username" type="text" placeholder="e.g. octocat" required />
+          </div>
+          <button class="btn btn-primary" type="submit">Load Dashboard</button>
+          <button class="btn btn-outline" type="button" id="gh-clear">Clear</button>
+          <div id="github-status" class="github-status" aria-live="polite"></div>
+        </form>
+
+        <div class="github-grid">
+          <div class="card profile-card" id="gh-profile">
+            <div class="card-header">
+              <h3>Profile</h3>
+            </div>
+            <div class="card-body">
+              <div class="profile-row">
+                <img id="gh-avatar" alt="Avatar" class="avatar" />
+                <div>
+                  <div class="profile-name" id="gh-name">—</div>
+                  <div class="profile-login" id="gh-login">—</div>
+                  <div class="profile-bio" id="gh-bio"></div>
+                </div>
+              </div>
+              <div class="profile-stats">
+                <div><span id="gh-followers">0</span><label>Followers</label></div>
+                <div><span id="gh-following">0</span><label>Following</label></div>
+                <div><span id="gh-repos-count">0</span><label>Repos</label></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card contributions-card" id="gh-contributions">
+            <div class="card-header">
+              <h3>Contributions</h3>
+            </div>
+            <div class="card-body">
+              <div id="gh-contrib-note" class="muted">Public contributions chart is shown below. If it’s unavailable, we’ll render an approximate heatmap from recent public activity.</div>
+              <div id="gh-contrib-svg" class="contrib-svg" role="img" aria-label="Contributions calendar"></div>
+            </div>
+          </div>
+
+          <div class="card repos-card" id="gh-repos">
+            <div class="card-header">
+              <h3>Top Repositories</h3>
+              <div class="muted small">Sorted by stars</div>
+            </div>
+            <div class="card-body">
+              <div id="gh-repo-list" class="repo-list"></div>
+            </div>
+          </div>
+
+          <div class="card activity-card" id="gh-activity">
+            <div class="card-header">
+              <h3>Recent Activity</h3>
+              <div class="muted small">Public events</div>
+            </div>
+            <div class="card-body">
+              <ul id="gh-activity-list" class="activity-list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo-text">XAYTHEON</span>
+            <p>Empowering the next generation of innovators</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Three.js for mini viewer -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

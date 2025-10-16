@@ -15,6 +15,14 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Eightgon';
+    src: url('assets/fonts/Eightgon.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -33,6 +41,12 @@ body {
     line-height: 1.6;
 }
 
+/* Apply Eightgon font on the dedicated dashboard page */
+body.eightgon-page {
+    font-family: 'Eightgon', 'Researcher', 'OriginTech', sans-serif;
+    letter-spacing: 0.5px;
+}
+
 /* Canvas Container - 3D Background */
 .canvas-container {
     position: fixed;
@@ -40,8 +54,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: -1; /* force behind all page content */
     background: #ffffff;
+}
+
+/* Ensure page content (including footer) sits above the background canvas */
+.content {
+    position: relative;
+    z-index: 1;
 }
 
 #three-canvas {
@@ -98,13 +118,6 @@ body {
 }
 
 /* Content */
-.content {
-    position: relative;
-    z-index: 1;
-    /* Ensure content doesn't slide under the fixed navbar */
-    padding-top: 70px;
-}
-
 /* Container */
 .container {
     max-width: 1200px;
@@ -116,7 +129,6 @@ body {
 .navbar {
     position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -255,6 +267,7 @@ body {
     height: 64px; /* desktop default */
     width: auto;
     display: inline-block;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
 }
 
 .title-subtitle {
@@ -356,6 +369,189 @@ section {
 
 
 /* Projects Section */
+/* GitHub Dashboard */
+.github-section {
+    background: transparent; /* allow 3D background to show through */
+}
+
+.github-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    position: relative; /* anchor for floating 3D */
+}
+
+.mini-3d {
+    width: 400px;
+    height: 400px;
+    position: absolute; /* float over header */
+    top: -90px;    /* move further up toward the corner */
+    right: -80px;  /* move further right toward the edge */
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    background: transparent;
+    pointer-events: none; /* purely decorative */
+}
+
+.mini-3d canvas { width: 100%; height: 100%; display: block; opacity: 0.78; transition: opacity 0.3s ease; }
+.mini-3d:hover canvas { opacity: 0.88; }
+.mini-3d-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 0.9em;
+    color: rgba(0,0,0,0.6);
+}
+
+@media (max-width: 900px) {
+    .github-header { flex-direction: column; }
+    .mini-3d { position: relative; width: 100%; height: 240px; top: auto; right: auto; }
+}
+
+.github-form {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 30px;
+}
+
+.github-form .field-group {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.github-form label {
+    font-weight: 600;
+}
+
+.github-form input[type="text"],
+.github-form input[type="password"] {
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95em;
+}
+
+.github-form input:focus {
+    border-color: #000;
+}
+
+.github-form .btn { grid-column: span 2; }
+
+.github-form .remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.github-form .field-hint,
+.muted {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+.muted.small { font-size: 0.8em; }
+
+.github-status {
+    grid-column: 1 / -1;
+    min-height: 1.2em;
+}
+
+.github-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+}
+
+.card {
+    grid-column: span 6;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.card.profile-card { grid-column: span 5; }
+.card.contributions-card { grid-column: span 7; }
+.card.repos-card { grid-column: span 7; }
+.card.activity-card { grid-column: span 5; }
+
+.card-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.card-body { padding: 16px; }
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    margin-right: 14px;
+}
+
+.profile-row { display: flex; align-items: center; }
+.profile-name { font-size: 1.2em; font-weight: 700; }
+.profile-login { opacity: 0.7; margin-top: 2px; }
+.profile-bio { margin-top: 8px; }
+
+.profile-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.profile-stats span { font-weight: 700; font-size: 1.1em; display: block; }
+.profile-stats label { font-size: 0.85em; opacity: 0.7; }
+
+.repo-list { display: grid; gap: 12px; }
+.repo-item { padding: 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
+.repo-name { font-weight: 700; }
+.repo-meta { display: flex; gap: 12px; font-size: 0.9em; opacity: 0.8; margin-top: 6px; }
+.repo-desc { margin-top: 6px; }
+
+.activity-list { list-style: none; display: grid; gap: 12px; }
+.activity-item { padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
+.activity-time { opacity: 0.7; font-size: 0.85em; }
+
+.contrib-svg {
+    min-height: 140px;
+    display: grid;
+    place-items: center;
+}
+
+/* Responsive layout for GitHub grid */
+@media (max-width: 1024px) {
+    .card { grid-column: span 12; }
+    .card.profile-card,
+    .card.contributions-card,
+    .card.repos-card,
+    .card.activity-card { grid-column: span 12; }
+}
+
+@media (max-width: 768px) {
+    .github-form {
+        grid-template-columns: 1fr;
+    }
+    .github-form .field-group,
+    .github-form .btn,
+    .github-status { grid-column: span 1; }
+}
 
 /* Footer */
 .footer {
@@ -369,6 +565,17 @@ section {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+}
+
+.footer-label {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.85em;
+    letter-spacing: 1px;
+    font-weight: 700;
 }
 
 .footer-brand .logo-text {
