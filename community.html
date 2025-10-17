@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Highlights — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase SDK & Auth (for navbar/gating if needed) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script defer src="auth.js"></script>
+</head>
+<body class="eightgon-page">
+  <div class="content">
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="logo" href="index.html" aria-label="Back to Home">
+          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="index.html#home">Home</a></li>
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+          <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+          <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
+          <li id="auth-area"></li>
+        </ul>
+      </div>
+    </nav>
+
+    <section class="github-section">
+      <div class="container">
+        <h2 class="section-title" style="font-family:'Eightgon',sans-serif;">Community Highlights</h2>
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <h3>Trending Now</h3>
+          </div>
+          <div class="card-body">
+            <form id="trend-form" class="github-form" autocomplete="off" style="margin-bottom: 16px;">
+              <div class="field-group" style="grid-column: span 3;">
+                <label for="trend-lang">Language</label>
+                <select id="trend-lang">
+                  <option value="">Any</option>
+                  <option>JavaScript</option>
+                  <option>TypeScript</option>
+                  <option>Python</option>
+                  <option>Go</option>
+                  <option>Rust</option>
+                  <option>Java</option>
+                  <option>C#</option>
+                  <option>C++</option>
+                </select>
+              </div>
+              <div class="field-group" style="grid-column: span 3;">
+                <label for="trend-topic">Topic</label>
+                <input id="trend-topic" type="text" placeholder="e.g. threejs, vite" />
+              </div>
+              <div class="field-group" style="grid-column: span 3;">
+                <label for="trend-window">Time Window</label>
+                <select id="trend-window">
+                  <option value="30">Last 30 days</option>
+                  <option value="7">Last 7 days</option>
+                  <option value="90">Last 90 days</option>
+                </select>
+              </div>
+              <div class="field-group" style="grid-column: span 3;">
+                <label for="trend-k">Top K</label>
+                <input id="trend-k" type="number" min="1" max="20" value="10" />
+              </div>
+              <button class="btn btn-primary" type="submit">Update</button>
+              <button class="btn btn-outline" type="button" id="trend-reset">Reset</button>
+              <div id="trend-status" class="github-status" aria-live="polite"></div>
+            </form>
+
+            <div id="trend-results" class="repo-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo-text">XAYTHEON</span>
+            <p>Empowering the next generation of innovators</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="community.js"></script>
+</body>
+</html>

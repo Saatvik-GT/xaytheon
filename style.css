@@ -453,6 +453,18 @@ section {
     font-size: 0.95em;
 }
 
+/* Community form fields */
+.github-form select,
+.github-form input[type="number"],
+.github-form input[type="url"],
+.github-form input[type="date"] {
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95em;
+}
+
 .github-form input:focus {
     border-color: #000;
 }

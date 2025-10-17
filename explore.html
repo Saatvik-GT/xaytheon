@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore by Topic — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase SDK & Auth for navbar -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script defer src="auth.js"></script>
+  <!-- D3 for force-directed graph -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+</head>
+<body class="eightgon-page">
+  <div class="content">
+    <nav class="navbar">
+      <div class="nav-container">
+        <a class="logo" href="index.html" aria-label="Back to Home">
+          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+        </a>
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="index.html#home">Home</a></li>
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+          <li><a class="nav-link" href="community.html">Community Highlights</a></li>
+          <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+          <li id="auth-area"></li>
+        </ul>
+      </div>
+    </nav>
+
+    <section class="github-section">
+      <div class="container">
+        <h2 class="section-title" style="font-family:'Eightgon',sans-serif;">Explore by Topic</h2>
+
+        <form id="explore-form" class="github-form" autocomplete="off" style="margin-bottom: 16px;">
+          <div class="field-group" style="grid-column: span 4;">
+            <label for="ex-base-topic">Base Topic</label>
+            <input id="ex-base-topic" type="text" placeholder="e.g. threejs" value="threejs" />
+          </div>
+          <div class="field-group" style="grid-column: span 4;">
+            <label for="ex-language">Language</label>
+            <select id="ex-language">
+              <option value="">Any</option>
+              <option>JavaScript</option>
+              <option>TypeScript</option>
+              <option>Python</option>
+              <option>Go</option>
+              <option>Rust</option>
+              <option>Java</option>
+              <option>C#</option>
+              <option>C++</option>
+            </select>
+          </div>
+          <div class="field-group" style="grid-column: span 4;">
+            <label for="ex-limit">Repos to sample</label>
+            <input id="ex-limit" type="number" min="10" max="100" value="50" />
+          </div>
+          <button class="btn btn-primary" type="submit">Explore</button>
+          <button class="btn btn-outline" type="button" id="ex-clear">Clear</button>
+          <div id="ex-status" class="github-status" aria-live="polite"></div>
+        </form>
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-header"><h3>Topic Map</h3></div>
+          <div class="card-body">
+            <div id="graph-wrap" style="width:100%; height:560px; position:relative; border:1px solid rgba(0,0,0,0.1); border-radius:10px; overflow:hidden;">
+              <svg id="graph" width="100%" height="100%"></svg>
+              <div id="graph-legend" style="position:absolute; right:12px; top:12px; background:#fff; border:1px solid rgba(0,0,0,0.1); border-radius:8px; padding:8px 10px; font-size:12px;">
+                <div><span style="display:inline-block;width:10px;height:10px;background:#0ea5e9;border-radius:50%;margin-right:6px;"></span>Topic</div>
+                <div><span style="display:inline-block;width:10px;height:10px;background:#111827;border-radius:50%;margin-right:6px;"></span>Repo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo-text">XAYTHEON</span>
+            <p>Empowering the next generation of innovators</p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="explore.js"></script>
+</body>
+</html>
