@@ -117,12 +117,20 @@
       .attr('font-size', 10)
       .attr('fill', '#333');
 
-    // Simulation
+    // Simulation (tuned for larger samples):
+    // - Slightly stronger repulsion for topic to keep spokes open
+    // - Collide radius scaled by node type
+    // - Gentle x/y centering to avoid drifting to edges
+    // - Reheat alpha when (re)rendering
     sim = d3.forceSimulation(nodeArr)
-      .force('charge', d3.forceManyBody().strength(-45))
-      .force('link', d3.forceLink(links).id(d=>d.id).distance(60))
+      .force('charge', d3.forceManyBody().strength(d => d.type==='topic' ? -120 : -35))
+      .force('link', d3.forceLink(links).id(d=>d.id).distance(l => (l.source.type==='repo' && l.target.type==='topic') ? 70 : 60).strength(0.8))
       .force('center', d3.forceCenter(width()/2, height()/2))
-      .force('collide', d3.forceCollide(12))
+      .force('x', d3.forceX(width()/2).strength(0.05))
+      .force('y', d3.forceY(height()/2).strength(0.05))
+      .force('collide', d3.forceCollide(d => d.type==='topic' ? 12 : 9))
+      .alpha(1)
+      .alphaDecay(0.06)
       .on('tick', ()=>{
         linkSel
           .attr('x1', d=>d.source.x)
@@ -136,6 +144,15 @@
           .attr('x', d=>d.x+8)
           .attr('y', d=>d.y+4);
       });
+
+    // Keep forces centered on resize
+    window.addEventListener('resize', () => {
+      if (!sim) return;
+      sim.force('center', d3.forceCenter(width()/2, height()/2));
+      sim.force('x', d3.forceX(width()/2).strength(0.05));
+      sim.force('y', d3.forceY(height()/2).strength(0.05));
+      sim.alpha(0.5).restart();
+    });
   }
 
   async function onNodeClick(event, d){
@@ -167,6 +184,7 @@
   async function explore(){
     nodes.clear();
     links.length = 0;
+    linkKeys.clear();
     const base = (topicEl.value||'').trim() || 'threejs';
     const lang = (langEl.value||'').trim();
     const limit = Math.max(10, Math.min(100, parseInt(limitEl.value||'50',10)));
