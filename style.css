@@ -181,7 +181,7 @@ body {
 }
 
 .nav-container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
@@ -208,6 +208,7 @@ body {
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-img {
@@ -232,7 +233,25 @@ body {
 .nav-menu {
   display: flex;
   list-style: none;
-  gap: 10px;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: calc(100vw - 200px);
+  padding: 0 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.nav-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-menu > li {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .nav-link {
@@ -241,7 +260,9 @@ body {
   font-weight: 500;
   transition: all 0.3s ease;
   position: relative;
-  font-size: 0.9em;
+  font-size: 0.85em;
+  white-space: nowrap;
+  padding: 8px 10px;
 }
 
 .nav-link:hover {
@@ -338,8 +359,8 @@ body {
 .theme-toggle {
   background: transparent;
   border: none;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -347,6 +368,7 @@ body {
   transition: all 0.3s ease;
   padding: 6px;
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .theme-toggle:hover {
@@ -360,8 +382,8 @@ body {
 }
 
 .theme-toggle svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   stroke: var(--text-primary);
   fill: none;
   transition: all 0.3s ease;
@@ -384,23 +406,24 @@ body {
 /* Language Switcher */
 .lang-switcher {
   position: relative;
-  margin: 0 10px;
+  margin: 0 5px;
 }
 
 .lang-btn {
   background: transparent;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 6px 12px;
+  padding: 4px 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 0.9em;
+  font-size: 0.85em;
   font-weight: 500;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .lang-btn:hover {
@@ -995,7 +1018,7 @@ a,
 }
 
 
-@media (max-width: 890px) {
+@media (max-width: 1023px) {
   .menu-icon {
     display: block;
   }
@@ -1012,24 +1035,77 @@ a,
     flex-direction: column;
     background-color: var(--navbar-bg);
     width: 100%;
-    height: 100vh;
-    transition: 0.3s ease-in-out;
+    max-width: 100%;
+    height: calc(100vh - 70px);
+    transition: left 0.3s ease-in-out;
     z-index: 1000;
+    gap: 0;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .nav-menu > li {
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .nav-link {
+    font-size: 1em;
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
   }
 
   .nav-menu.active {
     left: 0;
   }
 
-  .nav-menu.active~.menu-icon {
+  .nav-menu.active ~ .menu-icon {
     display: none;
   }
 
-  .nav-menu.active~.menu-close-icon {
+  .nav-menu.active ~ .menu-close-icon {
     display: block;
+  }
+  
+  .theme-toggle {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 16px;
+  }
+}
+/* Responsive breakpoints for larger screens */
+@media (min-width: 1400px) {
+  .nav-menu {
+    gap: 12px;
+  }
+  
+  .nav-link {
+    font-size: 0.9em;
   }
 }
 
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .nav-menu {
+    gap: 10px;
+  }
+  
+  .nav-link {
+    font-size: 0.87em;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .nav-menu {
+    gap: 8px;
+  }
+  
+  .nav-link {
+    font-size: 0.85em;
+    padding: 8px 8px;
+  }
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .hamburger {
