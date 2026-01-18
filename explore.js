@@ -1,4 +1,34 @@
 // Explore by Topic — Graph + List View (FULLY WORKING)
+// ---------- PROGRESS TRACKER ----------
+const PROGRESS_KEY = "xaytheon:progress";
+
+function getProgressData() {
+  try {
+    return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveProgressData(data) {
+  localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
+}
+
+function updateProgressUI(total) {
+  const progressData = getProgressData();
+  const completed = Object.keys(progressData).filter(
+  key => document.querySelector(`[data-repo="${key}"]`)
+).length;
+
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  const bar = document.getElementById("progress-bar");
+  const text = document.getElementById("progress-text");
+
+  if (bar) bar.style.width = percent + "%";
+  if (text) text.textContent = `${percent}% completed`;
+}
+
 
 (function () {
   const form = document.getElementById("explore-form");
@@ -211,38 +241,94 @@
 
     return data.items;
   }
+  function calculateTrendScore(repo) {
+  return (
+    (repo.stargazers_count || 0) * 0.6 +
+    (repo.forks_count || 0) * 0.3 +
+    (repo.watchers_count || 0) * 0.1
+  );
+}
 
-  // ---------- LIST VIEW ----------
-  function renderRepoList(repos) {
-    const tbody = document.getElementById("repo-list");
-    if (!tbody) return;
 
-    tbody.innerHTML = "";
+ // ---------- LIST VIEW ----------
+function renderRepoList(repos) {
+  const tbody = document.getElementById("repo-list");
+  if (!tbody) return;
 
-    repos.forEach(repo => {
-      const tr = document.createElement("tr");
+  tbody.innerHTML = "";
 
-      const safeRepo = JSON.stringify({
-        full_name: repo.full_name,
-        language: repo.language,
-        html_url: repo.html_url
-      }).replace(/"/g, "&quot;");
+  const sortedRepos = [...repos].sort(
+    (a, b) => calculateTrendScore(b) - calculateTrendScore(a)
+  );
 
-      tr.innerHTML = `
-        <td>
-          <a href="${repo.html_url}" target="_blank" rel="noopener" onclick='window.trackRepoView && window.trackRepoView(${safeRepo})'>
-            ${repo.full_name}
-          </a>
-          <a href="health.html?repo=${repo.full_name}" style="margin-left:8px; text-decoration:none;" title="Check Sustainability">🩺</a>
-        </td>
-        <td>${repo.topics?.[0] || "—"}</td>
-        <td>${repo.language || "—"}</td>
-        <td align="right">${repo.stargazers_count}</td>
-      `;
+  const progressData = getProgressData();
 
-      tbody.appendChild(tr);
+  sortedRepos.forEach(repo => {
+    const tr = document.createElement("tr");
+    const isChecked = !!progressData[repo.full_name];
+
+    tr.innerHTML = `
+      <td>
+        <a href="${repo.html_url}" target="_blank" rel="noopener">
+          ${repo.full_name}
+        </a>
+        <a href="health.html?repo=${repo.full_name}"
+           style="margin-left:8px; text-decoration:none;"
+           title="Check Sustainability">🩺</a>
+      </td>
+      <td>${repo.topics?.[0] || "—"}</td>
+      <td>${repo.language || "—"}</td>
+      <td align="right">${repo.stargazers_count}</td>
+      <td align="center">
+        <input
+          type="checkbox"
+          class="progress-checkbox"
+          data-repo="${repo.full_name}"
+          ${isChecked ? "checked" : ""}
+        />
+      </td>
+    `;
+
+    // checkbox change → localStorage
+    const checkbox = tr.querySelector(".progress-checkbox");
+    checkbox.addEventListener("change", () => {
+      const data = getProgressData();
+
+      if (checkbox.checked) {
+        data[repo.full_name] = true;
+      } else {
+        delete data[repo.full_name];
+      }
+
+      saveProgressData(data);
+      updateProgressUI(sortedRepos.length);
     });
-  }
+
+    tbody.appendChild(tr);
+  });
+
+  updateProgressUI(sortedRepos.length);
+}
+// 🔹 DEMO MODE (for proof when API is unavailable)
+if (new URLSearchParams(window.location.search).get("demo") === "1") {
+  renderRepoList([
+    {
+      full_name: "demo/repo-one",
+      html_url: "https://github.com/demo/repo-one",
+      language: "JavaScript",
+      stargazers_count: 120,
+      topics: ["demo"]
+    },
+    {
+      full_name: "demo/repo-two",
+      html_url: "https://github.com/demo/repo-two",
+      language: "Python",
+      stargazers_count: 80,
+      topics: ["demo"]
+    }
+  ]);
+}
+
 
   // ---------- GRAPH ----------
   function renderGraph() {
@@ -462,4 +548,6 @@ if (limitNum < 10 || limitNum > 100) {
 
   // Initial load with defaults
   debouncedExplore();
+  window.renderRepoList = renderRepoList;
+
 })();

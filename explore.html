@@ -96,6 +96,22 @@
           <button class="btn " id="view-graph-btn">Graph View</button>
           <button class="btn " id="view-list-btn">List View</button>
         </div>
+        <!-- Contributor Progress Tracker -->
+<section id="progress-tracker" style="margin: 16px 0; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px;">
+  <h3 style="margin-bottom: 8px;">Contributor Progress</h3>
+
+  <div style="width: 100%; background-color: #e5e7eb; border-radius: 8px; overflow: hidden;">
+    <div
+      id="progress-bar"
+      style="width: 0%; height: 14px; background-color: #22c55e;"
+    ></div>
+  </div>
+
+  <p id="progress-text" style="margin-top: 6px; font-size: 0.9rem;">
+    0% completed
+  </p>
+</section>
+
 
         <div class="card" style="grid-column: 1 / -1;">
           <div class="card-header">
@@ -125,9 +141,36 @@
                     <th align="left">Topic</th>
                     <th align="left">Language</th>
                     <th align="right">Stars</th>
+                    <th align="center">Completed</th>
+
                   </tr>
                 </thead>
-                <tbody id="repo-list"></tbody>
+                <tbody id="repo-list">
+  <tr>
+    <td>
+      <a href="#">demo/repo-one</a>
+    </td>
+    <td>demo</td>
+    <td>JavaScript</td>
+    <td align="right">123</td>
+    <td align="center">
+      <input
+        type="checkbox"
+        class="progress-checkbox"
+        data-repo="demo/repo-one"
+        onchange="
+          const data = JSON.parse(localStorage.getItem('xaytheon:progress') || '{}');
+          if (this.checked) data['demo/repo-one'] = true;
+          else delete data['demo/repo-one'];
+          localStorage.setItem('xaytheon:progress', JSON.stringify(data));
+          document.getElementById('progress-bar').style.width = '100%';
+          document.getElementById('progress-text').innerText = '100% completed';
+        "
+      />
+    </td>
+  </tr>
+</tbody>
+
               </table>
             </div>
 
@@ -150,7 +193,8 @@
     </footer>
   </div>
 
-  <script src="explore.js"></script>
+<script type="module" src="js/explore.js"></script>
+
   <script src="script.js"></script>
 </body>
 
