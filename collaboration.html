@@ -89,9 +89,17 @@
         <div id="footer-placeholder"></div>
     </div>
 
+  <script>
+  window.toggleTheme = function() {
+      document.documentElement.classList.toggle('dark-theme');
+      localStorage.setItem('xaytheon-theme', 
+          document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light'
+      );
+  };
+  </script>
+    <script src="boilerplate/boilerplate-loader.js"></script>
     <script src="collab-cursors.js"></script>
     <script src="collaboration.js"></script>
-    <script src="boilerplate/boilerplate-loader.js"></script>
 
 </body>
 
