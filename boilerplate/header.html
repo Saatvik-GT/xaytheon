@@ -589,7 +589,7 @@
 
             <div class="nav-actions" id="nav-actions">
                 <a href="login.html" class="btn-signin">Sign In</a>
-                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" onclick= "toggleTheme()">
                     <i class="ri-sun-line"></i>
                     <i class="ri-moon-line"></i>
                 </button>
@@ -606,122 +606,97 @@
 </div>
 
 <script>
-    // Prevent flash of unstyled content - load theme immediately
-    (function () {
-        const savedTheme = localStorage.getItem('xaytheon-theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    window.toggleTheme = function() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark-theme');
+        
+        if (isDark) {
+            html.classList.remove('dark-theme');
+            localStorage.setItem('xaytheon-theme', 'light');
+        } else {
+            html.classList.add('dark-theme');
+            localStorage.setItem('xaytheon-theme', 'dark');
+        }
+    };
 
-        if (theme === 'dark') {
+    window.enforceHttps = function() {
+        if (location.protocol !== 'https:' && 
+            !location.hostname.includes('localhost') && 
+            !location.hostname.includes('127.')) {
+            location.replace(`https:${location.href.substring(location.protocol.length)}`);
+        }
+    };
+
+    (function initTheme() {
+        const saved = localStorage.getItem('xaytheon-theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const useDark = saved === 'dark' || (!saved && systemDark);
+        
+        if (useDark) {
             document.documentElement.classList.add('dark-theme');
         }
     })();
 
-    const themeToggle = document.getElementById('theme-toggle');
-    const menuToggle = document.getElementById('menu-toggle');
-    const menuClose = document.getElementById('menu-close');
-    const navMenu = document.getElementById('nav-menu');
-    const navActions = document.getElementById('nav-actions');
-    const body = document.body;
-
-    // Enhanced Theme Manager - No Glitches
-    class ThemeManager {
-        constructor() {
-            this.themeKey = 'xaytheon-theme';
-            this.html = document.documentElement;
-            this.init();
-        }
-
-        init() {
-            this.setupListeners();
-        }
-
-        getCurrentTheme() {
-            return this.html.classList.contains('dark-theme') ? 'dark' : 'light';
-        }
-
-        applyTheme(theme) {
-            // Use classList for instant, glitch-free switching
-            if (theme === 'dark') {
-                this.html.classList.add('dark-theme');
-            } else {
-                this.html.classList.remove('dark-theme');
-            }
-
-            // Save to localStorage
-            localStorage.setItem(this.themeKey, theme);
-        }
-
-        toggleTheme() {
-            const currentTheme = this.getCurrentTheme();
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            this.applyTheme(newTheme);
-        }
-
-        setupListeners() {
-            // Theme toggle button
-            themeToggle.addEventListener('click', () => {
-                this.toggleTheme();
-            });
-
-            // System theme change detection
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            mediaQuery.addEventListener('change', (e) => {
-                // Only apply system preference if user hasn't manually set a theme
-                if (!localStorage.getItem(this.themeKey)) {
-                    this.applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-        }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 
-    const themeManager = new ThemeManager();
+    function init() {
+        // Theme toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn?.addEventListener('click', window.toggleTheme);
+        
+        // Mobile menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const navMenu = document.getElementById('nav-menu');
+        const navActions = document.getElementById('nav-actions');
+        const body = document.body;
 
-    // Mobile Menu
-    function openMenu() {
-        navMenu.classList.add('active');
-        navActions.classList.add('active');
-        menuClose.classList.add('active');
-        body.classList.add('menu-open');
-    }
-
-    function closeMenu() {
-        navMenu.classList.remove('active');
-        navActions.classList.remove('active');
-        menuClose.classList.remove('active');
-        body.classList.remove('menu-open');
-    }
-
-    menuToggle.addEventListener('click', openMenu);
-    menuClose.addEventListener('click', closeMenu);
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 1024 &&
-            body.classList.contains('menu-open') &&
-            !navMenu.contains(e.target) &&
-            !navActions.contains(e.target) &&
-            !menuToggle.contains(e.target)) {
-            closeMenu();
+        function openMenu() {
+            navMenu?.classList.add('active');
+            navActions?.classList.add('active');
+            menuClose?.classList.add('active');
+            body.classList.add('menu-open');
         }
-    });
 
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-            closeMenu();
-            menuToggle.focus();
+        function closeMenu() {
+            navMenu?.classList.remove('active');
+            navActions?.classList.remove('active');
+            menuClose?.classList.remove('active');
+            body.classList.remove('menu-open');
         }
-    });
 
-    // Close menu on window resize to desktop
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            if (window.innerWidth > 1024 && navMenu.classList.contains('active')) {
+        menuToggle?.addEventListener('click', openMenu);
+        menuClose?.addEventListener('click', closeMenu);
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024 && body.classList.contains('menu-open') &&
+                !navMenu?.contains(e.target) && !navActions?.contains(e.target) && 
+                !menuToggle?.contains(e.target)) {
                 closeMenu();
             }
-        }, 250);
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && body.classList.contains('menu-open')) {
+                closeMenu();
+            }
+        });
+
+        // HTTPS (skip localhost)
+        if (!location.hostname.includes('localhost') && !location.hostname.includes('127.')) {
+            window.enforceHttps();
+        }
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('xaytheon-theme')) {
+            document.documentElement.classList.toggle('dark-theme', e.matches);
+        }
     });
 </script>
