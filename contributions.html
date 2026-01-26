@@ -103,8 +103,16 @@
     <span class="cursor-dot"></span>
   </div>
 
-  <script src="contributions.js"></script>
+  <script>
+  window.toggleTheme = function() {
+      document.documentElement.classList.toggle('dark-theme');
+      localStorage.setItem('xaytheon-theme', 
+          document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light'
+      );
+  };
+  </script>
   <script src="boilerplate/boilerplate-loader.js"></script>
+  <script src="contributions.js"></script>
     
 </body>
 
