@@ -14,7 +14,6 @@
     <script defer src="auth.js"></script>
        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-</head>
 
 <body class="eightgon-page">
     <div class="page-wrapper">
@@ -83,8 +82,16 @@
          <div id="footer-placeholder"></div>
     </div>
 
-    <script src="ai.js"></script>
+    <script>
+    window.toggleTheme = function() {
+        document.documentElement.classList.toggle('dark-theme');
+        localStorage.setItem('xaytheon-theme', 
+            document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light'
+        );
+    };
+    </script>
     <script src="boilerplate/boilerplate-loader.js"></script>
+    <script src="ai.js"></script>
     
 </body>
 
