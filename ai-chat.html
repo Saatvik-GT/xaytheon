@@ -81,8 +81,16 @@
          <div id="footer-placeholder"></div>
     </div>
 
-    <script src="ai.js"></script>
+    <script>
+    window.toggleTheme = function() {
+        document.documentElement.classList.toggle('dark-theme');
+        localStorage.setItem('xaytheon-theme', 
+            document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light'
+        );
+    };
+    </script>
     <script src="boilerplate/boilerplate-loader.js"></script>
+    <script src="ai.js"></script>
     
 </body>
 
