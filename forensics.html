@@ -4,23 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Interactive forensic time-travel analytics dashboard to scrub through project health metrics, visualize trends, and analyze historical performance.">
-    <title>XAYTHEON | Forensic Time-Travel Analytics</title>
+    <meta name="description" content="Interactive forensic time-travel analytics dashboard to scrub through project health metrics, visualize trends, and analyze historical performance.">
+    <title>Forensic Time-Travel | XAYTHEON</title>
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="forensics.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap"
-        rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
 </head>
 
-<body class="dark-theme forensic-mode">
+<body class="dark-theme">
 
     <noscript>
         <div style="padding:1rem; text-align:center; background:#111; color:#fff;">
@@ -28,19 +24,20 @@
         </div>
     </noscript>
 
-    <nav id="navbar-placeholder"></nav>
+    <div id="header-placeholder"></div>
 
-    <div class="forensic-interface">
+    <main class="forensics-container">
 
-        <!-- Header -->
-        <header class="forensic-header glass">
-            <div class="brand">
-                <span class="pulse-icon">🕰️</span>
-                <h1>Temporal <span class="accent">Forensics</span></h1>
-            </div>
-            <div class="current-time-display">
-                <span class="label">Historical Context</span>
-                <span id="forensic-clock">LIVE</span>
+        <!-- 3D Time-Slicer Viewport -->
+        <div id="time-slicer-viewport" role="region" aria-label="3D Time Slicer Visualization"></div>
+
+        <!-- HUD Overlay -->
+        <div class="forensics-hud">
+
+            <!-- Top Panel -->
+            <div class="top-panel glass">
+                <h1><i class="ri-time-line" aria-hidden="true"></i> Forensic Time-Travel Analytics</h1>
+                <p class="subtitle">Scrub through 6 months of project health history</p>
             </div>
             <div class="actions">
                 <button id="simulate-incident" class="btn btn-outline btn-sm">Simulate Incident</button>
@@ -52,62 +49,106 @@
         <div id="forensic-canvas-container">
             <canvas id="forensic-3d-view"></canvas>
 
-            <!-- Overlay Metadata -->
-            <div class="canvas-overlay">
-                <div id="node-info-panel" class="info-card glass hidden">
-                    <h3 id="node-name">Auth Service</h3>
-                    <div class="metric-row">
-                        <span>Load:</span>
-                        <span id="node-load">--</span>
-                    </div>
-                    <div class="metric-row">
-                        <span>Status:</span>
-                        <span id="node-status">HEALTHY</span>
-                    </div>
-                    <div class="sparkline-container">
-                        <canvas id="node-sparkline"></canvas>
-                    </div>
+            <!-- Temporal Scrubber -->
+            <div class="scrubber-panel glass">
+                <div class="scrubber-header">
+                    <span id="current-date" aria-live="polite">Loading...</span>
+                    <span id="health-score-display" class="health-badge" aria-live="polite">--</span>
                 </div>
             </div>
         </div>
 
-        <!-- Timeline & Controls -->
+        <!-- The "Rewind" Control Bar -->
         <footer class="forensic-controls glass">
             <div class="playback-controls">
                 <button id="play-pause-btn" class="ctrl-btn">PAUSE</button>
                 <div class="timeline-container">
-                    <div class="time-labels">
-                        <span id="start-time">-5m</span>
-                        <span class="indicator">▼</span>
-                        <span id="end-time">LIVE</span>
-                    </div>
-                    <input type="range" id="time-traveller" min="0" max="300" value="300" class="time-slider">
+                    <label for="time-slider" class="visually-hidden">Timeline scrubber</label>
+                    <input 
+                        type="range" 
+                        id="time-slider" 
+                        min="0" 
+                        max="100" 
+                        value="100" 
+                        class="time-slider"
+                        aria-label="Timeline scrubber control">
+                    <div class="timeline-markers" id="timeline-markers"></div>
                 </div>
-                <div class="playback-speed">
-                    <select id="speed-selector">
-                        <option value="1">1x</option>
+
+                <div class="playback-controls">
+                    <button id="play-btn" class="control-btn" aria-label="Play timeline">
+                        <i class="ri-play-fill" aria-hidden="true"></i>
+                    </button>
+                    <button id="pause-btn" class="control-btn hidden" aria-label="Pause timeline">
+                        <i class="ri-pause-fill" aria-hidden="true"></i>
+                    </button>
+                    <button id="reset-btn" class="control-btn" aria-label="Reset timeline">
+                        <i class="ri-restart-line" aria-hidden="true"></i>
+                    </button>
+                    <select id="speed-select" class="speed-select" aria-label="Playback speed selector">
+                        <option value="0.5">0.5x</option>
+                        <option value="1" selected>1x</option>
                         <option value="2">2x</option>
                         <option value="5">5x</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Anomaly / Health Metrics -->
-            <div class="anomaly-track">
-                <div class="label">Anomaly Heatmap</div>
-                <div id="anomaly-viz" class="viz-strip"></div>
+            <!-- Metrics Dashboard -->
+            <div class="metrics-panel glass">
+                <h3>Health Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">Complexity</span>
+                        <span class="metric-value" id="metric-complexity" aria-live="polite">--</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Risk Score</span>
+                        <span class="metric-value" id="metric-risk" aria-live="polite">--</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Build Speed</span>
+                        <span class="metric-value" id="metric-build" aria-live="polite">--s</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Test Coverage</span>
+                        <span class="metric-value" id="metric-coverage" aria-live="polite">--%</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Code Churn</span>
+                        <span class="metric-value" id="metric-churn" aria-live="polite">--</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Tech Debt</span>
+                        <span class="metric-value" id="metric-debt" aria-live="polite">--</span>
+                    </div>
+                </div>
             </div>
-        </footer>
 
-    </div>
+            <!-- Summary Stats -->
+            <div class="summary-panel glass">
+                <h3>Timeline Summary</h3>
+                <div class="summary-stats">
+                    <div class="stat-row">
+                        <span>Average Health:</span>
+                        <span id="avg-health" aria-live="polite">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Critical Weeks:</span>
+                        <span id="critical-weeks" aria-live="polite">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Health Trend:</span>
+                        <span id="health-trend" aria-live="polite">--</span>
+                    </div>
+                </div>
+            </div>
 
-    <script type="module" src="forensic-renderer.js"></script>
-    <script type="module" src="forensics.js"></script>
-    <script>
-        fetch('navbar.html').then(r => r.text()).then(html => {
-            document.getElementById('navbar-placeholder').innerHTML = html;
-        });
-    </script>
+        </div>
+    </main>
+
+    <script type="module" src="boilerplate/boilerplate-loader.js" defer></script>
+    <script type="module" src="forensics.js" defer></script>
 
 </body>
 </html>
