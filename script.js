@@ -747,6 +747,7 @@ window.trackRepoView = async function (repo) {
 };
 
 // Initialize Recommendations
+
 async function initRecommendations() {
   const recArea = document.getElementById("recommendations-area");
   const emptyArea = document.getElementById("rec-empty");
@@ -765,15 +766,13 @@ async function initRecommendations() {
 
   let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 
-  // Fetch backend history and merge
+  // Fetch backend history via ghJson and merge
   try {
-    const res = await safeFetch(
+    const remoteHistory = await ghJson(
       `${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`,
-      { headers: { "Authorization": `Bearer ${window.XAYTHEON_AUTH.getToken()}` } }
+      { Authorization: `Bearer ${window.XAYTHEON_AUTH.getToken()}` }
     );
-    const remoteHistory = await res.json();
 
-    // Merge logic
     const map = new Map();
     remoteHistory?.forEach(h => map.set(h.full_name, h));
     history.forEach(h => { if (!map.has(h.full_name)) map.set(h.full_name, h); });
@@ -824,6 +823,39 @@ async function initRecommendations() {
       return;
     }
 
+    renderRecommendationCards(recommendations);
+
+  } catch (e) {
+    console.error("Recommendations failed", e);
+    ErrorHandler.handle(e, { source: "initRecommendations" });
+    renderRecommendationCards([
+      { full_name:"facebook/react", name:"react", description:"Fallback Error", language:"JavaScript", stargazers_count:200000, owner:{login:"facebook"}, html_url:"https://github.com/facebook/react"},
+      { full_name:"vuejs/vue", name:"vue", description:"Fallback Error", language:"JavaScript", stargazers_count:180000, owner:{login:"vuejs"}, html_url:"https://github.com/vuejs/vue"}
+    ]);
+  }
+}
+
+  renderRecommendationCards(recommendations);
+
+} catch (e) {
+  console.error("Recommendations failed", e);
+  ErrorHandler.handle(e, { source: "initRecommendations" });
+  renderRecommendationCards([
+    { full_name:"facebook/react", name:"react", description:"Fallback Error", language:"JavaScript", stargazers_count:200000, owner:{login:"facebook"}, html_url:"https://github.com/facebook/react"},
+    { full_name:"vuejs/vue", name:"vue", description:"Fallback Error", language:"JavaScript", stargazers_count:180000, owner:{login:"vuejs"}, html_url:"https://github.com/vuejs/vue"}
+  ]);
+}
+
+  renderRecommendationCards(recommendations);
+
+} catch (e) {
+  console.error("Recommendations failed", e);
+  ErrorHandler.handle(e, { source: "initRecommendations" });
+  renderRecommendationCards([
+    { full_name:"facebook/react", name:"react", description:"Fallback Error", language:"JavaScript", stargazers_count:200000, owner:{login:"facebook"}, html_url:"https://github.com/facebook/react"},
+    { full_name:"vuejs/vue", name:"vue", description:"Fallback Error", language:"JavaScript", stargazers_count:180000, owner:{login:"vuejs"}, html_url:"https://github.com/vuejs/vue"}
+  ]);
+}
     renderRecommendationCards(recommendations);
 
   } catch (e) {
@@ -1005,6 +1037,7 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
 
 
 
