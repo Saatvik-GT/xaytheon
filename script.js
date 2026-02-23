@@ -1,5 +1,5 @@
 // ===================== ERROR SYSTEM INIT =====================
-import ErrorHandler from "./errorHandler.js";
+import ErrorHandler from "./js/errorHandler.js";
 
 ErrorHandler.configure({
   environment: "development",
@@ -1037,6 +1037,7 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
 
 
 
