@@ -84,8 +84,8 @@
         </footer>
     </div>
 
-    <script src="forensic-renderer.js"></script>
-    <script src="forensics.js"></script>
+    <script type="module" src="forensic-renderer.js"></script>
+    <script type="module" src="forensics.js"></script>
     <script>
         fetch('navbar.html').then(r => r.text()).then(html => {
             document.getElementById('navbar-placeholder').innerHTML = html;
