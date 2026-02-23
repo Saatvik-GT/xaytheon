@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Fuzzer - Xaytheon</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="security-fuzzer.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container security-dashboard">
+        <header class="dashboard-header">
+            <h1>🔐 AI-Powered Security Fuzzer</h1>
+            <p>Dynamic taint analysis, exploit path visualization & auto-test generation</p>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid" id="stats-grid" style="display:none;">
+            <div class="stat-card critical">
+                <div class="stat-icon">🔴</div>
+                <div class="stat-content">
+                    <h3>Critical Vulns</h3>
+                    <div class="stat-value" id="stat-critical">0</div>
+                </div>
+            </div>
+            <div class="stat-card high">
+                <div class="stat-icon">🟠</div>
+                <div class="stat-content">
+                    <h3>High Severity</h3>
+                    <div class="stat-value" id="stat-high">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <h3>Publicly Reachable</h3>
+                    <div class="stat-value" id="stat-reachable">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🧪</div>
+                <div class="stat-content">
+                    <h3>Tests Generated</h3>
+                    <div class="stat-value" id="stat-tests">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Controls -->
+        <div class="card analysis-controls">
+            <h2>🎯 Analyze Project</h2>
+            <div class="form-group">
+                <label for="project-path">Project Directory Path</label>
+                <input type="text" id="project-path" placeholder="e.g., /path/to/project or paste package.json" required>
+            </div>
+            <div class="form-row">
+                <button id="analyze-project" class="btn btn-primary">
+                    🔍 Analyze Vulnerabilities
+                </button>
+                <button id="upload-package" class="btn btn-secondary">
+                    📦 Upload package.json
+                </button>
+            </div>
+            
+            <!-- Compare & Pull Request Actions -->
+            <div class="action-buttons">
+                <button id="compare-scans" class="btn btn-compare">
+                    📊 Compare Scans
+                </button>
+                <button id="create-pr" class="btn btn-pr">
+                    🔀 Create Pull Request
+                </button>
+            </div>
+        </div>
+
+        <!-- 3D Dependency Graph Visualization -->
+        <div class="card viz-section" id="viz-section" style="display:none;">
+            <h2>🌐 Exploit Path Visualization</h2>
+            <div class="viz-controls">
+                <button id="toggle-vulnerable" class="btn-control active">Show Vulnerable Only</button>
+                <button id="toggle-glow" class="btn-control active">Glowing Paths</button>
+                <button id="reset-camera" class="btn-control">Reset View</button>
+            </div>
+            <div id="visualization-container"></div>
+            <div class="viz-legend">
+                <div class="legend-item">
+                    <span class="legend-dot critical"></span>
+                    <span>Critical Path (CVE 9.0-10.0)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot high"></span>
+                    <span>High Risk (CVE 7.0-8.9)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot medium"></span>
+                    <span>Medium Risk (CVE 4.0-6.9)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot low"></span>
+                    <span>Low Risk (CVE 0.0-3.9)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vulnerability List -->
+        <div class="card vuln-list" id="vuln-list" style="display:none;">
+            <h2>🚨 Detected Vulnerabilities</h2>
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="critical">Critical</button>
+                <button class="filter-btn" data-filter="high">High</button>
+                <button class="filter-btn" data-filter="medium">Medium</button>
+                <button class="filter-btn" data-filter="low">Low</button>
+            </div>
+            <div id="vulnerabilities-container"></div>
+        </div>
+
+        <!-- Taint Flow Analysis -->
+        <div class="card taint-section" id="taint-section" style="display:none;">
+            <h2>🔬 Taint Flow Analysis</h2>
+            <div id="taint-flows-container"></div>
+        </div>
+
+        <!-- Generated Tests -->
+        <div class="card tests-section" id="tests-section" style="display:none;">
+            <h2>🧪 Auto-Generated Security Tests</h2>
+            <p class="section-desc">AI-generated Vitest/Jest test cases to validate exploit attempts</p>
+            <div id="tests-container"></div>
+        </div>
+
+        <!-- Risk Matrix -->
+        <div class="card risk-matrix-section" id="risk-matrix-section" style="display:none;">
+            <h2>📊 Risk Matrix</h2>
+            <div class="risk-matrix" id="risk-matrix"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Xaytheon Security Fuzzer © 2026</p>
+    </footer>
+
+    <input type="file" id="file-input" accept=".json" style="display:none;">
+
+    <script type="module" src="i18n.js"></script>
+    <script type="module" src="theme.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="security-fuzzer.js"></script>
+</body>
+</html>

@@ -5,6 +5,8 @@
  * between the UI and the 3D renderer.
  */
 
+import ErrorHandler from './js/errorHandler.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const renderer = new window.ForensicRenderer('forensic-3d-view');
 
@@ -35,10 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     async function init() {
-        // Inject some initial data
-        await fetch('/api/analytics/forensic/high-res/simulate', { method: 'POST' });
-        await refreshTimeline();
-        startPlaybackLoop();
+        try {
+            // Inject some initial data
+            await fetch('/api/analytics/forensic/high-res/simulate', { method: 'POST' });
+            await refreshTimeline();
+            startPlaybackLoop();
+        } catch (err) {
+            ErrorHandler.handle('Initialization failed', err);
+        }
     }
 
     async function refreshTimeline() {
@@ -50,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderAnomalyHeatmap(timelineBlocks);
             }
         } catch (err) {
-            console.error("Timeline API offline.");
+            ErrorHandler.handle("Timeline API offline.", err);
         }
     }
 
@@ -112,10 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
     simulateBtn.addEventListener('click', async () => {
         simulateBtn.disabled = true;
         simulateBtn.textContent = 'Simulating...';
-        await fetch('/api/analytics/forensic/high-res/simulate', { method: 'POST' });
-        await refreshTimeline();
-        simulateBtn.disabled = false;
-        simulateBtn.textContent = 'Simulate Incident';
+        try {
+            await fetch('/api/analytics/forensic/high-res/simulate', { method: 'POST' });
+            await refreshTimeline();
+        } catch (err) {
+            ErrorHandler.handle('Simulation failed', err);
+        } finally {
+            simulateBtn.disabled = false;
+            simulateBtn.textContent = 'Simulate Incident';
+        }
     });
 
     // Window Resize

@@ -3,6 +3,8 @@
  * Provides offline support, caching strategies, and push notifications
  */
 
+importScripts('/js/errorHandler.js');
+
 const CACHE_NAME = 'xaytheon-v1';
 const OFFLINE_URL = '/offline.html';
 
@@ -49,7 +51,7 @@ self.addEventListener('install', (event) => {
                 return self.skipWaiting(); // Activate immediately
             })
             .catch((err) => {
-                console.error('[SW] Failed to cache app shell:', err);
+                ErrorHandler.handle('[SW] Failed to cache app shell', err);
             })
     );
 });
@@ -74,6 +76,9 @@ self.addEventListener('activate', (event) => {
                 console.log('[SW] Service Worker activated');
                 return self.clients.claim(); // Take control immediately
             })
+            .catch((err) => {
+                ErrorHandler.handle('[SW] Activation failed', err);
+            })
     );
 });
 
@@ -83,14 +88,10 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(request.url);
 
     // Skip non-GET requests
-    if (request.method !== 'GET') {
-        return;
-    }
+    if (request.method !== 'GET') return;
 
     // Skip cross-origin requests (except for CDN assets)
-    if (url.origin !== location.origin && !isTrustedCDN(url.origin)) {
-        return;
-    }
+    if (url.origin !== location.origin && !isTrustedCDN(url.origin)) return;
 
     // API requests - Network First, fallback to cache
     if (url.pathname.startsWith('/api/')) {
@@ -116,14 +117,9 @@ self.addEventListener('fetch', (event) => {
 
 // ==================== CACHING STRATEGIES ====================
 
-/**
- * Cache First - Try cache, fallback to network
- */
 async function cacheFirst(request) {
     const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-        return cachedResponse;
-    }
+    if (cachedResponse) return cachedResponse;
 
     try {
         const networkResponse = await fetch(request);
@@ -133,14 +129,11 @@ async function cacheFirst(request) {
         }
         return networkResponse;
     } catch (error) {
-        console.error('[SW] Cache first failed:', error);
+        ErrorHandler.handle('[SW] Cache first failed', error);
         throw error;
     }
 }
 
-/**
- * Network First - Try network, fallback to cache
- */
 async function networkFirst(request, cacheName = CACHE_NAME) {
     try {
         const networkResponse = await fetch(request);
@@ -152,16 +145,12 @@ async function networkFirst(request, cacheName = CACHE_NAME) {
     } catch (error) {
         console.log('[SW] Network failed, trying cache...');
         const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-            return cachedResponse;
-        }
+        if (cachedResponse) return cachedResponse;
+        ErrorHandler.handle('[SW] Network and cache both failed', error);
         throw error;
     }
 }
 
-/**
- * Network First with Offline Fallback - For HTML pages
- */
 async function networkFirstWithOffline(request) {
     try {
         const networkResponse = await fetch(request);
@@ -173,35 +162,26 @@ async function networkFirstWithOffline(request) {
     } catch (error) {
         console.log('[SW] Offline, serving cached page or offline page...');
         const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-        // Return offline page
+        if (cachedResponse) return cachedResponse;
         return caches.match(OFFLINE_URL);
     }
 }
 
-/**
- * Stale While Revalidate - Return cache immediately, update in background
- */
 async function staleWhileRevalidate(request) {
     const cache = await caches.open(CACHE_NAME);
     const cachedResponse = await cache.match(request);
 
     const fetchPromise = fetch(request)
         .then((networkResponse) => {
-            if (networkResponse.ok) {
-                cache.put(request, networkResponse.clone());
-            }
+            if (networkResponse.ok) cache.put(request, networkResponse.clone());
             return networkResponse;
         })
-        .catch(() => null);
+        .catch((err) => ErrorHandler.handle('[SW] Stale while revalidate failed', err));
 
     return cachedResponse || fetchPromise;
 }
 
 // ==================== HELPER FUNCTIONS ====================
-
 function isStaticAsset(pathname) {
     return /\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i.test(pathname);
 }
@@ -248,7 +228,7 @@ self.addEventListener('push', (event) => {
                 { action: 'open', title: 'Open' },
                 { action: 'close', title: 'Dismiss' }
             ]
-        })
+        }).catch((err) => ErrorHandler.handle('[SW] Push notification failed', err))
     );
 });
 
@@ -257,26 +237,18 @@ self.addEventListener('notificationclick', (event) => {
     console.log('[SW] Notification clicked');
     event.notification.close();
 
-    if (event.action === 'close') {
-        return;
-    }
+    if (event.action === 'close') return;
 
     const urlToOpen = event.notification.data?.url || '/';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then((clientList) => {
-                // Focus existing window if available
                 for (const client of clientList) {
-                    if (client.url.includes(urlToOpen) && 'focus' in client) {
-                        return client.focus();
-                    }
+                    if (client.url.includes(urlToOpen) && 'focus' in client) return client.focus();
                 }
-                // Open new window
-                if (clients.openWindow) {
-                    return clients.openWindow(urlToOpen);
-                }
-            })
+                if (clients.openWindow) return clients.openWindow(urlToOpen);
+            }).catch((err) => ErrorHandler.handle('[SW] Notification click handling failed', err))
     );
 });
 
@@ -290,7 +262,6 @@ self.addEventListener('sync', (event) => {
 });
 
 async function syncPendingRequests() {
-    // Get pending requests from IndexedDB
     const pendingRequests = await getPendingRequests();
 
     for (const request of pendingRequests) {
@@ -306,28 +277,23 @@ async function syncPendingRequests() {
                 console.log('[SW] Synced request:', request.url);
             }
         } catch (error) {
-            console.error('[SW] Failed to sync request:', error);
+            ErrorHandler.handle('[SW] Failed to sync request', error);
         }
     }
 }
 
 // IndexedDB helpers for pending requests
 async function getPendingRequests() {
-    // This will be handled by pwa.js - just return empty for now
     return [];
 }
 
-async function removePendingRequest(id) {
-    // This will be handled by pwa.js
-}
+async function removePendingRequest(id) {}
 
 // ==================== MESSAGE HANDLING ====================
 self.addEventListener('message', (event) => {
     console.log('[SW] Message received:', event.data);
 
-    if (event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
+    if (event.data.type === 'SKIP_WAITING') self.skipWaiting();
 
     if (event.data.type === 'GET_VERSION') {
         event.ports[0].postMessage({ version: CACHE_NAME });

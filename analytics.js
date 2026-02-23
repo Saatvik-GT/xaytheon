@@ -3,6 +3,7 @@
  * Handles data fetching, chart rendering, and user interactions
  */
 
+import ErrorHandler from './js/errorHandler.js';
 // Configuration
 const API_BASE_URL = 'http://127.0.0.1:5000/api';
 let currentUser = null;
@@ -183,7 +184,7 @@ async function checkAuthentication() {
             showAuthWarning();
         }
     } catch (error) {
-        console.error('Authentication check failed:', error);
+        ErrorHandler.handle('Authentication check failed:', error);
         showAuthWarning();
     }
 }
@@ -383,7 +384,7 @@ async function loadAnalyticsData(forceRefresh = false) {
     const lastUpdatedInfo = document.getElementById('last-updated-info');
 
     if (!startDate || !endDate) {
-        console.warn('Please select both start and end dates');
+        ErrorHandler.handle('Please select both start and end dates');
         return;
     }
 
@@ -448,7 +449,7 @@ async function loadAnalyticsData(forceRefresh = false) {
         }
 
     } catch (error) {
-        console.warn('Fetching unsuccessful, attempting persistent cache...', error);
+        ErrorHandler.handle('Fetching unsuccessful, attempting persistent cache...', error);
 
         // Try loading from persistent OfflineManager
         const cachedRecord = await offlineManager.loadData(cacheKey); //
@@ -468,7 +469,7 @@ async function loadAnalyticsData(forceRefresh = false) {
             if (!navigator.onLine) {
                 showError('You are offline and no cached data is available for this date range.');
             } else {
-                console.error('Error loading analytics data:', error);
+                ErrorHandler.handle('Error loading analytics data:', error);
                 showError('Failed to load analytics data. Please try again.');
             }
             return;
@@ -916,7 +917,7 @@ async function exportData(format) {
 
         showSuccess(`Data exported successfully as ${format.toUpperCase()}`);
     } catch (error) {
-        console.error('Export error:', error);
+        ErrorHandler.handle('Export error:', error);
         showError(`Failed to export ${format.toUpperCase()}. ${error.message}`);
     }
 }
@@ -1071,7 +1072,7 @@ async function exportToPDF() {
         showToast('PDF Report with charts downloaded successfully!', 'success');
 
     } catch (error) {
-        console.error('PDF Generation Error:', error);
+        ErrorHandler.handle('PDF Generation Error:', error);
         showError(`Failed to generate PDF: ${error.message}`);
     }
 }
@@ -1143,7 +1144,7 @@ async function fallbackPDFExport() {
         showToast('PDF exported via server!', 'success');
 
     } catch (fallbackError) {
-        console.error('Fallback export failed:', fallbackError);
+        ErrorHandler.handle('Fallback export failed:', fallbackError);
         showError('Both PDF export methods failed. Try exporting as CSV or JSON instead.');
     }
 }
@@ -1258,7 +1259,7 @@ function initWebSocket() {
     });
 
     socket.on('connect_error', (err) => {
-        console.error('WebSocket connection error:', err);
+        ErrorHandler.handle('WebSocket connection error:', err);
     });
 }
 

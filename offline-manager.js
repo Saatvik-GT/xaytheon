@@ -1,3 +1,5 @@
+import ErrorHandler from './js/errorHandler.js';
+
 /**
  * OfflineManager - Handles client-side caching using IndexedDB
  */
@@ -17,7 +19,7 @@ class OfflineManager {
             const request = indexedDB.open(this.dbName, 1);
 
             request.onerror = (event) => {
-                console.error('IndexedDB error:', event.target.error);
+                ErrorHandler.handle('IndexedDB error', event.target.error);
                 reject('Error opening database');
             };
 
@@ -64,7 +66,7 @@ class OfflineManager {
             };
 
             request.onerror = (event) => {
-                console.error('Error saving data:', event.target.error);
+                ErrorHandler.handle('Error saving data', event.target.error);
                 reject('Error saving data');
             };
         });
@@ -91,7 +93,7 @@ class OfflineManager {
             };
 
             request.onerror = (event) => {
-                console.error('Error loading data:', event.target.error);
+                ErrorHandler.handle('Error loading data', event.target.error);
                 reject('Error loading data');
             };
         });
