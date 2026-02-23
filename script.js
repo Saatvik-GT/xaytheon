@@ -668,35 +668,42 @@ if (menuIcon && menuCloseIcon && navMenu) {
 
 
 // ===================== Recommendation Engine =====================
-const HISTORY_KEY = "xaytheon:view_history";
 
-// Track a repository view
+const HISTORY_KEY = "xaytheon:view_history";
+const SEARCH_HISTORY_KEY = "xaytheon:search_history";
+
 // Track a repository view
 window.trackRepoView = async function (repo) {
   try {
     let history = [];
 
-    // Check if user is logged in
-    const isAuthed = window.XAYTHEON_AUTH && window.XAYTHEON_AUTH.isAuthenticated();
+    const isAuthed = window.XAYTHEON_AUTH?.isAuthenticated?.();
 
+    // Try backend fetch first
     if (isAuthed) {
       try {
-        const res = await window.XAYTHEON_AUTH.authenticatedFetch(`${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`);
-        if (res.ok) {
-          history = await res.json();
-        }
-      } catch (e) { console.warn("Failed to fetch fresh history", e); }
+        const res = await safeFetch(
+          `${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${window.XAYTHEON_AUTH.getToken()}`
+            },
+          }
+        );
+        history = await res.json();
+      } catch (e) {
+        console.warn("Failed to fetch fresh history", e);
+      }
     }
 
-    // If empty (network fail or not authed), try local storage
-    if (history.length === 0) {
+    // Fallback to localStorage
+    if (!history || history.length === 0) {
       history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
     }
 
-    // Remove if already exists (to move to top)
+    // Move repo to top
     const filtered = history.filter(h => h.full_name !== repo.full_name);
-
-    // Add to top
     filtered.unshift({
       full_name: repo.full_name,
       language: repo.language,
@@ -704,110 +711,136 @@ window.trackRepoView = async function (repo) {
       visited_at: Date.now()
     });
 
-    // Limit to 50
+    // Limit history
     if (filtered.length > 50) filtered.length = 50;
-
-    // Save to LocalStorage (always as backup/cache)
     localStorage.setItem(HISTORY_KEY, JSON.stringify(filtered));
 
-    // Save to Backend if authed
+    // Save to backend if authenticated
     if (isAuthed) {
-      await window.XAYTHEON_AUTH.authenticatedFetch(
-        `${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ history: filtered })
-        }
-      ).catch(e => console.warn("Failed to sync history to backend", e));
+      try {
+        await safeFetch(
+          `${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${window.XAYTHEON_AUTH.getToken()}`
+            },
+            body: JSON.stringify({ history: filtered })
+          }
+        );
+      } catch (e) {
+        console.warn("Failed to sync history to backend", e);
+      }
 
-      // Auto-update recommendations
+      // Refresh recommendations
       initRecommendations();
     }
 
   } catch (e) {
     console.warn("Tracking failed", e);
+    ErrorHandler.handle(e, { source: "trackRepoView", repo });
   }
 };
 
+// Initialize Recommendations
 async function initRecommendations() {
   const recArea = document.getElementById("recommendations-area");
   const emptyArea = document.getElementById("rec-empty");
   const list = document.getElementById("rec-list");
 
-  if (!recArea || !list) {
-    return;
-  }
+  if (!recArea || !list) return;
 
-  if (!window.XAYTHEON_AUTH || !window.XAYTHEON_AUTH.isAuthenticated()) {
+  if (!window.XAYTHEON_AUTH?.isAuthenticated?.()) {
     recArea.classList.add("hidden");
-    if (emptyArea) emptyArea.classList.add("hidden");
-    const authReq = document.querySelector("[data-requires-auth]");
-    if (authReq) authReq.style.display = "none";
+    emptyArea?.classList.add("hidden");
+    document.querySelector("[data-requires-auth]")?.style.display = "none";
     return;
   } else {
-    const authReq = document.querySelector("[data-requires-auth]");
-    if (authReq) authReq.style.display = "block";
+    document.querySelector("[data-requires-auth]")?.style.display = "block";
   }
 
-  let history = [];
-  let localHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 
-  // Try to load from backend if authenticated and merge
+  // Fetch backend history and merge
   try {
-    const res = await window.XAYTHEON_AUTH.authenticatedFetch(`${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`);
-    if (res.ok) {
-      const remoteHistory = await res.json();
+    const res = await safeFetch(
+      `${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`,
+      { headers: { "Authorization": `Bearer ${window.XAYTHEON_AUTH.getToken()}` } }
+    );
+    const remoteHistory = await res.json();
 
-      // Merge Logic
-      if (remoteHistory.length === 0 && localHistory.length > 0) {
-        // Push local to backend
-        history = localHistory;
-        window.XAYTHEON_AUTH.authenticatedFetch(
-          `${window.location.protocol === "https:" ? "https://your-api-domain.com/api/user" : "http://localhost:5000/api/user"}/history`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ history: localHistory })
-          }
-        );
-      } else {
-        // Intelligent Merge
-        const map = new Map();
-        remoteHistory.forEach(h => map.set(h.full_name, h));
-        localHistory.forEach(h => {
-          if (!map.has(h.full_name)) map.set(h.full_name, h);
-        });
-        history = Array.from(map.values()).sort((a, b) => (b.visited_at || 0) - (a.visited_at || 0)).slice(0, 50);
-      }
+    // Merge logic
+    const map = new Map();
+    remoteHistory?.forEach(h => map.set(h.full_name, h));
+    history.forEach(h => { if (!map.has(h.full_name)) map.set(h.full_name, h); });
+    history = Array.from(map.values()).sort((a,b) => (b.visited_at||0) - (a.visited_at||0)).slice(0,50);
 
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    } else {
-      throw new Error("Backend failed");
-    }
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch (e) {
     console.warn("Could not fetch remote history, falling back to local", e);
-    history = localHistory;
+    ErrorHandler.handle(e, { source: "initRecommendations" });
   }
 
-  // Track a search interest
-  const SEARCH_HISTORY_KEY = "xaytheon:search_history";
-  window.trackSearchInterest = function (topic, language) {
-    if (!topic && !language) return;
-    let history = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || "[]");
+  // Analyze clicks + search
+  const languages = {}, topics = {};
+  const searchHistory = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || "[]");
 
-    // Add to top
-    history.unshift({
-      topic: topic || "",
-      language: language || "",
-      ts: Date.now()
-    });
+  history.forEach(h => { if(h.language) languages[h.language] = (languages[h.language]||0)+2; });
+  searchHistory.forEach(s => { if(s.language) languages[s.language] = (languages[s.language]||0)+1; if(s.topic) topics[s.topic] = (topics[s.topic]||0)+1; });
 
-    // Limit to 20
-    if (history.length > 20) history.length = 20;
+  const topLangs = Object.entries(languages).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+  const topTopics = Object.entries(topics).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
 
-    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
-  };
+  let q = topLangs.length+topTopics.length === 0 ? "stars:>1000" : [...topLangs.map(l=>`language:${l}`), ...topTopics.map(t=>`topic:${t}`)].join(" ");
+
+  recArea.classList.remove("hidden");
+  emptyArea?.classList.add("hidden");
+
+  try {
+    const encodedQ = encodeURIComponent(q);
+    const url = `https://api.github.com/search/repositories?q=${encodedQ}&sort=stars&order=desc&per_page=20`;
+
+    const data = await ghJson(url);
+
+    const viewedNames = new Set(history.map(h=>h.full_name));
+    const recommendations = (data.items||[]).filter(r=>!viewedNames.has(r.full_name)).slice(0,6);
+
+    if (recommendations.length === 0 && q !== "stars:>500") {
+      const fallbackUrl = `https://api.github.com/search/repositories?q=stars:>1000&sort=stars&order=desc&per_page=10`;
+      const fallbackData = await ghJson(fallbackUrl);
+      renderRecommendationCards(fallbackData.items.slice(0,6));
+      return;
+    }
+
+    if(recommendations.length===0){
+      renderRecommendationCards([
+        { full_name:"facebook/react", name:"react", description:"Fallback", language:"JavaScript", stargazers_count:200000, owner:{login:"facebook"}, html_url:"https://github.com/facebook/react"},
+        { full_name:"vuejs/vue", name:"vue", description:"Fallback", language:"JavaScript", stargazers_count:180000, owner:{login:"vuejs"}, html_url:"https://github.com/vuejs/vue"}
+      ]);
+      return;
+    }
+
+    renderRecommendationCards(recommendations);
+
+  } catch (e) {
+    console.error("Recommendations failed", e);
+    ErrorHandler.handle(e, { source: "initRecommendations" });
+    renderRecommendationCards([
+      { full_name:"facebook/react", name:"react", description:"Fallback Error", language:"JavaScript", stargazers_count:200000, owner:{login:"facebook"}, html_url:"https://github.com/facebook/react"},
+      { full_name:"vuejs/vue", name:"vue", description:"Fallback Error", language:"JavaScript", stargazers_count:180000, owner:{login:"vuejs"}, html_url:"https://github.com/vuejs/vue"}
+    ]);
+  }
+}
+
+// Track a search interest safely
+window.trackSearchInterest = function(topic, language){
+  if(!topic && !language) return;
+  let history = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY)||"[]");
+  history.unshift({ topic: topic||"", language: language||"", ts: Date.now() });
+  if(history.length>20) history.length=20;
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
+};
 
   // Analyze history (clicks)
   const languages = {};
@@ -969,6 +1002,7 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
 
 
 
