@@ -4,20 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAYTHEON | 3D High-Res Forensic Engine</title>
+    <meta name="description"
+        content="Interactive forensic time-travel analytics dashboard to scrub through project health metrics, visualize trends, and analyze historical performance.">
+    <title>XAYTHEON | Forensic Time-Travel Analytics</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="forensics.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 </head>
 
 <body class="dark-theme forensic-mode">
+
+    <noscript>
+        <div style="padding:1rem; text-align:center; background:#111; color:#fff;">
+            This dashboard requires JavaScript to function properly.
+        </div>
+    </noscript>
+
     <nav id="navbar-placeholder"></nav>
 
     <div class="forensic-interface">
+
+        <!-- Header -->
         <header class="forensic-header glass">
             <div class="brand">
                 <span class="pulse-icon">🕰️</span>
@@ -56,7 +71,7 @@
             </div>
         </div>
 
-        <!-- The "Rewind" Control Bar -->
+        <!-- Timeline & Controls -->
         <footer class="forensic-controls glass">
             <div class="playback-controls">
                 <button id="play-pause-btn" class="ctrl-btn">PAUSE</button>
@@ -77,11 +92,13 @@
                 </div>
             </div>
 
+            <!-- Anomaly / Health Metrics -->
             <div class="anomaly-track">
                 <div class="label">Anomaly Heatmap</div>
                 <div id="anomaly-viz" class="viz-strip"></div>
             </div>
         </footer>
+
     </div>
 
     <script type="module" src="forensic-renderer.js"></script>
@@ -91,6 +108,6 @@
             document.getElementById('navbar-placeholder').innerHTML = html;
         });
     </script>
-</body>
 
+</body>
 </html>
