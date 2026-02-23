@@ -189,39 +189,42 @@ async function ghJson(url, headers = {}) {
     return IN_FLIGHT_REQUESTS.get(key);
   }
 
-  const promise = safeFetch(url, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "XAYTHEON",
-      ...headers,
-    },
-  });
+  const promise = (async () => {
+    const res = await safeFetch(url, {
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "XAYTHEON",
+        ...headers,
+      },
+    });
 
-  // Extract Rate Limit Headers
-  const limit = res.headers.get("X-RateLimit-Limit");
-  const remaining = res.headers.get("X-RateLimit-Remaining");
-
-  if (limit && remaining) {
-    updateRateLimitUI(remaining, limit);
-  }
-
-  // Check for rate limiting
-  if (res.status === 403 || res.status === 429) {
-    const resetTime = res.headers.get('X-RateLimit-Reset');
-    const remainingVal = res.headers.get('X-RateLimit-Remaining');
-
-    if (remainingVal === '0' || res.status === 429) {
-      const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : null;
-      const waitTime = resetDate ? Math.ceil((resetDate - Date.now()) / 60000) : 'unknown';
-      throw new Error(`⚠️ GitHub API rate limit exceeded. Please try again in ${waitTime} minutes.`);
+    // Extract Rate Limit Headers
+    const limit = res.headers.get("X-RateLimit-Limit");
+    const remaining = res.headers.get("X-RateLimit-Remaining");
+    if (limit && remaining) {
+      updateRateLimitUI(remaining, limit);
     }
-  }
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`GitHub API ${res.status}: ${text}`);
-  }
-  return res.json();
+    // Check for rate limiting
+    if (res.status === 403 || res.status === 429) {
+      const resetTime = res.headers.get("X-RateLimit-Reset");
+      const remainingVal = res.headers.get("X-RateLimit-Remaining");
+      if (remainingVal === "0" || res.status === 429) {
+        const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : null;
+        const waitTime = resetDate ? Math.ceil((resetDate - Date.now()) / 60000) : "unknown";
+        throw new Error(`⚠️ GitHub API rate limit exceeded. Retry in ${waitTime} minutes.`);
+      }
+    }
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`GitHub API ${res.status}: ${text}`);
+    }
+
+    return res.json();
+  })();
+
+  IN_FLIGHT_REQUESTS.set(key, promise);
+  return promise;
 }
 
 function updateRateLimitUI(remaining, limit) {
@@ -1002,6 +1005,7 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
 
 
 
