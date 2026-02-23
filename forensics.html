@@ -4,12 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <meta name="description" content="Interactive forensic time-travel analytics dashboard to scrub through project health metrics, visualize trends, and analyze historical performance.">
     <title>Forensic Time-Travel | XAYTHEON</title>
+=======
+    <meta name="description"
+        content="Interactive forensic time-travel analytics dashboard to scrub through project health metrics, visualize trends, and analyze historical performance.">
+    <title>XAYTHEON | Forensic Time-Travel Analytics</title>
+>>>>>>> 1bb2416c9a1f030977103f5ca11fa622f7491ddf
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="forensics.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<<<<<<< HEAD
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
@@ -38,6 +45,38 @@
             <div class="top-panel glass">
                 <h1><i class="ri-time-line" aria-hidden="true"></i> Forensic Time-Travel Analytics</h1>
                 <p class="subtitle">Scrub through 6 months of project health history</p>
+=======
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+</head>
+
+<body class="dark-theme forensic-mode">
+
+    <noscript>
+        <div style="padding:1rem; text-align:center; background:#111; color:#fff;">
+            This dashboard requires JavaScript to function properly.
+        </div>
+    </noscript>
+
+    <nav id="navbar-placeholder"></nav>
+
+    <div class="forensic-interface">
+
+        <!-- Header -->
+        <header class="forensic-header glass">
+            <div class="brand">
+                <span class="pulse-icon">🕰️</span>
+                <h1>Temporal <span class="accent">Forensics</span></h1>
+            </div>
+            <div class="current-time-display">
+                <span class="label">Historical Context</span>
+                <span id="forensic-clock">LIVE</span>
+>>>>>>> 1bb2416c9a1f030977103f5ca11fa622f7491ddf
             </div>
             <div class="actions">
                 <button id="simulate-incident" class="btn btn-outline btn-sm">Simulate Incident</button>
@@ -58,7 +97,7 @@
             </div>
         </div>
 
-        <!-- The "Rewind" Control Bar -->
+        <!-- Timeline & Controls -->
         <footer class="forensic-controls glass">
             <div class="playback-controls">
                 <button id="play-pause-btn" class="ctrl-btn">PAUSE</button>
@@ -94,6 +133,7 @@
                 </div>
             </div>
 
+<<<<<<< HEAD
             <!-- Metrics Dashboard -->
             <div class="metrics-panel glass">
                 <h3>Health Metrics</h3>
@@ -149,6 +189,24 @@
 
     <script src="boilerplate/boilerplate-loader.js" defer></script>
     <script src="forensics.js" defer></script>
+=======
+            <!-- Anomaly / Health Metrics -->
+            <div class="anomaly-track">
+                <div class="label">Anomaly Heatmap</div>
+                <div id="anomaly-viz" class="viz-strip"></div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script type="module" src="forensic-renderer.js"></script>
+    <script type="module" src="forensics.js"></script>
+    <script>
+        fetch('navbar.html').then(r => r.text()).then(html => {
+            document.getElementById('navbar-placeholder').innerHTML = html;
+        });
+    </script>
+>>>>>>> 1bb2416c9a1f030977103f5ca11fa622f7491ddf
 
 </body>
 </html>

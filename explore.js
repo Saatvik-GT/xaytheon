@@ -1,6 +1,6 @@
 // Explore by Topic — Graph + List View (FULLY WORKING)
 import { calculateTrendScore } from "./trendScore.js";
-
+import ErrorHandler from './js/errorhandler.js';
 
 (function () {
   const form = document.getElementById("explore-form");
@@ -378,7 +378,7 @@ renderRepoList(exploreData.repos);
 setStatus(`Added ${repos.length} repos`);
 
     } catch (e) {
-      console.error(e);
+      ErrorHandler.handle(e);
       setStatus(e.message || "Failed to expand topic", "error");
 
       // Add retry functionality
@@ -489,7 +489,7 @@ renderRepoList(exploreData.repos);
 setStatus(`Loaded ${repos.length} repositories`);
 
     } catch (e) {
-      console.error(e);
+      ErrorHandler.handle(e);
       setStatus(e.message || "Failed to load data", "error");
 
       // Add retry functionality
@@ -535,3 +535,4 @@ setStatus(`Loaded ${repos.length} repositories`);
   debouncedExplore();
 })();
 console.log(exploreData.repos.map(r => r.trendScore));
+

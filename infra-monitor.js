@@ -2,6 +2,8 @@
  * XAYTHEON - Health Monitor Frontend with Self-Healing CI/CD
  */
 
+import ErrorHandler from './js/errorHandler.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const buildFeed = document.getElementById('build-feed');
     const repoFleet = document.getElementById('repo-fleet');
@@ -56,14 +58,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorTypes = ['lint', 'dependency', 'test', 'syntax'];
         const randomType = errorTypes[Math.floor(Math.random() * errorTypes.length)];
 
-        await fetch('/api/ai/simulate-failure', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                repoName: 'SatyamPandey-07/xaytheon',
-                errorType: randomType
-            })
-        });
+        try {
+            await fetch('/api/ai/simulate-failure', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    repoName: 'Saatvik-GT/xaytheon',
+                    errorType: randomType
+                })
+            });
+        } catch (err) {
+            ErrorHandler.handle('Demo trigger failed', err);
+        }
     });
 
     // Remediation button handlers
@@ -88,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 showErrorNotification('Failed to apply auto-fix');
             }
-        } catch (error) {
-            console.error('Apply patch error:', error);
+        } catch (err) {
+            ErrorHandler.handle('Apply patch error', err);
             showErrorNotification('Failed to apply auto-fix');
         } finally {
             applyPatchBtn.disabled = false;
@@ -119,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 showErrorNotification('Failed to create PR');
             }
-        } catch (error) {
-            console.error('Create PR error:', error);
+        } catch (err) {
+            ErrorHandler.handle('Create PR error', err);
             showErrorNotification('Failed to create PR');
         } finally {
             createPRBtn.disabled = false;
@@ -177,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showSuccessNotification(message) {
-        // Simple notification (could be enhanced with a toast library)
         const notification = document.createElement('div');
         notification.className = 'notification success';
         notification.innerHTML = `<i class="ri-checkbox-circle-fill"></i> ${message}`;
@@ -223,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             renderFleet(data.repos);
         } catch (err) {
-            console.error('Failed to load fleet summary');
+            ErrorHandler.handle('Failed to load fleet summary', err);
         }
     }
 

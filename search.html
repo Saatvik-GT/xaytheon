@@ -99,7 +99,7 @@
         Powered by Xaytheon Semantic Intelligence v2.0
     </footer>
 
-    <script src="search.js"></script>
+    <script type="module" src="search.js"></script>
     <script>
         fetch('navbar.html').then(r => r.text()).then(html => {
             document.getElementById('navbar-placeholder').innerHTML = html;

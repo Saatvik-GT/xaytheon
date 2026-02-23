@@ -4,6 +4,9 @@
  */
 
 // Configuration
+
+import ErrorHandler from './js/errorHandler.js';
+
 const API_BASE_URL = 'http://localhost:5000/api';
 const SOCKET_URL = 'http://localhost:5000';
 let socket = null;
@@ -38,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             showAuthWarning();
         }
     } catch (error) {
-        console.error('Initialization error:', error);
+        ErrorHandler.handle('Initialization error:', error);
         showAuthWarning();
     }
 
@@ -56,7 +59,7 @@ function connectWebSocket(token) {
     });
 
     socket.on('connect', () => {
-        console.log('🔌 WebSocket connected');
+        ErrorHandler.log('🔌 WebSocket connected');
         updateConnectionStatus(true);
 
         // Join current watchlist room if selected
@@ -66,7 +69,7 @@ function connectWebSocket(token) {
     });
 
     socket.on('disconnect', () => {
-        console.log('🔌 WebSocket disconnected');
+        ErrorHandler.log('🔌 WebSocket disconnected');
         updateConnectionStatus(false);
     });
 
@@ -118,7 +121,7 @@ async function loadWatchlists() {
             showEmptyState();
         }
     } catch (error) {
-        console.error('Error loading watchlists:', error);
+        ErrorHandler.handle('Error loading watchlists:', error);
         showToast('Failed to load watchlists', 'error');
     }
 }
@@ -159,7 +162,7 @@ async function selectWatchlist(id) {
 
         renderWatchlistContent(watchlist);
     } catch (error) {
-        console.error('Error loading watchlist details:', error);
+        ErrorHandler.handle('Error loading watchlist details:', error);
         showToast('Failed to load watchlist details', 'error');
     }
 }
@@ -365,7 +368,7 @@ async function createWatchlist(event) {
             showToast('Failed to create watchlist', 'error');
         }
     } catch (error) {
-        console.error('Error creating watchlist:', error);
+        ErrorHandler.handle('Error creating watchlist:', error);
         showToast('Error creating watchlist', 'error');
     }
 }
@@ -409,7 +412,7 @@ async function addRepository(event) {
             showToast('Failed to add repository', 'error');
         }
     } catch (error) {
-        console.error('Error adding repository:', error);
+        ErrorHandler.handle('Error adding repository:', error);
         showToast('Error adding repository', 'error');
     }
 }
@@ -435,7 +438,7 @@ async function removeRepo(repoName) {
             showToast('Failed to remove repository', 'error');
         }
     } catch (error) {
-        console.error('Error removing repository:', error);
+        ErrorHandler.handle('Error removing repository:', error);
         showToast('Error removing repository', 'error');
     }
 }
@@ -459,7 +462,7 @@ async function loadNotifications() {
         renderNotifications();
         updateNotificationBadge(unreadCount > 0, unreadCount);
     } catch (error) {
-        console.error('Error loading notifications:', error);
+        ErrorHandler.handle('Error loading notifications:', error);
     }
 }
 
@@ -576,7 +579,7 @@ function setupEventListeners() {
             renderNotifications();
             updateNotificationBadge(false);
         } catch (error) {
-            console.error('Error marking read:', error);
+            ErrorHandler.handle('Error marking read:', error);
         }
     });
 
