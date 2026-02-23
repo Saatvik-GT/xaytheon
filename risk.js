@@ -2,6 +2,8 @@
  * XAYTHEON - Risk Detector Logic
  */
 
+import ErrorHandler from './js/errorHandler.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const analyzeBtn = document.getElementById('analyze-btn');
     const repoInput = document.getElementById('repo-input');
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             renderDashboard(data);
         } catch (err) {
-            console.error(err);
+            ErrorHandler.handle(err);
             alert('Failed to analyze repository risks.');
         } finally {
             analyzeBtn.innerText = 'Scan Repository';
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDashboard(data) {
+        try{
         // Update Stats
         activePrsEl.textContent = data.stats.totalActivePrs;
         potentialConflictsEl.textContent = data.stats.potentialConflicts;
@@ -66,9 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Render Conflict Map (Visual)
         renderMap(data.conflicts);
+            } catch (err) {
+        ErrorHandler.handle('Error rendering risk dashboard', err);
     }
 
     function renderMap(conflicts) {
+        try{
         if (conflicts.length === 0) {
             conflictMap.innerHTML = '<div class="empty-map">No overlapping file changes detected. Your PRs are clean! 🎉</div>';
             return;
@@ -89,5 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             cluster.appendChild(node);
         });
+             } catch (err) {
+        ErrorHandler.handle('Error rendering conflict map', err);
     }
 });

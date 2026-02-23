@@ -1,5 +1,6 @@
+import ErrorHandler from './js/errorhandler.js';
 
-(function initTheme() {
+function initTheme() {
     const theme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", theme);
 })();
@@ -134,7 +135,7 @@ class GitHubDashboard {
 
         } catch (error) {
             this.showStatus(`❌ Error: ${error.message}`, 'error');
-            console.error('GitHub API Error:', error);
+            ErrorHandler.handle('GitHub API Error:', error);
         }
     }
     displayProfile() {
@@ -262,7 +263,7 @@ class GitHubDashboard {
             }
         }
 
-        console.log('Detected Primary Language:', this.primaryLanguage);
+        ErrorHandler.log('Detected Primary Language:', this.primaryLanguage);
     }
 
     displayLanguageBreakdown(repos) {
@@ -452,7 +453,7 @@ class GitHubDashboard {
             });
 
         } catch (error) {
-            console.warn('Failed to fetch suggestions:', error);
+            ErrorHandler.handle('Failed to fetch suggestions:', error);
             container.style.display = 'none';
         }
     }
@@ -532,11 +533,11 @@ class GitHubDashboard {
         const monthLabelsEl = document.getElementById('month-labels');
 
         if (!gridEl) {
-            console.error('Heatmap grid element not found!');
+            ErrorHandler.handle('Heatmap grid element not found!');
             return;
         }
 
-        console.log('Rendering heatmap with', events.length, 'events');
+        ErrorHandler.log('Rendering heatmap with', events.length, 'events');
 
         // Clear grid and month labels
         gridEl.innerHTML = '';
@@ -549,7 +550,7 @@ class GitHubDashboard {
             contributionMap[date] = (contributionMap[date] || 0) + 1;
         });
 
-        console.log('Contribution map:', Object.keys(contributionMap).length, 'unique days');
+        ErrorHandler.log('Contribution map:', Object.keys(contributionMap).length, 'unique days');
 
         // Calculate date range (52 weeks back from today)
         const today = new Date();
@@ -561,7 +562,7 @@ class GitHubDashboard {
         const dayOfWeek = startDate.getDay();
         startDate.setDate(startDate.getDate() - dayOfWeek);
 
-        console.log('Date range:', startDate.toDateString(), 'to', today.toDateString());
+        ErrorHandler.log('Date range:', startDate.toDateString(), 'to', today.toDateString());
 
         // Calculate contribution levels
         const counts = Object.values(contributionMap).filter(c => c > 0);
