@@ -189,7 +189,7 @@ async function ghJson(url, headers = {}) {
     return IN_FLIGHT_REQUESTS.get(key);
   }
 
-  const promise = fetch(url, {
+  const promise = safeFetch(url, {
     headers: {
       Accept: "application/vnd.github+json",
       "User-Agent": "XAYTHEON",
@@ -394,7 +394,7 @@ async function fetchContributionSvg(username, token) {
         }
       }
     }`;
-  const res = await fetch("https://api.github.com/graphql", {
+  const res = await safeFetch("https://api.github.com/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -938,7 +938,7 @@ function renderRecommendationCards(repos) {
 
 // Example usage with fetch
 function fetchRepos(key) {
-  const promise = fetch(url, {
+  const promise = safeFetch(url, {
   headers: {
     Accept: "application/vnd.github+json",
     "User-Agent": "XAYTHEON",
@@ -969,5 +969,6 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
 
 
