@@ -7,6 +7,26 @@ ErrorHandler.configure({
 
 ErrorHandler.attachGlobalListeners();
 
+// ===================== SAFE FETCH ABSTRACTION =====================
+async function safeFetch(url, options = {}) {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      const error = new Error(`HTTP ${response.status} - ${response.statusText}`);
+      error.status = response.status;
+      throw error;
+    }
+    return response;
+  } catch (err) {
+    ErrorHandler.handle(err, {
+      source: "safeFetch",
+      url,
+      options,
+    });
+    throw err;
+  }
+}
+
 // ===================== API REQUEST DEDUPLICATION =====================
 const IN_FLIGHT_REQUESTS = new Map();
 
@@ -949,4 +969,5 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
 
