@@ -1,3 +1,12 @@
+// ===================== ERROR SYSTEM INIT =====================
+import ErrorHandler from "./errorHandler.js";
+
+ErrorHandler.configure({
+  environment: "development",
+});
+
+ErrorHandler.attachGlobalListeners();
+
 // ===================== API REQUEST DEDUPLICATION =====================
 const IN_FLIGHT_REQUESTS = new Map();
 
@@ -940,3 +949,4 @@ function fetchRepos(key) {
 
 IN_FLIGHT_REQUESTS.set(key, promise);
 return promise;
+
