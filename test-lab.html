@@ -4,80 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Test Lab — Autonomous logic analysis and boundary testing for your codebase">
     <title>AI Test Lab — XAYTHEON</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css?v=1.0.0">
-    <link rel="stylesheet" href="test-lab.css?v=1.0.0">
+    <link rel="stylesheet" href="test-lab.css?v=1.0.1">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Supabase SDK & Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+    <script defer src="auth.js?v=1.0.0"></script>
+    <script defer src="i18n.js?v=1.0.0"></script>
 </head>
 
 <body class="dark-theme">
-    <div id="header-placeholder"></div>
+    <div class="page-wrapper">
+        <div id="header-placeholder"></div>
 
-    <main class="test-lab-container">
-        <!-- 3D Viewport for Logic Tree -->
-        <div id="logic-tree-viewport"></div>
+        <main class="test-lab-container">
+            <!-- 3D Viewport for Logic Tree -->
+            <div id="logic-tree-viewport"></div>
 
-        <!-- Control Panel -->
-        <div class="test-hud">
-            <div class="side-panel">
-                <div class="card glass animate-in">
-                    <h3><i class="ri-test-tube-line"></i> AI Test Lab</h3>
-                    <p class="subtitle">Autonomous logic analysis & boundary testing</p>
+            <!-- Control Panel -->
+            <div class="test-hud">
+                <div class="side-panel">
+                    <div class="card glass animate-in">
+                        <h3><i class="ri-test-tube-line"></i> AI Test Lab</h3>
+                        <p class="subtitle">Autonomous logic analysis & boundary testing</p>
 
-                    <div class="search-box">
-                        <input type="text" id="file-input" placeholder="Enter file path (e.g. auth.service.js)..."
-                            value="auth.service.js">
-                        <button class="btn btn-primary" onclick="analyzeCode()">Analyze</button>
+                        <div class="search-box">
+                            <input type="text" id="file-input" placeholder="Enter file path (e.g. auth.service.js)..."
+                                value="auth.service.js">
+                            <button class="btn btn-primary" id="analyze-btn" onclick="analyzeCode()">Analyze</button>
+                        </div>
+                    </div>
+
+                    <div class="card glass branch-details hidden" id="branch-card">
+                        <div class="card-header">
+                            <h4>Branch Identified</h4>
+                            <span id="coverage-status" class="status-badge">UNTESTED</span>
+                        </div>
+                        <div class="branch-logic">
+                            <code>if (<span id="branch-condition">condition</span>)</code>
+                        </div>
+
+                        <div class="boundary-list" id="boundary-list">
+                            <!-- Boundaries will be listed here -->
+                        </div>
+
+                        <button class="btn btn-accent full-width" id="generate-test-btn" onclick="generateTest()">
+                            <i class="ri-magic-line"></i> Generate Edge-Case Test
+                        </button>
                     </div>
                 </div>
 
-                <div class="card glass branch-details hidden" id="branch-card">
-                    <div class="card-header">
-                        <h4>Branch Identified</h4>
-                        <span id="coverage-status" class="status-badge">UNTESTED</span>
+                <div class="test-results glass hidden" id="test-results">
+                    <div class="results-header">
+                        <h4>Generated Test Suite</h4>
+                        <button class="close-btn" id="close-results-btn" onclick="hideResults()"><i
+                                class="ri-close-line"></i></button>
                     </div>
-                    <div class="branch-logic">
-                        <code>if (<span id="branch-condition">condition</span>)</code>
+                    <div class="code-preview">
+                        <pre><code id="generated-code">// AI generated test cases...</code></pre>
                     </div>
-
-                    <div class="boundary-list" id="boundary-list">
-                        <!-- Boundaries will be listed here -->
+                    <div class="actions">
+                        <button class="btn btn-secondary" id="copy-code-btn" onclick="copyCode()">
+                            <i class="ri-clipboard-line"></i> Copy to Clipboard
+                        </button>
+                        <button class="btn btn-primary" id="save-tests-btn">
+                            <i class="ri-save-line"></i> Save to _tests_/
+                        </button>
                     </div>
-
-                    <button class="btn btn-accent full-width" onclick="generateTest()">
-                        <i class="ri-magic-line"></i> Generate Edge-Case Test
-                    </button>
                 </div>
             </div>
 
-            <div class="test-results glass hidden" id="test-results">
-                <div class="results-header">
-                    <h4>Generated Test Suite</h4>
-                    <button class="close-btn" onclick="hideResults()"><i class="ri-close-line"></i></button>
-                </div>
-                <div class="code-preview">
-                    <pre><code id="generated-code">// AI generated test cases...</code></pre>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-secondary" onclick="copyCode()">Copy to Clipboard</button>
-                    <button class="btn btn-primary">Save to _tests_/</button>
-                </div>
+            <!-- Legend Overlay -->
+            <div class="legend-overlay glass">
+                <div class="legend-item"><span class="dot green"></span> Tested Path</div>
+                <div class="legend-item"><span class="dot red"></span> Untested Gap</div>
+                <div class="legend-item"><span class="dot yellow"></span> Boundary Detected</div>
             </div>
-        </div>
+        </main>
 
-        <!-- Legend Overlay -->
-        <div class="legend-overlay glass">
-            <div class="legend-item"><span class="dot green"></span> Tested Path</div>
-            <div class="legend-item"><span class="dot red"></span> Untested Gap</div>
-            <div class="legend-item"><span class="dot yellow"></span> Boundary Detected</div>
-        </div>
-    </main>
+        <div id="footer-placeholder"></div>
+    </div>
 
+    <script src="theme.js?v=1.0.0"></script>
     <script src="boilerplate/boilerplate-loader.js?v=1.0.0"></script>
-    <script src="test-lab.js?v=1.0.0"></script>
+    <script src="test-lab.js?v=1.0.1"></script>
 </body>
 
 </html>

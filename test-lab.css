@@ -1,5 +1,16 @@
+/* ========================================
+   AI Test Lab — Page Styles
+   ======================================== */
+
+/* Local accent variable fallback */
+:root {
+    --accent-color: #6366f1;
+    --accent-color-glow: rgba(99, 102, 241, 0.4);
+}
+
+/* ---- Container & Viewport ---- */
 .test-lab-container {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     background: #05050a;
     overflow: hidden;
@@ -9,8 +20,12 @@
 #logic-tree-viewport {
     width: 100%;
     height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
+/* ---- HUD Overlay ---- */
 .test-hud {
     position: absolute;
     top: 80px;
@@ -20,38 +35,67 @@
     pointer-events: none;
     display: flex;
     justify-content: space-between;
+    z-index: 10;
 }
 
+/* ---- Side Panel ---- */
 .side-panel {
-    width: 380px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     pointer-events: auto;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
 }
 
+/* Scrollbar styling for side panel */
+.side-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.side-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+/* ---- Glass Card ---- */
 .glass {
-    background: rgba(10, 10, 25, 0.75);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 25, 0.8);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
     padding: 24px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
+/* ---- Card Titles ---- */
 .card h3 {
     margin: 0 0 5px 0;
     color: var(--accent-color);
     display: flex;
     align-items: center;
     gap: 12px;
+    font-size: 1.15rem;
+}
+
+.card h3 i {
+    font-size: 1.3rem;
+    color: var(--accent-color);
+    filter: drop-shadow(0 0 6px var(--accent-color-glow));
 }
 
 .subtitle {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.5);
     margin-bottom: 20px;
+    line-height: 1.5;
 }
 
+/* ---- Search Box ---- */
 .search-box {
     display: flex;
     gap: 10px;
@@ -61,15 +105,30 @@
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 10px 15px;
-    color: white;
+    color: #e5e5e5;
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+#file-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-color-glow);
+}
+
+#file-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- Hidden Utility ---- */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
+/* ---- Branch Card ---- */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -79,15 +138,19 @@
 
 .card-header h4 {
     margin: 0;
-    color: white;
+    color: #e5e5e5;
+    font-size: 1rem;
 }
 
 .status-badge {
     font-size: 0.7rem;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
     background: #ef4444;
-    /* red for untested by default */
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .status-badge.tested {
@@ -95,43 +158,106 @@
 }
 
 .branch-logic {
-    background: #000;
+    background: rgba(0, 0, 0, 0.5);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 20px;
-    color: #3b82f6;
-    font-family: monospace;
+    color: #60a5fa;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    border: 1px solid rgba(96, 165, 250, 0.15);
 }
 
+/* ---- Boundary Items ---- */
 .boundary-list {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .boundary-item {
     background: rgba(255, 255, 255, 0.03);
-    padding: 12px;
-    border-radius: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
     margin-bottom: 10px;
     border-left: 3px solid var(--accent-color);
+    transition: background 0.2s ease;
+}
+
+.boundary-item:hover {
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .boundary-item .type {
     display: block;
     font-size: 0.7rem;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
 }
 
 .boundary-item .value {
     font-size: 0.95rem;
-    font-weight: bold;
-    color: white;
+    font-weight: 600;
+    color: #e5e5e5;
 }
 
 .boundary-item .reason {
     display: block;
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* ---- Buttons ---- */
+.test-lab-container .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.test-lab-container .btn-primary {
+    background: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--accent-color-glow);
+}
+
+.test-lab-container .btn-primary:hover {
+    background: #818cf8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--accent-color-glow);
+}
+
+.test-lab-container .btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e5e5e5;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.test-lab-container .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+}
+
+.test-lab-container .btn-accent {
+    background: linear-gradient(135deg, var(--accent-color), #8b5cf6);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--accent-color-glow);
+}
+
+.test-lab-container .btn-accent:hover {
+    background: linear-gradient(135deg, #818cf8, #a78bfa);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--accent-color-glow);
 }
 
 .full-width {
@@ -139,13 +265,14 @@
     margin-top: 10px;
 }
 
+/* ---- Test Results Panel ---- */
 .test-results {
     width: 600px;
-    height: 500px;
+    max-height: calc(100vh - 140px);
     display: flex;
     flex-direction: column;
     pointer-events: auto;
-    animation: fadeIn 0.3s ease;
+    animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .results-header {
@@ -155,30 +282,69 @@
     margin-bottom: 20px;
 }
 
-.close-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 1.5rem;
+.results-header h4 {
+    margin: 0;
+    color: #e5e5e5;
+    font-size: 1.05rem;
 }
 
+.close-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+/* ---- Code Preview ---- */
 .code-preview {
     flex: 1;
     overflow: auto;
-    background: #0d1117;
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.code-preview::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.code-preview::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
 }
 
 .code-preview code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.85rem;
     color: #e6edf3;
-    line-height: 1.5;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
+.test-results .actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* ---- Legend Overlay ---- */
 .legend-overlay {
     position: absolute;
     bottom: 20px;
@@ -186,6 +352,8 @@
     padding: 12px 20px;
     display: flex;
     gap: 20px;
+    z-index: 10;
+    border-radius: 14px;
 }
 
 .legend-item {
@@ -193,37 +361,122 @@
     align-items: center;
     gap: 8px;
     font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .dot.green {
     background: #10b981;
-    box-shadow: 0 0 10px #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
 }
 
 .dot.red {
     background: #ef4444;
-    box-shadow: 0 0 10px #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
 }
 
 .dot.yellow {
     background: #f7df1e;
-    box-shadow: 0 0 10px #f7df1e;
+    box-shadow: 0 0 10px rgba(247, 223, 30, 0.6);
 }
 
-@keyframes fadeIn {
+/* ---- Animate In ---- */
+.animate-in {
+    animation: fadeSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ---- Keyframes ---- */
+@keyframes fadeSlideIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(12px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ---- Footer Fix ---- */
+/* The test-lab page uses a fullscreen viewport, so we need to
+   ensure the footer sits below the viewport properly */
+.test-lab-container+#footer-placeholder .footer,
+.page-wrapper>#footer-placeholder .footer {
+    margin-top: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1200px) {
+    .test-results {
+        width: 480px;
+    }
+}
+
+@media (max-width: 992px) {
+    .test-hud {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .side-panel {
+        width: 100%;
+        max-height: none;
+    }
+
+    .test-results {
+        width: 100%;
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .test-hud {
+        top: 70px;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .side-panel {
+        width: 100%;
+    }
+
+    .glass {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .legend-overlay {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .test-results .actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .card h3 {
+        font-size: 1rem;
+    }
+
+    .legend-item {
+        font-size: 0.7rem;
     }
 }
