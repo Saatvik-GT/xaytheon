@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testing — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .testing-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+    .testing-sidebar { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; }
+    .sidebar-title { font-size: 1.2em; font-weight: 600; margin-bottom: 16px; }
+    .test-suite-list { display: grid; gap: 12px; }
+    .suite-item { padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .suite-item:hover { border-color: #000; background: #f9f9f9; }
+    .suite-item.active { border-color: #000; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .suite-name { font-weight: 600; font-size: 0.9em; }
+    .suite-status { font-size: 0.75em; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-top: 6px; display: inline-block; }
+    .status-passed { background: #d1fae5; color: #059669; }
+    .status-failed { background: #fee2e2; color: #dc2626; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .main-testing { background: #f5f5f5; border-radius: 12px; padding: 20px; }
+    .testing-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; }
+    .testing-title { font-size: 1.5em; font-weight: 600; }
+    .test-actions { display: flex; gap: 10px; }
+    .coverage-overview { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .coverage-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .coverage-item { text-align: center; }
+    .coverage-value { font-size: 2em; font-weight: 600; }
+    .coverage-label { font-size: 0.85em; opacity: 0.6; margin-top: 4px; }
+    .test-results { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .results-title { font-weight: 600; font-size: 1.1em; }
+    .test-list { display: grid; gap: 8px; }
+    .test-item { padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .test-info { flex: 1; }
+    .test-name { font-weight: 600; font-size: 0.9em; }
+    .test-duration { font-size: 0.8em; opacity: 0.6; margin-top: 4px; }
+    .test-status { font-size: 0.8em; padding: 4px 10px; border-radius: 10px; font-weight: 600; }
+    .failure-details { margin-top: 12px; padding: 12px; background: #fee2e2; border-radius: 6px; font-size: 0.85em; }
+    .schedule-section { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .schedule-grid { display: grid; gap: 12px; }
+    .schedule-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 6px; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-size: 1.4em; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .form-select { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="logo" href="index.html" aria-label="Back to Home">
+        <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a class="nav-link" href="index.html#home">Home</a></li>
+        <li><a class="nav-link" href="github.html">GitHub</a></li>
+        <li><a class="nav-link" href="community.html">Community</a></li>
+        <li><a class="nav-link" href="explore.html">Explore</a></li>
+        <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content" style="padding-top: 40px;">
+    <h1>Testing</h1>
+    <p style="opacity: 0.7; margin-bottom: 24px;">Automated testing and CI/CD integration</p>
+
+    <div class="testing-layout">
+      <aside class="testing-sidebar">
+        <div class="sidebar-title">Test Suites</div>
+        <div class="test-suite-list" id="suite-list"></div>
+      </aside>
+
+      <main class="main-testing" id="testing-content">
+        <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+          <div style="font-size: 3em; margin-bottom: 16px;">🧪</div>
+          <div>Select a test suite to view results</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="schedule-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Schedule Test Run</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="schedule-form">
+        <div class="form-group">
+          <label class="form-label">Schedule</label>
+          <select id="schedule-interval" class="form-select">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="hourly">Hourly</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input type="time" id="schedule-time" class="form-input" value="09:00" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notification on failure</label>
+          <select id="notification-type" class="form-select">
+            <option value="email">Email</option>
+            <option value="slack">Slack</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Schedule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const suiteList = document.getElementById('suite-list');
+    const testingContent = document.getElementById('testing-content');
+    const scheduleModal = document.getElementById('schedule-modal');
+    let currentSuite = null;
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function getTestSuites() {
+      const suites = JSON.parse(localStorage.getItem('xaytheon:testSuites') || '[]');
+      if (suites.length === 0) {
+        return [
+          {
+            id: generateId(),
+            name: 'Unit Tests',
+            status: 'passed',
+            coverage: 85,
+            lastRun: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+            tests: [
+              { name: 'testUserLogin', status: 'passed', duration: '120ms' },
+              { name: 'testCreatePost', status: 'passed', duration: '95ms' },
+              { name: 'testDeletePost', status: 'passed', duration: '85ms' },
+              { name: 'testUpdateProfile', status: 'passed', duration: '110ms' },
+              { name: 'testLogout', status: 'passed', duration: '75ms' }
+            ],
+            schedules: [
+              { interval: 'daily', time: '09:00', notification: 'email' }
+            ]
+          },
+          {
+            id: generateId(),
+            name: 'Integration Tests',
+            status: 'failed',
+            coverage: 72,
+            lastRun: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+            tests: [
+              { name: 'testAPIAuth', status: 'passed', duration: '210ms' },
+              { name: 'testDatabaseConnection', status: 'passed', duration: '180ms' },
+              { name: 'testWebhookDelivery', status: 'failed', duration: '450ms', error: 'Webhook endpoint returned 500 error' },
+              { name: 'testCaching', status: 'passed', duration: '140ms' },
+              { name: 'testRateLimiting', status: 'passed', duration: '200ms' }
+            ],
+            schedules: [
+              { interval: 'weekly', time: '10:00', notification: 'slack' }
+            ]
+          },
+          {
+            id: generateId(),
+            name: 'E2E Tests',
+            status: 'pending',
+            coverage: 68,
+            lastRun: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+            tests: [
+              { name: 'testUserRegistrationFlow', status: 'passed', duration: '3.2s' },
+              { name: 'testCheckoutProcess', status: 'passed', duration: '4.5s' },
+              { name: 'testPaymentIntegration', status: 'pending', duration: '0ms' },
+              { name: 'testEmailVerification', status: 'passed', duration: '2.8s' },
+              { name: 'testPasswordReset', status: 'passed', duration: '2.1s' }
+            ],
+            schedules: []
+          }
+        ];
+      }
+      return suites;
+    }
+
+    function renderSuiteList() {
+      const suites = getTestSuites();
+      
+      if (suites.length === 0) {
+        suiteList.innerHTML = '<div style="opacity: 0.6; padding: 12px; text-align: center;">No test suites</div>';
+        return;
+      }
+
+      suiteList.innerHTML = suites.map(suite => `
+        <div class="suite-item ${currentSuite && currentSuite.id === suite.id ? 'active' : ''}" data-id="${suite.id}">
+          <div class="suite-name">${escapeHtml(suite.name)}</div>
+          <div style="font-size: 0.8em; opacity: 0.6; margin-top: 4px;">Coverage: ${suite.coverage}%</div>
+          <span class="suite-status status-${suite.status}">${suite.status}</span>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.suite-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const suiteId = item.dataset.id;
+          const suites = getTestSuites();
+          currentSuite = suites.find(s => s.id === suiteId);
+          renderSuiteList();
+          renderTestingContent();
+        });
+      });
+    }
+
+    function renderTestingContent() {
+      if (!currentSuite) {
+        testingContent.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+            <div style="font-size: 3em; margin-bottom: 16px;">🧪</div>
+            <div>Select a test suite to view results</div>
+          </div>`;
+        return;
+      }
+
+      const passedTests = currentSuite.tests.filter(t => t.status === 'passed').length;
+      const failedTests = currentSuite.tests.filter(t => t.status === 'failed').length;
+      const pendingTests = currentSuite.tests.filter(t => t.status === 'pending').length;
+
+      testingContent.innerHTML = `
+        <div class="testing-header">
+          <div>
+            <div class="testing-title">${escapeHtml(currentSuite.name)}</div>
+            <div style="opacity: 0.6; margin-top: 4px;">Last run: ${timeAgo(currentSuite.lastRun)}</div>
+          </div>
+          <div class="test-actions">
+            <button class="btn btn-outline" onclick="runTests()">Run Tests</button>
+            <button class="btn btn-primary" onclick="openScheduleModal()">Schedule</button>
+          </div>
+        </div>
+
+        <div class="coverage-overview">
+          <div class="coverage-grid">
+            <div class="coverage-item">
+              <div class="coverage-value" style="color: #059669;">${passedTests}</div>
+              <div class="coverage-label">Passed</div>
+            </div>
+            <div class="coverage-item">
+              <div class="coverage-value" style="color: #dc2626;">${failedTests}</div>
+              <div class="coverage-label">Failed</div>
+            </div>
+            <div class="coverage-item">
+              <div class="coverage-value" style="color: #d97706;">${pendingTests}</div>
+              <div class="coverage-label">Pending</div>
+            </div>
+            <div class="coverage-item">
+              <div class="coverage-value">${currentSuite.coverage}%</div>
+              <div class="coverage-label">Coverage</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-results">
+          <div class="results-header">
+            <div class="results-title">Test Results</div>
+            <div class="test-status status-${currentSuite.status}">${currentSuite.status}</div>
+          </div>
+          <div class="test-list">
+            ${currentSuite.tests.map(test => `
+              <div class="test-item">
+                <div class="test-info">
+                  <div class="test-name">${escapeHtml(test.name)}</div>
+                  <div class="test-duration">${test.duration}</div>
+                  ${test.error ? `<div class="failure-details">${escapeHtml(test.error)}</div>` : ''}
+                </div>
+                <div class="test-status status-${test.status}">${test.status}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="schedule-section">
+          <div class="results-header">
+            <div class="results-title">Scheduled Runs</div>
+            <button class="btn btn-outline" style="font-size: 0.85em; padding: 6px 12px;" onclick="openScheduleModal()">+ Add Schedule</button>
+          </div>
+          <div class="schedule-grid">
+            ${currentSuite.schedules.length === 0 ? 
+              '<div style="opacity: 0.6; text-align: center; padding: 20px;">No scheduled runs</div>' :
+              currentSuite.schedules.map((schedule, idx) => `
+                <div class="schedule-item">
+                  <div>
+                    <span style="font-weight: 600;">${schedule.interval}</span>
+                    <span style="opacity: 0.6; margin-left: 8px;">at ${schedule.time}</span>
+                  </div>
+                  <div style="font-size: 0.85em; opacity: 0.6;">Notify via ${schedule.notification}</div>
+                </div>
+              `).join('')
+            }
+          </div>
+        </div>
+      `;
+    }
+
+    function runTests() {
+      if (currentSuite) {
+        const newStatus = confirm('Run tests? This may take a few minutes.');
+        if (newStatus) {
+          alert('Tests started! Results will be available shortly.');
+        }
+      }
+    }
+
+    function openScheduleModal() {
+      scheduleModal.classList.add('active');
+    }
+
+    document.getElementById('modal-close').addEventListener('click', () => {
+      scheduleModal.classList.remove('active');
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      scheduleModal.classList.remove('active');
+    });
+
+    document.getElementById('schedule-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (currentSuite) {
+        const newSchedule = {
+          interval: document.getElementById('schedule-interval').value,
+          time: document.getElementById('schedule-time').value,
+          notification: document.getElementById('notification-type').value
+        };
+        currentSuite.schedules.push(newSchedule);
+        const suites = getTestSuites();
+        const index = suites.findIndex(s => s.id === currentSuite.id);
+        if (index >= 0) {
+          suites[index] = currentSuite;
+          localStorage.setItem('xaytheon:testSuites', JSON.stringify(suites));
+        }
+        scheduleModal.classList.remove('active');
+        renderTestingContent();
+        alert('Test run scheduled!');
+      }
+    });
+
+    function timeAgo(dateStr) {
+      const d = new Date(dateStr);
+      const s = Math.floor((Date.now() - d.getTime()) / 1000);
+      const units = [
+        ['year', 365*24*3600],
+        ['month', 30*24*3600],
+        ['day', 24*3600],
+        ['hour', 3600],
+        ['minute', 60]
+      ];
+      for (const [name, secs] of units) {
+        const v = Math.floor(s / secs);
+        if (v >= 1) return `${v} ${name}${v>1?'s':''} ago`;
+      }
+      return 'just now';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+    }
+
+    renderSuiteList();
+  </script>
+</body>
+</html>
