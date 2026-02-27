@@ -217,6 +217,17 @@ function initializeSocket(server) {
             });
         });
 
+        // NEURAL BRAIN: Join room
+        socket.on("join_neural_brain", () => {
+            socket.join("neural_brain_room");
+            console.log(`🧠 User ${socket.userId} joined Neural Project Brain`);
+        });
+
+        // NEURAL BRAIN: Broadcast thinking state
+        socket.on("brain_sync_broadcast", (state) => {
+            io.to("neural_brain_room").emit("brain_map_update", state);
+        });
+
         // Server → Client: push a single realtime notification directly to a user room
         // Called internally: io.to(`user:${userId}`).emit("notification_push", payload)
         // Exposed here as a broadcast relay from server logic
