@@ -1,208 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Architectural Drift Detector - Xaytheon</title>
-    <link rel="stylesheet" href="arch-drift.css?v=1.0.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/controls/OrbitControls.js"></script>
+    <title>XAYTHEON | Semantic Arch Drift Auditor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #121212;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #0ea5e9;
+            --red: #f43f5e;
+            --amber: #f59e0b;
+            --text-muted: #71717a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem;
+        }
+
+        header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .audit-tool {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 2.5rem;
+            align-items: flex-start;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono';
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .drift-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .drift-card.drift {
+            border-left: 6px solid var(--red);
+        }
+
+        .drift-card.stable {
+            border-left: 6px solid var(--accent);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .score {
+            font-family: 'JetBrains Mono';
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .finding-item {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border: 1px solid transparent;
+        }
+
+        .finding-item.high {
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        .finding-item.medium {
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .finding-item p {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 16px;
+            transform: translateX(180%);
+            transition: 0.4s;
+            z-index: 1000;
+        }
+
+        .toast.visible {
+            transform: translateX(0);
+        }
+    </style>
 </head>
+
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-content">
-            <h1 class="nav-title">
-                <span aria-hidden="true">🏗️</span>
-                Architectural Drift Detector
-            </h1>
-            <div class="nav-actions">
-                <button id="refreshBtn" class="btn-secondary" type="button">
-                    <span aria-hidden="true">🔄</span>
-                    Refresh
-                </button>
-                <a href="index.html" class="btn-secondary">← Dashboard</a>
-            </div>
-        </div>
-    </nav>
+    <nav id="navbar-placeholder"></nav>
 
-    <!-- Main Content -->
     <div class="container">
-        <!-- Input Section -->
-        <section class="input-section">
-            <div class="card">
-                <h2>Repository Analysis</h2>
-                <div class="input-grid">
-                    <div class="form-group">
-                        <label for="ownerInput">Repository Owner</label>
-                        <input type="text" id="ownerInput" placeholder="e.g., facebook">
-                    </div>
-                    <div class="form-group">
-                        <label for="repoInput">Repository Name</label>
-                        <input type="text" id="repoInput" placeholder="e.g., react">
-                    </div>
-                    <div class="form-group">
-                        <label for="architectureSelect">Architecture Pattern</label>
-                        <select id="architectureSelect">
-                            <option value="layered">Layered Architecture</option>
-                            <option value="mvc">MVC</option>
-                            <option value="cleanArchitecture">Clean Architecture</option>
-                            <option value="hexagonal">Hexagonal (Ports & Adapters)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button id="analyzeBtn" class="btn-primary" type="button">
-                            <span aria-hidden="true">🔍</span>
-                            Analyze Architecture
-                        </button>
-                    </div>
+        <header>
+            <h1>Semantic <span>Architecture</span> Auditor</h1>
+            <p style="color: var(--text-muted); margin-top: 0.75rem;">Deep structural analysis for modularity and design
+                pattern compliance.</p>
+        </header>
+
+        <div class="audit-tool">
+            <div class="main-panel">
+                <div class="card">
+                    <span class="card-title">Live Analysis Feed</span>
+                    <div id="drift-reports"></div>
                 </div>
             </div>
-        </section>
 
-        <!-- Metrics Dashboard -->
-        <section id="metricsSection" class="metrics-section hidden">
-            <div class="metrics-grid">
-                <div class="metric-card critical">
-                    <div class="metric-icon" role="img" aria-label="Critical violations">
-                        ⚠️
-                    </div>
-                    <div class="metric-content">
-                        <div class="metric-value" id="criticalCount">0</div>
-                        <div class="metric-label">Critical Violations</div>
-                    </div>
-                </div>
-
-                <div class="metric-card high">
-                    <div class="metric-icon" role="img" aria-label="High priority issues">
-                        🔴
-                    </div>
-                    <div class="metric-content">
-                        <div class="metric-value" id="highCount">0</div>
-                        <div class="metric-label">High Priority</div>
-                    </div>
-                </div>
-
-                <div class="metric-card health">
-                    <div class="metric-icon" role="img" aria-label="System health score">
-                        💚
-                    </div>
-                    <div class="metric-content">
-                        <div class="metric-value" id="healthScore">100</div>
-                        <div class="metric-label">Health Score</div>
-                    </div>
-                </div>
-
-                <div class="metric-card violations">
-                    <div class="metric-icon" role="img" aria-label="Total violations">
-                        📊
-                    </div>
-                    <div class="metric-content">
-                        <div class="metric-value" id="totalViolations">0</div>
-                        <div class="metric-label">Total Violations</div>
-                    </div>
+            <div class="side-panel">
+                <div class="card">
+                    <span class="card-title">Audit sandbox</span>
+                    <input type="text" id="audit-file" value="backend/src/controllers/auth.controller.js">
+                    <textarea id="audit-content" rows="10"
+                        placeholder="Paste code to analyze structural drift..."></textarea>
+                    <button class="btn" onclick="runAudit()">Perform Audit</button>
                 </div>
             </div>
-        </section>
-
-        <!-- 3D Heatmap Visualization -->
-        <section id="heatmapSection" class="heatmap-section hidden">
-            <div class="card">
-                <div class="section-header">
-                    <h2>3D Violation Heatmap</h2>
-                    <div class="heatmap-controls">
-                        <button id="rotateBtn" class="btn-icon" title="Toggle Rotation" type="button">
-                            <span aria-hidden="true">🔄</span>
-                        </button>
-                        <button id="resetViewBtn" class="btn-icon" title="Reset View" type="button">
-                            <span aria-hidden="true">🎯</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div id="heatmapCanvas" class="heatmap-canvas"></div>
-
-                <div class="legend">
-                    <div class="legend-item">
-                        <span class="legend-color critical-color"></span>
-                        <span>Critical</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color high-color"></span>
-                        <span>High</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color medium-color"></span>
-                        <span>Medium</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color low-color"></span>
-                        <span>Low</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Violations List -->
-        <section id="violationsSection" class="violations-section hidden">
-            <div class="card">
-                <h2>Detected Violations</h2>
-                <div class="violations-filter">
-                    <button class="filter-btn active" data-severity="all">All</button>
-                    <button class="filter-btn" data-severity="critical">Critical</button>
-                    <button class="filter-btn" data-severity="high">High</button>
-                    <button class="filter-btn" data-severity="medium">Medium</button>
-                    <button class="filter-btn" data-severity="low">Low</button>
-                </div>
-                <div id="violationsList" class="violations-list"></div>
-            </div>
-        </section>
-
-        <!-- AI Governance Assistant -->
-        <section id="governanceSection" class="governance-section hidden">
-            <div class="card">
-                <h2>
-                    <span aria-hidden="true">🤖</span>
-                    AI Governance Assistant
-                </h2>
-                <div id="governanceContent"></div>
-            </div>
-        </section>
-
-        <!-- Architecture-as-Code Editor -->
-        <section id="architectureEditorSection" class="architecture-editor-section hidden">
-            <div class="card">
-                <div class="section-header">
-                    <h2>Architecture-as-Code Definition</h2>
-                    <div class="editor-actions">
-                        <button id="loadExampleBtn" class="btn-secondary" type="button">Load Example</button>
-                        <button id="validateBtn" class="btn-primary" type="button">Validate</button>
-                    </div>
-                </div>
-                <textarea id="architectureEditor" class="architecture-editor" placeholder="Enter your architecture definition in JSON..."></textarea>
-                <div id="validationResults" class="validation-results hidden"></div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Violation Detail Modal -->
-    <div id="violationModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="violationModalTitle">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="violationModalTitle">Violation Details</h3>
-                <button class="modal-close" aria-label="Close modal">&times;</button>
-            </div>
-            <div id="modalBody" class="modal-body"></div>
         </div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite">
-        <div class="spinner" aria-hidden="true"></div>
-        <p>Analyzing repository architecture...</p>
-    </div>
-
-    <script src="arch-drift.js?v=1.0.0"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="frontend/js/arch-drift.js"></script>
+    <script>
+        fetch('navbar.html').then(r => r.text()).then(html => {
+            document.getElementById('navbar-placeholder').innerHTML = html;
+        });
+    </script>
 </body>
+
 </html>
