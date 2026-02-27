@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teams — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .teams-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+    .teams-sidebar { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; }
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .sidebar-title { font-size: 1.2em; font-weight: 600; }
+    .team-list { display: grid; gap: 12px; }
+    .team-item { padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .team-item:hover { border-color: #000; background: #f9f9f9; }
+    .team-item.active { border-color: #000; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .team-name { font-weight: 600; font-size: 0.95em; }
+    .team-members { font-size: 0.85em; opacity: 0.6; margin-top: 4px; }
+    .main-teams { background: #f5f5f5; border-radius: 12px; padding: 20px; }
+    .teams-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .teams-title { font-size: 1.5em; font-weight: 600; }
+    .team-overview { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .overview-card { text-align: center; padding: 16px; background: #f9f9f9; border-radius: 8px; }
+    .overview-value { font-size: 2em; font-weight: 600; color: #000; }
+    .overview-label { font-size: 0.9em; opacity: 0.6; margin-top: 4px; }
+    .section-title { font-size: 1.2em; font-weight: 600; margin-bottom: 12px; }
+    .members-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .member-card { background: #f9f9f9; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; }
+    .member-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 1.2em; }
+    .member-info { flex: 1; }
+    .member-name { font-weight: 600; font-size: 0.9em; }
+    .member-role { font-size: 0.8em; opacity: 0.6; }
+    .role-badge { font-size: 0.75em; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-left: 8px; }
+    .role-admin { background: #fee2e2; color: #dc2626; }
+    .role-member { background: #dbeafe; color: #2563eb; }
+    .activity-feed { background: #fff; border-radius: 12px; padding: 16px; }
+    .activity-item { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-text { font-size: 0.9em; }
+    .activity-time { font-size: 0.8em; opacity: 0.5; margin-top: 4px; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-size: 1.4em; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; min-height: 80px; resize: vertical; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="logo" href="index.html" aria-label="Back to Home">
+        <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a class="nav-link" href="index.html#home">Home</a></li>
+        <li><a class="nav-link" href="github.html">GitHub</a></li>
+        <li><a class="nav-link" href="community.html">Community</a></li>
+        <li><a class="nav-link" href="explore.html">Explore</a></li>
+        <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content" style="padding-top: 40px;">
+    <h1>Teams</h1>
+    <p style="opacity: 0.7; margin-bottom: 24px;">Collaborate with your team members</p>
+
+    <div class="teams-layout">
+      <aside class="teams-sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">Your Teams</div>
+          <button id="create-team-btn" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85em;">+</button>
+        </div>
+        <div class="team-list" id="team-list"></div>
+      </aside>
+
+      <main class="main-teams" id="team-content">
+        <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+          <div style="font-size: 3em; margin-bottom: 16px;">👥</div>
+          <div>Select a team to view details or create a new team</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="team-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Create Team</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="team-form">
+        <div class="form-group">
+          <label class="form-label">Team Name</label>
+          <input type="text" id="team-name" class="form-input" required placeholder="Enter team name..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="team-desc" class="form-textarea" placeholder="What is this team about?"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Team</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const teamModal = document.getElementById('team-modal');
+    const teamForm = document.getElementById('team-form');
+    const teamList = document.getElementById('team-list');
+    const teamContent = document.getElementById('team-content');
+    let currentTeam = null;
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function getTeams() {
+      return JSON.parse(localStorage.getItem('xaytheon:teams') || '[]');
+    }
+
+    function saveTeams(teams) {
+      localStorage.setItem('xaytheon:teams', JSON.stringify(teams));
+    }
+
+    function createTeam(data) {
+      const teams = getTeams();
+      const newTeam = {
+        id: generateId(),
+        name: data.name,
+        description: data.description,
+        members: [
+          { id: generateId(), name: 'You', role: 'admin', avatar: '👤' }
+        ],
+        createdAt: new Date().toISOString(),
+        activity: [
+          { text: 'Team created', time: new Date().toISOString() }
+        ]
+      };
+      teams.push(newTeam);
+      saveTeams(teams);
+      return newTeam;
+    }
+
+    function addTeamActivity(teamId, text) {
+      const teams = getTeams();
+      const team = teams.find(t => t.id === teamId);
+      if (team) {
+        team.activity.unshift({
+          text,
+          time: new Date().toISOString()
+        });
+        saveTeams(teams);
+      }
+    }
+
+    function renderTeamList() {
+      const teams = getTeams();
+      
+      if (teams.length === 0) {
+        teamList.innerHTML = '<div style="opacity: 0.6; padding: 12px; text-align: center;">No teams yet</div>';
+        return;
+      }
+
+      teamList.innerHTML = teams.map(team => `
+        <div class="team-item ${currentTeam && currentTeam.id === team.id ? 'active' : ''}" data-id="${team.id}">
+          <div class="team-name">${escapeHtml(team.name)}</div>
+          <div class="team-members">${team.members.length} member${team.members.length !== 1 ? 's' : ''}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.team-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const teamId = item.dataset.id;
+          const teams = getTeams();
+          currentTeam = teams.find(t => t.id === teamId);
+          renderTeamList();
+          renderTeamContent();
+        });
+      });
+    }
+
+    function renderTeamContent() {
+      if (!currentTeam) {
+        teamContent.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+            <div style="font-size: 3em; margin-bottom: 16px;">👥</div>
+            <div>Select a team to view details or create a new team</div>
+          </div>`;
+        return;
+      }
+
+      const openIssues = Math.floor(Math.random() * 10) + 1;
+      const completedTasks = Math.floor(Math.random() * 50) + 10;
+      const contributions = Math.floor(Math.random() * 200) + 50;
+
+      teamContent.innerHTML = `
+        <div class="teams-header">
+          <div class="teams-title">${escapeHtml(currentTeam.name)}</div>
+          <button class="btn btn-outline" id="add-member-btn">Add Member</button>
+        </div>
+
+        <div class="team-overview">
+          <div class="overview-grid">
+            <div class="overview-card">
+              <div class="overview-value">${currentTeam.members.length}</div>
+              <div class="overview-label">Members</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-value">${openIssues}</div>
+              <div class="overview-label">Open Issues</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-value">${completedTasks}</div>
+              <div class="overview-label">Completed Tasks</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-value">${contributions}</div>
+              <div class="overview-label">Contributions</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+          <div>
+            <div class="section-title">Team Members</div>
+            <div class="members-list">
+              ${currentTeam.members.map(member => `
+                <div class="member-card">
+                  <div class="member-avatar">${member.avatar}</div>
+                  <div class="member-info">
+                    <div class="member-name">
+                      ${escapeHtml(member.name)}
+                      <span class="role-badge role-${member.role}">${member.role}</span>
+                    </div>
+                    <div class="member-role">Joined ${new Date().toLocaleDateString()}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">Activity Feed</div>
+            <div class="activity-feed">
+              ${currentTeam.activity.slice(0, 5).map(activity => `
+                <div class="activity-item">
+                  <div class="activity-text">${escapeHtml(activity.text)}</div>
+                  <div class="activity-time">${timeAgo(activity.time)}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('add-member-btn').addEventListener('click', () => {
+        const name = prompt('Enter member name:');
+        if (name) {
+          const newMember = {
+            id: generateId(),
+            name,
+            role: 'member',
+            avatar: '👤'
+          };
+          currentTeam.members.push(newMember);
+          addTeamActivity(currentTeam.id, `${name} joined the team`);
+          saveTeams(getTeams());
+          renderTeamList();
+          renderTeamContent();
+        }
+      });
+    }
+
+    document.getElementById('create-team-btn').addEventListener('click', () => {
+      teamForm.reset();
+      teamModal.classList.add('active');
+    });
+
+    document.getElementById('modal-close').addEventListener('click', () => {
+      teamModal.classList.remove('active');
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      teamModal.classList.remove('active');
+    });
+
+    teamForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById('team-name').value.trim(),
+        description: document.getElementById('team-desc').value.trim()
+      };
+
+      const newTeam = createTeam(data);
+      currentTeam = newTeam;
+      teamModal.classList.remove('active');
+      renderTeamList();
+      renderTeamContent();
+    });
+
+    function timeAgo(dateStr) {
+      const d = new Date(dateStr);
+      const s = Math.floor((Date.now() - d.getTime()) / 1000);
+      const units = [
+        ['year', 365*24*3600],
+        ['month', 30*24*3600],
+        ['day', 24*3600],
+        ['hour', 3600],
+        ['minute', 60]
+      ];
+      for (const [name, secs] of units) {
+        const v = Math.floor(s / secs);
+        if (v >= 1) return `${v} ${name}${v>1?'s':''} ago`;
+      }
+      return 'just now';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+    }
+
+    renderTeamList();
+  </script>
+</body>
+</html>
