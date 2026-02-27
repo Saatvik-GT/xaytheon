@@ -217,6 +217,17 @@ function initializeSocket(server) {
             });
         });
 
+        // PERFORMANCE GUARD: Join room
+        socket.on("join_perf_guard", () => {
+            socket.join("perf_guard_room");
+            console.log(`⚡ User ${socket.userId} joined Performance Guard`);
+        });
+
+        // PERFORMANCE GUARD: Broadcast alert
+        socket.on("perf_regression_alert", (report) => {
+            io.to("perf_guard_room").emit("perf_update", report);
+        });
+
         // Server → Client: push a single realtime notification directly to a user room
         // Called internally: io.to(`user:${userId}`).emit("notification_push", payload)
         // Exposed here as a broadcast relay from server logic

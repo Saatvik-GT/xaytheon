@@ -3,158 +3,220 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Interactive 3D bundle visualization dashboard with analytics, pruning insights, and performance metrics.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bundle City — XAYTHEON</title>
+    <title>XAYTHEON | Performance Guard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --border: rgba(255, 255, 255, 0.06);
+            --accent: #38bdf8;
+            --red: #f43f5e;
+            --green: #10b981;
+            --text-muted: #64748b;
+        }
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css?v=1.0.0">
-    <link rel="stylesheet" href="bundle-city.css?v=1.0.0">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem;
+        }
+
+        header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+        }
+
+        .perf-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .perf-card.critical {
+            border-left: 6px solid var(--red);
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.1);
+        }
+
+        .perf-card.clean {
+            border-left: 6px solid var(--green);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono';
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-family: 'JetBrains Mono';
+        }
+
+        .stat span {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            display: block;
+        }
+
+        .recommendation {
+            font-size: 0.85rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .controls {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono';
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 16px;
+            transform: translateX(180%);
+            transition: 0.4s;
+            z-index: 1000;
+        }
+
+        .toast.visible {
+            transform: translateX(0);
+        }
+    </style>
 </head>
 
-<body class="dark-theme">
+<body>
+    <nav id="navbar-placeholder"></nav>
 
-    <header id="header-placeholder"></header>
-
-    <main class="bundle-city-container">
-
-        <!-- 3D Canvas -->
-        <div
-            id="city-viewport"
-            role="application"
-            aria-label="Interactive 3D bundle city visualization">
-        </div>
-
-        <!-- Overlay UI -->
-        <div class="ui-overlay">
-            <div class="sidebar">
-
-                <div class="card glass">
-                    <h3>
-                        <i class="ri-government-line" aria-hidden="true"></i>
-                        Bundle Analytics
-                    </h3>
-
-                    <div class="city-stats">
-                        <div class="stat-item">
-                            <span class="label">Total Size</span>
-                            <span
-                                id="total-size"
-                                class="value"
-                                aria-live="polite"
-                                aria-atomic="true">
-                                0 KB
-                            </span>
-                        </div>
-
-                        <div class="stat-item">
-                            <span class="label">Buildings</span>
-                            <span
-                                id="total-buildings"
-                                class="value"
-                                aria-live="polite"
-                                aria-atomic="true">
-                                0
-                            </span>
-                        </div>
-
-                        <div class="stat-item">
-                            <span class="label">Bloat Factor</span>
-                            <span
-                                id="bloat-factor"
-                                class="value"
-                                aria-live="polite"
-                                aria-atomic="true">
-                                0%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card glass suggestions-panel">
-                    <h3>
-                        <i class="ri-magic-line" aria-hidden="true"></i>
-                        AI Pruning Insights
-                    </h3>
-
-                    <div
-                        id="ai-suggestions"
-                        class="suggestions-list"
-                        aria-live="polite"
-                        aria-busy="false">
-
-                        <div class="loading-shimmer">
-                            Analyzing city structure...
-                        </div>
-                    </div>
-                </div>
-
+    <div class="container">
+        <header>
+            <div>
+                <h1>Performance <span>Guard</span> & Bundle City</h1>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Predictive hydration and complexity analysis
+                    for main-thread optimization.</p>
             </div>
+        </header>
 
-            <div class="bottom-controls">
-                <div class="legend glass" aria-label="Asset type legend">
-                    <span class="legend-item">
-                        <span class="dot js" aria-hidden="true"></span> JS
-                    </span>
-                    <span class="legend-item">
-                        <span class="dot css" aria-hidden="true"></span> CSS
-                    </span>
-                    <span class="legend-item">
-                        <span class="dot img" aria-hidden="true"></span> Images
-                    </span>
-                    <span class="legend-item">
-                        <span class="dot font" aria-hidden="true"></span> Fonts
-                    </span>
-                </div>
+        <div class="layout">
+            <div id="perf-feed"></div>
 
-                <div
-                    class="info-bubble glass"
-                    id="selection-info"
-                    aria-live="polite">
-                    <p>Select a building to view performance "Rent"</p>
-                </div>
-            </div>
+            <aside class="controls">
+                <label>Target Module</label>
+                <input type="text" id="perf-file" value="frontend/js/dashboard.js">
+                <label>Code Payload</label>
+                <textarea id="perf-content" rows="12"
+                    placeholder="Paste module code to run bundle simulation..."></textarea>
+                <button class="btn" onclick="analyzeCurrent()">Run Performance Audit</button>
+            </aside>
         </div>
+    </div>
 
-        <!-- Demolition Confirmation Modal -->
-        <div
-            id="demolition-modal"
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="demolition-title"
-            aria-describedby="demolition-text"
-            hidden>
-
-            <div class="modal-content glass">
-                <h2 id="demolition-title">
-                    <span aria-hidden="true">⚠️</span>
-                    Demolition Order
-                </h2>
-                <p id="demolition-text">
-                    Are you sure you want to prune this module from the bundle?
-                </p>
-
-                <div class="modal-actions">
-                    <button id="cancel-demo" class="btn btn-secondary" type="button">
-                        Abort
-                    </button>
-                    <button id="confirm-demo" class="btn btn-danger" type="button">
-                        Demolish
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer Landmark -->
-    <footer></footer>
-
-    <script defer src="boilerplate/boilerplate-loader.js?v=1.0.0"></script>
-    <script defer src="bundle-city.js?v=1.0.0"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="frontend/js/bundle-city.js"></script>
+    <script>
+        fetch('navbar.html').then(r => r.text()).then(html => {
+            document.getElementById('navbar-placeholder').innerHTML = html;
+        });
+    </script>
 </body>
+
 </html>
