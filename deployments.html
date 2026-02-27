@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deployments — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .deploy-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+    .deploy-sidebar { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; }
+    .sidebar-title { font-size: 1.2em; font-weight: 600; margin-bottom: 16px; }
+    .env-list { display: grid; gap: 12px; }
+    .env-item { padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .env-item:hover { border-color: #000; background: #f9f9f9; }
+    .env-item.active { border-color: #000; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .env-name { font-weight: 600; font-size: 0.9em; }
+    .env-status { font-size: 0.75em; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-top: 6px; display: inline-block; }
+    .status-active { background: #d1fae5; color: #059669; }
+    .status-inactive { background: #f3f4f6; color: #374151; }
+    .status-deploying { background: #dbeafe; color: #2563eb; }
+    .main-deploy { background: #f5f5f5; border-radius: 12px; padding: 20px; }
+    .deploy-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; }
+    .deploy-title { font-size: 1.5em; font-weight: 600; }
+    .deploy-actions { display: flex; gap: 10px; }
+    .health-overview { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .health-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .health-item { text-align: center; }
+    .health-value { font-size: 2em; font-weight: 600; }
+    .health-label { font-size: 0.85em; opacity: 0.6; margin-top: 4px; }
+    .deployment-history { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .history-title { font-weight: 600; font-size: 1.1em; }
+    .history-list { display: grid; gap: 8px; }
+    .history-item { padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .deployment-info { flex: 1; }
+    .deployment-version { font-weight: 600; font-size: 0.9em; }
+    .deployment-time { font-size: 0.8em; opacity: 0.6; margin-top: 4px; }
+    .deployment-status { font-size: 0.8em; padding: 4px 10px; border-radius: 10px; font-weight: 600; }
+    .status-success { background: #d1fae5; color: #059669; }
+    .status-failed { background: #fee2e2; color: #dc2626; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .rollback-btn { background: none; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; padding: 6px 12px; font-size: 0.8em; cursor: pointer; transition: all 0.2s; }
+    .rollback-btn:hover { background: #f9f9f9; border-color: #000; }
+    .current-deployment { background: #d1fae5; border: 2px solid #059669; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-size: 1.4em; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .form-select { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; background: #059669; transition: width 0.3s; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="logo" href="index.html" aria-label="Back to Home">
+        <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a class="nav-link" href="index.html#home">Home</a></li>
+        <li><a class="nav-link" href="github.html">GitHub</a></li>
+        <li><a class="nav-link" href="community.html">Community</a></li>
+        <li><a class="nav-link" href="explore.html">Explore</a></li>
+        <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content" style="padding-top: 40px;">
+    <h1>Deployments</h1>
+    <p style="opacity: 0.7; margin-bottom: 24px;">Manage deployments and environments</p>
+
+    <div class="deploy-layout">
+      <aside class="deploy-sidebar">
+        <div class="sidebar-title">Environments</div>
+        <div class="env-list" id="env-list"></div>
+      </aside>
+
+      <main class="main-deploy" id="deploy-content">
+        <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+          <div style="font-size: 3em; margin-bottom: 16px;">🚀</div>
+          <div>Select an environment to manage deployments</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deploy-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">New Deployment</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="deploy-form">
+        <div class="form-group">
+          <label class="form-label">Version Tag</label>
+          <input type="text" id="deploy-version" class="form-input" required placeholder="v1.2.3" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Branch</label>
+          <select id="deploy-branch" class="form-select">
+            <option value="main">main</option>
+            <option value="develop">develop</option>
+            <option value="feature/new-feature">feature/new-feature</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Commit Message</label>
+          <input type="text" id="deploy-message" class="form-input" placeholder="Deployment description..." />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Deploy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const envList = document.getElementById('env-list');
+    const deployContent = document.getElementById('deploy-content');
+    const deployModal = document.getElementById('deploy-modal');
+    let currentEnv = null;
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function getEnvironments() {
+      const envs = JSON.parse(localStorage.getItem('xaytheon:environments') || '[]');
+      if (envs.length === 0) {
+        return [
+          {
+            id: generateId(),
+            name: 'Production',
+            status: 'active',
+            currentVersion: 'v2.1.3',
+            uptime: '99.9%',
+            health: 'healthy',
+            lastDeploy: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
+            deployments: [
+              { id: generateId(), version: 'v2.1.3', status: 'success', time: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(), branch: 'main' },
+              { id: generateId(), version: 'v2.1.2', status: 'success', time: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(), branch: 'main' },
+              { id: generateId(), version: 'v2.1.1', status: 'failed', time: new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString(), branch: 'main' },
+              { id: generateId(), version: 'v2.1.0', status: 'success', time: new Date(Date.now() - 10 * 24 * 3600 * 1000).toISOString(), branch: 'main' }
+            ]
+          },
+          {
+            id: generateId(),
+            name: 'Staging',
+            status: 'active',
+            currentVersion: 'v2.2.0-beta',
+            uptime: '98.5%',
+            health: 'healthy',
+            lastDeploy: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+            deployments: [
+              { id: generateId(), version: 'v2.2.0-beta', status: 'success', time: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), branch: 'develop' },
+              { id: generateId(), version: 'v2.1.4', status: 'success', time: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(), branch: 'develop' }
+            ]
+          },
+          {
+            id: generateId(),
+            name: 'Development',
+            status: 'inactive',
+            currentVersion: 'v2.2.1-alpha',
+            uptime: 'N/A',
+            health: 'inactive',
+            lastDeploy: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+            deployments: [
+              { id: generateId(), version: 'v2.2.1-alpha', status: 'success', time: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), branch: 'feature/new-feature' }
+            ]
+          }
+        ];
+      }
+      return envs;
+    }
+
+    function renderEnvList() {
+      const envs = getEnvironments();
+      
+      if (envs.length === 0) {
+        envList.innerHTML = '<div style="opacity: 0.6; padding: 12px; text-align: center;">No environments</div>';
+        return;
+      }
+
+      envList.innerHTML = envs.map(env => `
+        <div class="env-item ${currentEnv && currentEnv.id === env.id ? 'active' : ''}" data-id="${env.id}">
+          <div class="env-name">${escapeHtml(env.name)}</div>
+          <div style="font-size: 0.8em; opacity: 0.6; margin-top: 4px;">v${env.currentVersion}</div>
+          <span class="env-status status-${env.status}">${env.status}</span>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.env-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const envId = item.dataset.id;
+          const envs = getEnvironments();
+          currentEnv = envs.find(e => e.id === envId);
+          renderEnvList();
+          renderDeployContent();
+        });
+      });
+    }
+
+    function renderDeployContent() {
+      if (!currentEnv) {
+        deployContent.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+            <div style="font-size: 3em; margin-bottom: 16px;">🚀</div>
+            <div>Select an environment to manage deployments</div>
+          </div>`;
+        return;
+      }
+
+      const uptimeColor = currentEnv.uptime === 'N/A' ? '#6b7280' : '#059669';
+
+      deployContent.innerHTML = `
+        <div class="deploy-header">
+          <div>
+            <div class="deploy-title">${escapeHtml(currentEnv.name)}</div>
+            <div style="opacity: 0.6; margin-top: 4px;">v${currentEnv.currentVersion}</div>
+          </div>
+          <div class="deploy-actions">
+            <button class="btn btn-outline" onclick="runHealthCheck()">Health Check</button>
+            <button class="btn btn-primary" onclick="openDeployModal()">New Deployment</button>
+          </div>
+        </div>
+
+        <div class="health-overview">
+          <div class="health-grid">
+            <div class="health-item">
+              <div class="health-value" style="color: ${uptimeColor};">${currentEnv.uptime}</div>
+              <div class="health-label">Uptime</div>
+            </div>
+            <div class="health-item">
+              <div class="health-value" style="color: #059669;">${currentEnv.health}</div>
+              <div class="health-label">Health Status</div>
+            </div>
+            <div class="health-item">
+              <div class="health-value">${currentEnv.deployments.length}</div>
+              <div class="health-label">Deployments</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="deployment-history">
+          <div class="history-header">
+            <div class="history-title">Deployment History</div>
+            <div style="font-size: 0.85em; opacity: 0.6;">Last: ${timeAgo(currentEnv.lastDeploy)}</div>
+          </div>
+          <div class="history-list">
+            ${currentEnv.deployments.map((deploy, idx) => `
+              <div class="history-item ${idx === 0 ? 'current-deployment' : ''}" data-id="${deploy.id}">
+                <div class="deployment-info">
+                  <div class="deployment-version">${escapeHtml(deploy.version)} <span style="font-weight: normal; opacity: 0.6;">(${deploy.branch})</span></div>
+                  <div class="deployment-time">${timeAgo(deploy.time)}</div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <div class="deployment-status status-${deploy.status}">${deploy.status}</div>
+                  ${idx > 0 ? `<button class="rollback-btn" onclick="rollback('${deploy.version}', '${deploy.id}')">Rollback</button>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function openDeployModal() {
+      deployModal.classList.add('active');
+    }
+
+    document.getElementById('modal-close').addEventListener('click', () => {
+      deployModal.classList.remove('active');
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      deployModal.classList.remove('active');
+    });
+
+    document.getElementById('deploy-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (currentEnv) {
+        const newDeployment = {
+          id: generateId(),
+          version: document.getElementById('deploy-version').value.trim(),
+          status: 'pending',
+          time: new Date().toISOString(),
+          branch: document.getElementById('deploy-branch').value
+        };
+
+        currentEnv.deployments.unshift(newDeployment);
+        currentEnv.currentVersion = newDeployment.version;
+        currentEnv.lastDeploy = newDeployment.time;
+        currentEnv.status = 'deploying';
+
+        const envs = getEnvironments();
+        const index = envs.findIndex(e => e.id === currentEnv.id);
+        if (index >= 0) {
+          envs[index] = currentEnv;
+          localStorage.setItem('xaytheon:environments', JSON.stringify(envs));
+        }
+
+        deployModal.classList.remove('active');
+
+        setTimeout(() => {
+          newDeployment.status = 'success';
+          currentEnv.status = 'active';
+          const envs = getEnvironments();
+          const index = envs.findIndex(e => e.id === currentEnv.id);
+          if (index >= 0) {
+            envs[index] = currentEnv;
+            localStorage.setItem('xaytheon:environments', JSON.stringify(envs));
+          }
+          renderDeployContent();
+          alert(`Deployment ${newDeployment.version} completed successfully!`);
+        }, 3000);
+
+        renderEnvList();
+        renderDeployContent();
+        alert('Deployment started! This may take a few minutes.');
+      }
+    });
+
+    function runHealthCheck() {
+      if (currentEnv) {
+        alert('Running health checks... All systems operational!');
+        currentEnv.health = 'healthy';
+        const envs = getEnvironments();
+        const index = envs.findIndex(e => e.id === currentEnv.id);
+        if (index >= 0) {
+          envs[index] = currentEnv;
+          localStorage.setItem('xaytheon:environments', JSON.stringify(envs));
+        }
+        renderDeployContent();
+      }
+    }
+
+    function rollback(version, deployId) {
+      if (confirm(`Rollback to version ${version}?`)) {
+        alert(`Rolling back to ${version}...`);
+        if (currentEnv) {
+          currentEnv.status = 'deploying';
+          const envs = getEnvironments();
+          const index = envs.findIndex(e => e.id === currentEnv.id);
+          if (index >= 0) {
+            envs[index] = currentEnv;
+            localStorage.setItem('xaytheon:environments', JSON.stringify(envs));
+          }
+          renderEnvList();
+          renderDeployContent();
+
+          setTimeout(() => {
+            currentEnv.status = 'active';
+            currentEnv.currentVersion = version;
+            const envs = getEnvironments();
+            const index = envs.findIndex(e => e.id === currentEnv.id);
+            if (index >= 0) {
+              envs[index] = currentEnv;
+              localStorage.setItem('xaytheon:environments', JSON.stringify(envs));
+            }
+            renderEnvList();
+            renderDeployContent();
+            alert(`Rollback to ${version} completed successfully!`);
+          }, 2000);
+        }
+      }
+    }
+
+    function timeAgo(dateStr) {
+      const d = new Date(dateStr);
+      const s = Math.floor((Date.now() - d.getTime()) / 1000);
+      const units = [
+        ['year', 365*24*3600],
+        ['month', 30*24*3600],
+        ['day', 24*3600],
+        ['hour', 3600],
+        ['minute', 60]
+      ];
+      for (const [name, secs] of units) {
+        const v = Math.floor(s / secs);
+        if (v >= 1) return `${v} ${name}${v>1?'s':''} ago`;
+      }
+      return 'just now';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+    }
+
+    renderEnvList();
+  </script>
+</body>
+</html>
