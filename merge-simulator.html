@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAYTHEON | Neural Merge Simulator</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0a09;
+            --surface: #1c1917;
+            --border: rgba(255, 255, 255, 0.06);
+            --accent: #f97316;
+            --green: #22c55e;
+            --red: #ef4444;
+            --text-muted: #a8a29e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fafaf9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 200px;
+            gap: 1.5rem;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .sim-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-badge {
+            font-family: 'JetBrains Mono';
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .conflict_detected .status-badge {
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        .clean .status-badge {
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .confidence-meter {
+            margin-bottom: 2rem;
+        }
+
+        .bar-wrap {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            flex: 1;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .confidence-meter {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .conflict-list {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .conflict-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .conflict-item:last-child {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .fix-panel {
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .fix-panel h4 {
+            margin-bottom: 1rem;
+            color: var(--green);
+        }
+
+        .fix-panel li {
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            transform: translateX(150%);
+            transition: 0.4s;
+            z-index: 1000;
+        }
+
+        .toast.visible {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="navbar-placeholder"></nav>
+
+    <div class="container">
+        <header>
+            <h1>Neural <span>Merge</span> Simulator</h1>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Predict and Resolve Conflicts Before They Happen
+            </p>
+        </header>
+
+        <div class="config-grid">
+            <div class="input-group">
+                <label>Source Branch</label>
+                <input type="text" id="source-branch" value="feature/auth-refactor">
+            </div>
+            <div class="input-group">
+                <label>Target Branch</label>
+                <input type="text" id="target-branch" value="main">
+            </div>
+            <div class="input-group" style="padding-bottom: 10px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="simulate-conflict" style="width: auto; margin-right: 0.5rem;" checked>
+                    Simulate Latent Conflict
+                </label>
+                <button class="btn" onclick="runSimulation()">Run Simulator</button>
+            </div>
+        </div>
+
+        <div id="simulation-results">
+            <p class="muted" style="text-align: center; padding: 5rem; color: var(--text-muted);">Configure branches
+                above to begin neural path-finding.</p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="frontend/js/merge-simulator.js"></script>
+    <script>
+        fetch('navbar.html').then(r => r.text()).then(html => {
+            document.getElementById('navbar-placeholder').innerHTML = html;
+        });
+    </script>
+</body>
+
+</html>
