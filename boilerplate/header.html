@@ -83,6 +83,41 @@
         gap: 1rem;
         overflow-x: auto;
         overflow-y: hidden;
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .nav-container::-webkit-scrollbar {
+        display: none;
+        /* Chrome/Safari/Edge */
+    }
+
+    /* Nav menu scrollbar — thin & color-matched */
+    .nav-menu::-webkit-scrollbar {
+        height: 3px;
+    }
+
+    .nav-menu::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .nav-menu::-webkit-scrollbar-thumb {
+        background: transparent;
+        border-radius: 3px;
+        transition: background 0.3s ease;
+    }
+
+    .nav-menu:hover::-webkit-scrollbar-thumb {
+        background: var(--border);
+    }
+
+    .nav-menu {
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+    }
+
+    .nav-menu:hover {
+        scrollbar-color: var(--border) transparent;
     }
 
     /* Logo */

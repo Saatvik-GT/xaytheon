@@ -20,7 +20,7 @@
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-  
+
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
   <script src="theme.js?v=1.0.0"></script>
@@ -226,49 +226,42 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="boilerplate/boilerplate-loader.js?v=1.0.0"></script>
   <script src="script.js?v=1.0.0"></script>
+  <script src="boilerplate/boilerplate-loader.js?v=1.0.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({ duration: 800, once: true });
-    fetch('navbar.html')
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('header-placeholder').innerHTML = data;
-        if (typeof initNavbar === "function") initNavbar();
-      })
-      .catch(err => console.error('Error loading navbar:', err));
   </script>
 
   <script>
-  // Register Gmail as mailto handler
-  if ('registerProtocolHandler' in navigator) {
-    try {
-      navigator.registerProtocolHandler(
-        "mailto",
-        "https://mail.google.com/mail/?extsrc=mailto&url=%s",
-        "Gmail"
-      );
-    } catch (e) {
-      console.log("Protocol handler registration not allowed");
+    // Register Gmail as mailto handler
+    if ('registerProtocolHandler' in navigator) {
+      try {
+        navigator.registerProtocolHandler(
+          "mailto",
+          "https://mail.google.com/mail/?extsrc=mailto&url=%s",
+          "Gmail"
+        );
+      } catch (e) {
+        console.log("Protocol handler registration not allowed");
+      }
     }
-  }
 
-  // Add click handler for mailto links
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
-      link.addEventListener('click', function(e) {
-        const email = this.href.replace('mailto:', '');
-        
-        // Try Gmail web interface as fallback
-        if (confirm('Open Gmail to send email to ' + email + '?')) {
-          e.preventDefault();
-          window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + email, '_blank');
-        }
+    // Add click handler for mailto links
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+        link.addEventListener('click', function (e) {
+          const email = this.href.replace('mailto:', '');
+
+          // Try Gmail web interface as fallback
+          if (confirm('Open Gmail to send email to ' + email + '?')) {
+            e.preventDefault();
+            window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + email, '_blank');
+          }
+        });
       });
     });
-  });
-</script>
+  </script>
 
 </body>
 
