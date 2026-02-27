@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Issue Tracker — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .tracker-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+    .tracker-sidebar { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; }
+    .sidebar-title { font-size: 1.2em; font-weight: 600; margin-bottom: 16px; }
+    .filter-group { margin-bottom: 20px; }
+    .filter-label { font-weight: 600; font-size: 0.9em; margin-bottom: 8px; display: block; }
+    .filter-select { width: 100%; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 8px; }
+    .filter-count { font-size: 0.85em; opacity: 0.6; margin-left: 8px; }
+    .main-tracker { background: #f5f5f5; border-radius: 12px; padding: 20px; }
+    .tracker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .tracker-title { font-size: 1.5em; font-weight: 600; }
+    .issue-list { display: grid; gap: 12px; }
+    .issue-card { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 16px; transition: all 0.2s; cursor: pointer; }
+    .issue-card:hover { border-color: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .issue-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .issue-title { font-weight: 600; font-size: 1em; flex: 1; }
+    .issue-meta { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+    .issue-label { padding: 4px 10px; border-radius: 12px; font-size: 0.75em; font-weight: 600; }
+    .label-bug { background: #fee2e2; color: #dc2626; }
+    .label-feature { background: #dbeafe; color: #2563eb; }
+    .label-enhancement { background: #d1fae5; color: #059669; }
+    .label-documentation { background: #fef3c7; color: #d97706; }
+    .issue-status { font-size: 0.8em; font-weight: 600; padding: 4px 10px; border-radius: 12px; }
+    .status-open { background: #fee2e2; color: #dc2626; }
+    .status-in-progress { background: #dbeafe; color: #2563eb; }
+    .status-closed { background: #d1fae5; color: #059669; }
+    .issue-priority { font-size: 0.8em; font-weight: 600; padding: 4px 10px; border-radius: 12px; }
+    .priority-high { background: #fef2f2; color: #dc2626; border: 1px solid #dc2626; }
+    .priority-medium { background: #fffbeb; color: #d97706; border: 1px solid #d97706; }
+    .priority-low { background: #f0fdf4; color: #059669; border: 1px solid #059669; }
+    .issue-assignee { font-size: 0.85em; opacity: 0.7; }
+    .issue-desc { font-size: 0.9em; opacity: 0.8; margin-top: 8px; line-height: 1.5; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-size: 1.4em; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9em; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; min-height: 100px; resize: vertical; }
+    .form-select { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.95em; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.1); }
+    .issue-detail-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+    .meta-item { font-size: 0.9em; }
+    .meta-label { font-weight: 600; opacity: 0.7; }
+    .meta-value { margin-top: 4px; }
+    .comments-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.1); }
+    .comment { background: #f9f9f9; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .comment-header { display: flex; justify-content: space-between; font-size: 0.85em; opacity: 0.6; margin-bottom: 8px; }
+    .comment-text { font-size: 0.9em; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="logo" href="index.html" aria-label="Back to Home">
+        <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a class="nav-link" href="index.html#home">Home</a></li>
+        <li><a class="nav-link" href="github.html">GitHub</a></li>
+        <li><a class="nav-link" href="community.html">Community</a></li>
+        <li><a class="nav-link" href="explore.html">Explore</a></li>
+        <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content" style="padding-top: 40px;">
+    <h1>Issue Tracker</h1>
+    <p style="opacity: 0.7; margin-bottom: 24px;">Track and manage issues across your projects</p>
+
+    <div class="tracker-layout">
+      <aside class="tracker-sidebar">
+        <div class="sidebar-title">Filters</div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select id="filter-status" class="filter-select">
+            <option value="">All Status</option>
+            <option value="open">Open</option>
+            <option value="in-progress">In Progress</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Type</label>
+          <select id="filter-type" class="filter-select">
+            <option value="">All Types</option>
+            <option value="bug">Bug</option>
+            <option value="feature">Feature</option>
+            <option value="enhancement">Enhancement</option>
+            <option value="documentation">Documentation</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Priority</label>
+          <select id="filter-priority" class="filter-select">
+            <option value="">All Priorities</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Assignee</label>
+          <select id="filter-assignee" class="filter-select">
+            <option value="">All Assignees</option>
+          </select>
+        </div>
+      </aside>
+
+      <main class="main-tracker">
+        <div class="tracker-header">
+          <div class="tracker-title">Issues</div>
+          <button id="create-issue-btn" class="btn btn-primary">Create Issue</button>
+        </div>
+
+        <div class="issue-list" id="issue-list"></div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="issue-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Create Issue</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="issue-form">
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" id="issue-title" class="form-input" required placeholder="Issue title..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="issue-desc" class="form-textarea" required placeholder="Describe the issue..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select id="issue-type" class="form-select">
+            <option value="bug">Bug</option>
+            <option value="feature">Feature</option>
+            <option value="enhancement">Enhancement</option>
+            <option value="documentation">Documentation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select id="issue-priority" class="form-select">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assignee</label>
+          <input type="text" id="issue-assignee" class="form-input" placeholder="Assign to..." />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Issue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="view-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="view-title">Issue Details</h2>
+        <button class="modal-close" id="view-close">&times;</button>
+      </div>
+      <div id="view-content"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const issueModal = document.getElementById('issue-modal');
+    const viewModal = document.getElementById('view-modal');
+    const issueForm = document.getElementById('issue-form');
+    const issueList = document.getElementById('issue-list');
+    let editingIssueId = null;
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function getIssues() {
+      return JSON.parse(localStorage.getItem('xaytheon:issues') || '[]');
+    }
+
+    function saveIssues(issues) {
+      localStorage.setItem('xaytheon:issues', JSON.stringify(issues));
+    }
+
+    function createIssue(data) {
+      const issues = getIssues();
+      const newIssue = {
+        id: generateId(),
+        ...data,
+        status: 'open',
+        createdAt: new Date().toISOString(),
+        comments: []
+      };
+      issues.unshift(newIssue);
+      saveIssues(issues);
+      return newIssue;
+    }
+
+    function updateIssue(id, data) {
+      const issues = getIssues();
+      const index = issues.findIndex(i => i.id === id);
+      if (index >= 0) {
+        issues[index] = { ...issues[index], ...data };
+        saveIssues(issues);
+      }
+    }
+
+    function deleteIssue(id) {
+      const issues = getIssues().filter(i => i.id !== id);
+      saveIssues(issues);
+    }
+
+    function addComment(issueId, text) {
+      const issues = getIssues();
+      const issue = issues.find(i => i.id === issueId);
+      if (issue) {
+        const comment = {
+          id: generateId(),
+          text,
+          author: 'You',
+          createdAt: new Date().toISOString()
+        };
+        issue.comments.push(comment);
+        saveIssues(issues);
+      }
+    }
+
+    function renderIssues() {
+      const issues = getIssues();
+      const filterStatus = document.getElementById('filter-status').value;
+      const filterType = document.getElementById('filter-type').value;
+      const filterPriority = document.getElementById('filter-priority').value;
+      const filterAssignee = document.getElementById('filter-assignee').value;
+
+      const filtered = issues.filter(issue => {
+        if (filterStatus && issue.status !== filterStatus) return false;
+        if (filterType && issue.type !== filterType) return false;
+        if (filterPriority && issue.priority !== filterPriority) return false;
+        if (filterAssignee && issue.assignee !== filterAssignee) return false;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        issueList.innerHTML = '<div style="text-align: center; padding: 40px; opacity: 0.6;">No issues found</div>';
+        return;
+      }
+
+      issueList.innerHTML = filtered.map(issue => `
+        <div class="issue-card" data-id="${issue.id}">
+          <div class="issue-header">
+            <span class="issue-title">${escapeHtml(issue.title)}</span>
+            <span class="issue-status status-${issue.status}">${issue.status}</span>
+          </div>
+          <div class="issue-desc">${escapeHtml(issue.description.substring(0, 100))}${issue.description.length > 100 ? '...' : ''}</div>
+          <div class="issue-meta">
+            <span class="issue-label label-${issue.type}">${issue.type}</span>
+            <span class="issue-priority priority-${issue.priority}">${issue.priority}</span>
+            ${issue.assignee ? `<span class="issue-assignee">${escapeHtml(issue.assignee)}</span>` : ''}
+            <span style="margin-left: auto; font-size: 0.85em; opacity: 0.6;">${new Date(issue.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.issue-card').forEach(card => {
+        card.addEventListener('click', () => viewIssue(card.dataset.id));
+      });
+
+      updateAssigneeFilter();
+    }
+
+    function updateAssigneeFilter() {
+      const issues = getIssues();
+      const assignees = [...new Set(issues.filter(i => i.assignee).map(i => i.assignee))];
+      const select = document.getElementById('filter-assignee');
+      const currentValue = select.value;
+      
+      select.innerHTML = '<option value="">All Assignees</option>' + 
+        assignees.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+      
+      select.value = currentValue;
+    }
+
+    function viewIssue(id) {
+      const issues = getIssues();
+      const issue = issues.find(i => i.id === id);
+      if (!issue) return;
+
+      document.getElementById('view-title').textContent = `#${issue.id.substr(0, 8)} - ${issue.title}`;
+      document.getElementById('view-content').innerHTML = `
+        <div class="issue-detail-meta">
+          <div class="meta-item">
+            <div class="meta-label">Status</div>
+            <div class="meta-value">
+              <select id="view-status" class="form-select" style="width: auto;">
+                <option value="open" ${issue.status === 'open' ? 'selected' : ''}>Open</option>
+                <option value="in-progress" ${issue.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                <option value="closed" ${issue.status === 'closed' ? 'selected' : ''}>Closed</option>
+              </select>
+            </div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Type</div>
+            <div class="meta-value"><span class="issue-label label-${issue.type}">${issue.type}</span></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Priority</div>
+            <div class="meta-value"><span class="issue-priority priority-${issue.priority}">${issue.priority}</span></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Assignee</div>
+            <div class="meta-value">${escapeHtml(issue.assignee || 'Unassigned')}</div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <div class="meta-label">Description</div>
+          <div style="white-space: pre-wrap; line-height: 1.6; margin-top: 8px;">${escapeHtml(issue.description)}</div>
+        </div>
+
+        <div class="comments-section">
+          <div class="meta-label">Comments (${issue.comments.length})</div>
+          <div id="comments-list"></div>
+          <div style="margin-top: 12px;">
+            <textarea id="new-comment" class="form-textarea" placeholder="Add a comment..." style="min-height: 60px;"></textarea>
+            <button id="add-comment-btn" class="btn btn-primary" style="margin-top: 8px;">Add Comment</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="delete-issue-btn" class="btn btn-outline" style="color: #dc2626; border-color: #dc2626;">Delete Issue</button>
+          <button id="close-view-btn" class="btn btn-primary">Close</button>
+        </div>
+      `;
+
+      viewModal.classList.add('active');
+      
+      document.getElementById('view-status').addEventListener('change', (e) => {
+        updateIssue(id, { status: e.target.value });
+        renderIssues();
+      });
+
+      document.getElementById('delete-issue-btn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete this issue?')) {
+          deleteIssue(id);
+          viewModal.classList.remove('active');
+          renderIssues();
+        }
+      });
+
+      document.getElementById('close-view-btn').addEventListener('click', () => {
+        viewModal.classList.remove('active');
+      });
+
+      function renderComments() {
+        const commentsList = document.getElementById('comments-list');
+        if (issue.comments.length === 0) {
+          commentsList.innerHTML = '<div style="opacity: 0.6; padding: 12px;">No comments yet</div>';
+          return;
+        }
+
+        commentsList.innerHTML = issue.comments.map(comment => `
+          <div class="comment">
+            <div class="comment-header">
+              <span>${escapeHtml(comment.author)}</span>
+              <span>${new Date(comment.createdAt).toLocaleString()}</span>
+            </div>
+            <div class="comment-text">${escapeHtml(comment.text)}</div>
+          </div>
+        `).join('');
+      }
+
+      renderComments();
+
+      document.getElementById('add-comment-btn').addEventListener('click', () => {
+        const commentText = document.getElementById('new-comment').value.trim();
+        if (commentText) {
+          addComment(id, commentText);
+          document.getElementById('new-comment').value = '';
+          renderComments();
+        }
+      });
+    }
+
+    document.getElementById('create-issue-btn').addEventListener('click', () => {
+      editingIssueId = null;
+      document.getElementById('modal-title').textContent = 'Create Issue';
+      issueForm.reset();
+      issueModal.classList.add('active');
+    });
+
+    document.getElementById('modal-close').addEventListener('click', () => {
+      issueModal.classList.remove('active');
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      issueModal.classList.remove('active');
+    });
+
+    document.getElementById('view-close').addEventListener('click', () => {
+      viewModal.classList.remove('active');
+    });
+
+    issueForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = {
+        title: document.getElementById('issue-title').value.trim(),
+        description: document.getElementById('issue-desc').value.trim(),
+        type: document.getElementById('issue-type').value,
+        priority: document.getElementById('issue-priority').value,
+        assignee: document.getElementById('issue-assignee').value.trim()
+      };
+
+      createIssue(data);
+      issueModal.classList.remove('active');
+      renderIssues();
+    });
+
+    document.querySelectorAll('.filter-select').forEach(select => {
+      select.addEventListener('change', renderIssues);
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+    }
+
+    renderIssues();
+  </script>
+</body>
+</html>
