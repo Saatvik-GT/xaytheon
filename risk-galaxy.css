@@ -1,19 +1,57 @@
-.risk-galaxy-container {
-    width: 100vw;
-    height: 100vh;
-    background: radial-gradient(circle at center, #0a0a1f 0%, #05050a 100%);
-    overflow: hidden;
-    position: relative;
+/* ===========================
+   RISK GALAXY — Page Styles
+   =========================== */
+
+/* Ensure dark background globally on this page */
+body {
+    background-color: #03030a !important;
 }
 
+/* Container — full-viewport immersive section */
+.risk-galaxy-container {
+    width: 100%;
+    height: calc(100vh - 72px);
+    /* Accounts for header height */
+    min-height: 800px;
+    background: radial-gradient(ellipse at 30% 30%, #0f0f2e 0%, #080818 40%, #03030a 100%);
+    overflow: hidden;
+    position: relative;
+    margin-top: 72px;
+    /* Push below header */
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] .risk-galaxy-container,
+.dark-theme .risk-galaxy-container {
+    background: radial-gradient(ellipse at 30% 30%, #0f0f2e 0%, #080818 40%, #03030a 100%);
+}
+
+/* Light theme: also keep it dark since it's a galaxy viz */
+:root .risk-galaxy-container {
+    background: radial-gradient(ellipse at 30% 30%, #0f0f2e 0%, #080818 40%, #03030a 100%);
+}
+
+/* 3D Viewport canvas */
 #galaxy-viewport {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#galaxy-viewport canvas {
+    display: block;
     width: 100%;
     height: 100%;
 }
 
+/* ===========================
+   HUD Overlay
+   =========================== */
 .risk-hud {
     position: absolute;
-    top: 80px;
+    top: 20px;
     left: 20px;
     right: 20px;
     bottom: 20px;
@@ -21,34 +59,98 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    z-index: 10;
 }
 
+/* ===========================
+   Left Panel — Legend + File Card
+   =========================== */
 .left-panel {
     width: 380px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     pointer-events: auto;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
-.glass {
-    background: rgba(10, 10, 25, 0.7);
-    backdrop-filter: blur(15px);
+.left-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.left-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+/* ===========================
+   Glassmorphism Card
+   =========================== */
+.risk-galaxy-container .glass {
+    background: rgba(10, 10, 30, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    padding: 24px;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.subtitle {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
+/* Entry animation */
+.animate-in {
+    animation: slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card heading */
+.risk-galaxy-container .card h3 {
+    margin: 0 0 6px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.risk-galaxy-container .card h3 i {
+    font-size: 1.3rem;
+    color: #7c3aed;
+}
+
+/* Subtitle */
+.risk-galaxy-container .subtitle {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    margin-bottom: 18px;
+    line-height: 1.5;
+}
+
+/* ===========================
+   Risk Legend
+   =========================== */
 .risk-legend {
     display: flex;
-    gap: 15px;
+    gap: 14px;
     font-size: 0.75rem;
+    color: #cbd5e1;
+    flex-wrap: wrap;
 }
 
 .legend-item {
@@ -61,7 +163,8 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    box-shadow: 0 0 10px currentColor;
+    box-shadow: 0 0 8px currentColor;
+    flex-shrink: 0;
 }
 
 .dot.critical {
@@ -79,93 +182,131 @@
     background: #f7df1e;
 }
 
-.hidden {
-    display: none;
+/* ===========================
+   Hidden State
+   =========================== */
+.risk-galaxy-container .hidden {
+    display: none !important;
 }
 
+/* ===========================
+   File Selection Card
+   =========================== */
 .file-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .file-header h4 {
     margin: 0;
-    color: var(--accent-color);
-    font-size: 1.2rem;
+    color: #a78bfa;
+    font-size: 1.1rem;
+    font-weight: 700;
 }
 
 #file-path {
     font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
+    color: #64748b;
+    margin-bottom: 18px;
     word-break: break-all;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+/* ===========================
+   Metrics Grid
+   =========================== */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .metric {
     background: rgba(255, 255, 255, 0.03);
-    padding: 10px;
-    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px 8px;
+    border-radius: 12px;
     text-align: center;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.metric:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .metric .label {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #64748b;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
 }
 
 .metric .value {
-    font-size: 1rem;
-    font-weight: bold;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e2e8f0;
 }
 
+/* ===========================
+   Prediction Box
+   =========================== */
 .prediction-box {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(16, 185, 129, 0.08);
     border-left: 3px solid #10b981;
-    padding: 15px;
-    border-radius: 0 10px 10px 0;
-    margin-bottom: 20px;
+    padding: 14px 16px;
+    border-radius: 0 12px 12px 0;
+    margin-bottom: 18px;
 }
 
 .prediction-box h5 {
-    margin: 0 0 5px 0;
-    font-size: 0.8rem;
+    margin: 0 0 6px 0;
+    font-size: 0.78rem;
     color: #10b981;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
 }
 
 .prediction-box p {
     font-size: 0.85rem;
     margin: 0;
-    color: #e2e8f0;
+    color: #cbd5e1;
+    line-height: 1.5;
 }
 
+/* ===========================
+   Chart Container
+   =========================== */
 .chart-container {
-    height: 180px;
+    height: 160px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
+/* ===========================
+   Bottom Bar
+   =========================== */
 .bottom-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
+    padding: 14px 24px;
     pointer-events: auto;
+    flex-shrink: 0;
 }
 
 .status-group {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 0.9rem;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #94a3b8;
 }
 
 .pulse {
@@ -174,10 +315,11 @@
     background: #10b981;
     border-radius: 50%;
     box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
-    animation: pulse 2s infinite;
+    animation: pulse-glow 2s infinite;
+    flex-shrink: 0;
 }
 
-@keyframes pulse {
+@keyframes pulse-glow {
     0% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
@@ -185,38 +327,180 @@
 
     70% {
         transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(10, 10, 25, 0);
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
     }
 
     100% {
         transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(10, 10, 25, 0);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
     }
 }
 
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ===========================
+   Buttons
+   =========================== */
+.risk-galaxy-container .btn-sm {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid transparent;
+}
+
+.risk-galaxy-container .btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.risk-galaxy-container .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.risk-galaxy-container .btn-primary {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 12px rgba(124, 58, 237, 0.3);
+}
+
+.risk-galaxy-container .btn-primary:hover {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5);
+    transform: translateY(-1px);
+}
+
+.risk-galaxy-container .btn-danger {
+    background: linear-gradient(135deg, #ff3e3e, #c72c2c);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 12px rgba(255, 62, 62, 0.3);
+}
+
+.risk-galaxy-container .btn-danger:hover {
+    box-shadow: 0 4px 20px rgba(255, 62, 62, 0.5);
+    transform: translateY(-1px);
+}
+
+/* ===========================
+   Badge
+   =========================== */
 .badge {
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: bold;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .badge.CRITICAL {
-    background: #ff3e3e;
-    color: white;
+    background: rgba(255, 62, 62, 0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 62, 62, 0.3);
 }
 
 .badge.HIGH {
-    background: #ff9d00;
-    color: white;
+    background: rgba(255, 157, 0, 0.2);
+    color: #ffb84d;
+    border: 1px solid rgba(255, 157, 0, 0.3);
 }
 
 .badge.MEDIUM {
-    background: #f7df1e;
-    color: #000;
+    background: rgba(247, 223, 30, 0.15);
+    color: #f7df1e;
+    border: 1px solid rgba(247, 223, 30, 0.3);
 }
 
 .badge.LOW {
-    background: #10b981;
-    color: white;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+@media (max-width: 768px) {
+    .left-panel {
+        width: 100%;
+    }
+
+    .risk-hud {
+        top: 70px;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .bottom-bar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+
+    .controls {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .risk-legend {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .risk-hud {
+        top: 65px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+    }
+
+    .risk-galaxy-container .glass {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .controls .btn-sm {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ===========================
+   Footer Fix — allow footer below galaxy
+   =========================== */
+#footer-placeholder {
+    width: 100%;
+    position: relative;
+    z-index: 20;
+    background: var(--footer-bg, #000);
+}
+
+/* Override boilerplate footer margin for seamless transition */
+#footer-placeholder .footer {
+    margin-top: 0 !important;
 }

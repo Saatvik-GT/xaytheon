@@ -1,18 +1,42 @@
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+let parser = null;
+let traverse = null;
+try {
+    parser = require('@babel/parser');
+    traverse = require('@babel/traverse').default || require('@babel/traverse');
+} catch (e) {
+    console.warn("Babel AST parsers not available. Will fallback to simple heuristics.");
+}
+
 /**
  * Risk Engine Service
- * Predicts bug propensity using code churn, expertise debt, and historical data.
+ * Predicts bug propensity using REAL code churn, expertise debt, and AST-based complexity.
  */
 class RiskEngineService {
     /**
-     * Calculates risk scores for all project files.
+     * Calculates risk scores for the live project files via Git and AST.
      */
     async calculateRiskGalaxy() {
-        const files = this.getMockFileHistory();
+        const repoRoot = process.cwd(); // Assume we are running from backend or project root
+        // Find git root
+        let gitRoot = repoRoot;
+        try {
+            gitRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+        } catch (e) {
+            console.error("Not a git repository or git not available. Risk engine requires Git.");
+            // Fallback to mock data if not a git repo
+            return this.getMockDataGalaxy();
+        }
+
+        const files = this.getRealFileHistory(gitRoot);
 
         return files.map(file => {
             const churnScore = this.calculateChurnScore(file.history);
             const expertiseDebt = this.calculateExpertiseDebt(file.authors);
-            const complexityScore = file.complexity * 0.4;
+            const complexityScore = file.complexity * 0.4; // Weight complexity
 
             // Final Fragility Score (0-100)
             const fragilityScore = Math.min(100, (churnScore * 0.4) + (expertiseDebt * 0.3) + (complexityScore));
@@ -26,7 +50,7 @@ class RiskEngineService {
                     churn: churnScore,
                     expertise: expertiseDebt,
                     complexity: file.complexity,
-                    historicalBugs: file.historicalBugs
+                    historicalBugs: file.authors.length // simple proxy
                 },
                 trend: this.generateTimeline(fragilityScore),
                 status: this.getStatus(fragilityScore)
@@ -35,18 +59,25 @@ class RiskEngineService {
     }
 
     calculateChurnScore(history) {
-        // High frequency of changes in last 30 days = higher churn
+        if (!history || history.length === 0) return 5; // Base low
+        // Higher frequency of changes in last 30 days = higher churn
         const recentChanges = history.filter(h => h.daysAgo <= 30).length;
-        return Math.min(100, recentChanges * 10);
+        // Also factor in overall commit count
+        const totalCommits = history.length;
+        return Math.min(100, (recentChanges * 8) + (totalCommits * 0.5));
     }
 
     calculateExpertiseDebt(authors) {
+        if (!authors || authors.length === 0) return 50; // Unknown
+        if (authors.length === 1) return 10; // Sole owner, low debt (unless they leave, handled later)
+
         // If a file has many authors but no clear "owner" (>50% contributions), debt is high
-        const totalCommits = authors.reduce((a, b) => a + b.commits, 0);
+        const totalCommits = authors.reduce((sum, a) => sum + a.commits, 0);
         const maxCommits = Math.max(...authors.map(a => a.commits));
         const ownershipRatio = maxCommits / totalCommits;
 
-        return Math.min(100, (1 - ownershipRatio) * 100);
+        // The lower the ownership ratio, the higher the debt 
+        return Math.min(100, (1 - ownershipRatio) * 100 * 1.5);
     }
 
     getStatus(score) {
@@ -57,7 +88,6 @@ class RiskEngineService {
     }
 
     generateTimeline(currentScore) {
-        // Generate mock historical data for the last 6 months
         const points = [];
         let base = currentScore;
         for (let i = 0; i < 6; i++) {
@@ -69,84 +99,225 @@ class RiskEngineService {
         return points;
     }
 
-    getMockFileHistory() {
-        return [
+    getRealFileHistory(gitRoot) {
+        let trackedFiles = [];
+        try {
+            // Get all tracked files, limit to JS/TS/HTML/CSS for relevant analysis
+            const output = execSync('git ls-files', { cwd: gitRoot, encoding: 'utf-8' });
+            trackedFiles = output.split('\\n').filter(f => f.trim().length > 0);
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+
+        // Filter valid extensions and ignore node_modules just in case
+        trackedFiles = trackedFiles.filter(f => {
+            if (f.includes('node_modules/')) return false;
+            if (f.includes('dist/') || f.includes('build/')) return false;
+            return f.endsWith('.js') || f.endsWith('.ts') || f.endsWith('.tsx') || f.endsWith('.css') || f.endsWith('.html');
+        });
+
+        // Cap to 60-80 files to keep the API reasonably fast for demo
+        // Priority to backend and src files
+        trackedFiles.sort((a, b) => {
+            const scoreA = a.includes('src/') ? 1 : 0;
+            const scoreB = b.includes('src/') ? 1 : 0;
+            return scoreB - scoreA;
+        });
+        if (trackedFiles.length > 80) trackedFiles = trackedFiles.slice(0, 80);
+
+        const now = Date.now() / 1000;
+        const results = [];
+
+        trackedFiles.forEach((filePath, idx) => {
+            const absolutePath = path.join(gitRoot, filePath);
+
+            // 1. Get AST Complexity
+            const complexity = this.analyzeFileComplexity(absolutePath);
+
+            // 2. Get Git metrics
+            let history = [];
+            let authors = [];
+            try {
+                const log = execSync(`git log --follow --format="%at|%an" -- "${filePath}"`, { cwd: gitRoot, encoding: 'utf-8' });
+                const lines = log.trim().split('\n').filter(l => l);
+
+                const authorMap = {};
+                lines.forEach(line => {
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        const ts = parseInt(parts[0], 10);
+                        const author = parts[1].trim();
+
+                        const daysAgo = (now - ts) / (60 * 60 * 24);
+                        history.push({ daysAgo });
+                        authorMap[author] = (authorMap[author] || 0) + 1;
+                    }
+                });
+
+                authors = Object.keys(authorMap).map(name => ({
+                    name,
+                    commits: authorMap[name]
+                }));
+            } catch (err) {
+                // Ignore errors for individual files
+            }
+
+            results.push({
+                id: `file-${idx}`, // generate an ID string so frontend correctly links the ID
+                name: path.basename(filePath),
+                path: filePath,
+                complexity,
+                history,
+                authors
+            });
+        });
+
+        return results;
+    }
+
+    /**
+     * Parse code file to extract Cyclomatic Complexity
+     */
+    analyzeFileComplexity(filePath) {
+        let baseComplexity = 1;
+        if (!fs.existsSync(filePath)) return baseComplexity;
+
+        const ext = path.extname(filePath);
+        if (ext !== '.js' && ext !== '.ts' && ext !== '.jsx' && ext !== '.tsx') {
+            // non-script assets get a simple heuristic based on file size lines
+            const content = fs.readFileSync(filePath, 'utf-8');
+            return Math.min(100, Math.floor(content.split('\\n').length / 5));
+        }
+
+        if (!parser || !traverse) {
+            // Fallback line counting logic if Babel is not installed
+            const content = fs.readFileSync(filePath, 'utf-8');
+            const lines = content.split('\\n');
+            let approx = 1;
+            lines.forEach(l => {
+                const s = l.trim();
+                if (s.startsWith('if ') || s.startsWith('if(') || s.includes(' else ') || s.startsWith('for ') || s.startsWith('while ') || s.startsWith('switch(') || s.includes('catch(')) {
+                    approx++;
+                }
+            });
+            return approx;
+        }
+
+        try {
+            const content = fs.readFileSync(filePath, 'utf-8');
+            const isTS = filePath.endsWith('.ts') || filePath.endsWith('.tsx');
+
+            const plugins = ["jsx", "classProperties", "objectRestSpread"];
+            if (isTS) plugins.push("typescript");
+
+            const ast = parser.parse(content, {
+                sourceType: 'unambiguous',
+                plugins: plugins
+            });
+
+            traverse(ast, {
+                enter(p) {
+                    const type = p.node.type;
+                    if (['IfStatement', 'WhileStatement', 'DoWhileStatement', 'ForStatement', 'ForInStatement', 'ForOfStatement', 'ConditionalExpression', 'CatchClause'].includes(type)) {
+                        baseComplexity++;
+                    } else if (type === 'LogicalExpression' && (p.node.operator === '&&' || p.node.operator === '||')) {
+                        baseComplexity++;
+                    } else if (type === 'SwitchCase' && p.node.test !== null) {
+                        baseComplexity++;
+                    }
+                }
+            });
+        } catch (err) {
+            // Syntax error or unparseable, fallback to size
+            const content = fs.readFileSync(filePath, 'utf-8');
+            return Math.min(100, Math.floor(content.split('\\n').length / 10));
+        }
+
+        return baseComplexity;
+    }
+
+    /**
+     * Fallback to mock data if not running in a git repo
+     */
+    getMockDataGalaxy() {
+        console.warn("Using fallback mock data for Risk Galaxy");
+        const getMockFileHistory = [
             {
-                id: 1, name: 'auth.service.js', path: 'src/services/auth.service.js', complexity: 85, historicalBugs: 12,
+                id: 1, name: 'auth.service.js', path: 'src/services/auth.service.js', complexity: 85,
                 history: Array.from({ length: 15 }, () => ({ daysAgo: Math.floor(Math.random() * 60) })),
                 authors: [{ name: 'dev1', commits: 50 }, { name: 'dev2', commits: 45 }]
-            },
-            {
-                id: 2, name: 'payment.gateway.js', path: 'src/integrations/payment.gateway.js', complexity: 92, historicalBugs: 8,
-                history: Array.from({ length: 20 }, () => ({ daysAgo: Math.floor(Math.random() * 30) })),
-                authors: [{ name: 'dev3', commits: 30 }, { name: 'dev4', commits: 28 }, { name: 'dev5', commits: 25 }]
-            },
-            {
-                id: 3, name: 'utils.js', path: 'src/utils/utils.js', complexity: 20, historicalBugs: 1,
-                history: [{ daysAgo: 45 }, { daysAgo: 100 }],
-                authors: [{ name: 'dev1', commits: 80 }]
-            },
-            {
-                id: 4, name: 'socket.server.js', path: 'src/socket/socket.server.js', complexity: 70, historicalBugs: 5,
-                history: Array.from({ length: 12 }, () => ({ daysAgo: Math.floor(Math.random() * 40) })),
-                authors: [{ name: 'dev2', commits: 40 }, { name: 'dev6', commits: 10 }]
-            },
-            {
-                id: 5, name: 'db.config.js', path: 'src/config/db.js', complexity: 15, historicalBugs: 0,
-                history: [{ daysAgo: 200 }],
-                authors: [{ name: 'dev1', commits: 100 }]
             }
         ];
+        return getMockFileHistory.map(f => ({
+            id: f.id, name: f.name, path: f.path, score: 70, metrics: { churn: 50, expertise: 40, complexity: f.complexity, historicalBugs: 2 },
+            trend: this.generateTimeline(70), status: 'HIGH'
+        }));
     }
 
     /**
      * BLAST-RADIUS VULNERABILITY PROPAGATION ENGINE
-     * Recursively calculates the impact of a vulnerability across the dependency tree
+     * Dynamically infers dependencies based on actual file paths in a heuristic manner to construct the graph!
      */
     async calculateBlastRadius(vulnerabilityNode, dependencyTree) {
+        // Since we are now real, we override 'dependencyTree' and generate a real heuristic correlation graph.
+        const gitRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+        const files = this.getRealFileHistory(gitRoot);
+
+        // Build a naive dependency correlation map based on AST or directory proximity
         const propagationMap = new Map();
         const visited = new Set();
-        const criticalityScores = this.getCriticalityMatrix();
 
-        // Recursive DFS traversal to map propagation
-        const traverse = (nodeId, depth, parentImpact) => {
-            if (visited.has(nodeId) || depth > 5) return; // Limit depth to prevent infinite loops
-            visited.add(nodeId);
+        files.forEach(f => {
+            // Assume 1 layer propagation connection to files in the same directory
+            f.directory = path.dirname(f.path);
+        });
 
-            const node = dependencyTree.nodes.find(n => n.id === nodeId);
+        const traverse = (fileId, depth, parentImpact) => {
+            if (visited.has(fileId) || depth > 3) return;
+            visited.add(fileId);
+
+            const node = files.find(f => f.id === fileId || f.name.includes(fileId)); // weak match for ease
             if (!node) return;
 
-            // Calculate impact multiplier based on node criticality
-            const criticality = criticalityScores[node.type] || 1.0;
-            const depthDecay = Math.pow(0.7, depth); // Impact decreases with distance
-            const impactScore = parentImpact * criticality * depthDecay;
+            const impactScore = parentImpact * Math.pow(0.7, depth);
 
-            propagationMap.set(nodeId, {
-                id: nodeId,
-                name: node.name,
-                type: node.type,
-                impactScore: Math.min(100, impactScore),
-                depth: depth,
-                status: this.getPropagationStatus(impactScore),
-                affectedServices: []
-            });
+            if (!propagationMap.has(node.id)) {
+                propagationMap.set(node.id, {
+                    id: node.id,
+                    name: node.name,
+                    type: node.path.includes('backend') ? 'backend' : 'frontend',
+                    impactScore: Math.min(100, impactScore),
+                    depth: depth,
+                    status: this.getPropagationStatus(impactScore),
+                    affectedServices: []
+                });
+            }
 
-            // Find all nodes that depend on this one
-            const dependents = dependencyTree.links
-                .filter(link => link.source === nodeId)
-                .map(link => link.target);
+            // Simple heuristic to build dependents: files in the same directory, or files mentioning the name
+            const dependents = files.filter(f => {
+                if (f.id === node.id) return false;
+                // Files in same folder heavily connected
+                if (f.directory === node.directory) return true;
+                // Files mentioning root name (hacky heuristic for JS imports)
+                const baseName = node.name.split('.')[0];
+                return f.path.includes(baseName) || f.name.includes(baseName);
+            }).slice(0, 4); // Limit blast explosion fan-out
 
-            dependents.forEach(depId => {
-                traverse(depId, depth + 1, impactScore);
-                // Track affected services
-                if (propagationMap.has(nodeId)) {
-                    propagationMap.get(nodeId).affectedServices.push(depId);
+            dependents.forEach(dep => {
+                traverse(dep.id, depth + 1, impactScore);
+                if (propagationMap.has(node.id) && !propagationMap.get(node.id).affectedServices.includes(dep.id)) {
+                    propagationMap.get(node.id).affectedServices.push(dep.id);
                 }
             });
         };
 
-        // Start propagation from vulnerability source with 100% initial impact
-        traverse(vulnerabilityNode, 0, 100);
+        // If 'vulnerabilityNode' exists, trigger from it. Otherwise pick the worst file.
+        const startTarget = files.find(f => f.name.includes(vulnerabilityNode)) || files.sort((a, b) => b.complexity - a.complexity)[0];
+
+        if (startTarget) {
+            traverse(startTarget.id, 0, 100);
+        }
 
         return {
             sourceVulnerability: vulnerabilityNode,
@@ -154,20 +325,6 @@ class RiskEngineService {
             propagationTree: Array.from(propagationMap.values()),
             riskLevel: this.calculateOverallRiskLevel(propagationMap),
             recommendation: this.generateRecommendation(propagationMap)
-        };
-    }
-
-    getCriticalityMatrix() {
-        return {
-            'root': 1.0,
-            'core': 0.95,
-            'critical': 0.9,
-            'dependency': 0.7,
-            'data': 0.85,
-            'service': 0.75,
-            'cache': 0.5,
-            'devDependency': 0.3,
-            'ai': 0.8
         };
     }
 
@@ -205,41 +362,10 @@ class RiskEngineService {
         return `Monitor closely. ${totalNodes} services affected but impact is contained.`;
     }
 
-    /**
-     * Simulates a dependency tree for demonstration
-     */
     getMockDependencyTree() {
-        return {
-            nodes: [
-                { id: 'app-root', name: 'XAYTHEON App', type: 'root' },
-                { id: 'express', name: 'express', type: 'dependency' },
-                { id: 'socket.io', name: 'socket.io', type: 'critical' },
-                { id: 'axios', name: 'axios', type: 'dependency' },
-                { id: 'jsonwebtoken', name: 'jsonwebtoken', type: 'critical' },
-                { id: 'cors', name: 'cors', type: 'dependency' },
-                { id: 'auth-service', name: 'Auth Service', type: 'core' },
-                { id: 'payment-service', name: 'Payment Service', type: 'critical' },
-                { id: 'user-service', name: 'User Service', type: 'service' },
-                { id: 'redis-cache', name: 'Redis Cache', type: 'cache' },
-                { id: 'ai-engine', name: 'AI Engine', type: 'ai' }
-            ],
-            links: [
-                { source: 'app-root', target: 'express' },
-                { source: 'app-root', target: 'socket.io' },
-                { source: 'app-root', target: 'axios' },
-                { source: 'app-root', target: 'jsonwebtoken' },
-                { source: 'express', target: 'auth-service' },
-                { source: 'express', target: 'payment-service' },
-                { source: 'express', target: 'user-service' },
-                { source: 'socket.io', target: 'user-service' },
-                { source: 'jsonwebtoken', target: 'auth-service' },
-                { source: 'auth-service', target: 'user-service' },
-                { source: 'auth-service', target: 'redis-cache' },
-                { source: 'payment-service', target: 'ai-engine' },
-                { source: 'user-service', target: 'redis-cache' }
-            ]
-        };
+        return { nodes: [], links: [] };
     }
 }
 
 module.exports = new RiskEngineService();
+
