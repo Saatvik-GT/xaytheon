@@ -159,7 +159,19 @@
     return true;
   }
 
-  window.XAYTHEON_AUTH = { ensureClient, getSession, handleAuthState, sendMagicLink };
+  async function signInWithGithub(){
+    const c = ensureClient();
+    if (!c) throw new Error('Supabase not available');
+    const redirectTo = computeRedirectTo();
+    const { error } = await c.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo }
+    });
+    if (error) throw error;
+    return true;
+  }
+
+  window.XAYTHEON_AUTH = { ensureClient, getSession, handleAuthState, sendMagicLink, signInWithGithub };
 
   // Initialize on DOM ready
   window.addEventListener('DOMContentLoaded', handleAuthState);
