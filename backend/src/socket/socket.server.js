@@ -194,6 +194,17 @@ function initializeSocket(server) {
             });
         });
 
+        // QUANTUM ANOMALY: Join radar
+        socket.on("join_quantum_radar", () => {
+            socket.join("quantum_radar_room");
+            console.log(`📡 User ${socket.userId} joined Quantum Anomaly Radar`);
+        });
+
+        // QUANTUM ANOMALY: Broadcast detection
+        socket.on("quantum_anomaly_detected", (anomaly) => {
+            io.to("quantum_radar_room").emit("anomaly_alert", anomaly);
+        });
+
         // GOVERNANCE: Join governance monitors
         socket.on("join_governance", () => {
             socket.join("governance_room");

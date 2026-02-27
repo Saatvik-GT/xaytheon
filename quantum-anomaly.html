@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAYTHEON | Quantum Anomaly Radar</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --surface: #18181b;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #c084fc;
+            --red: #f87171;
+            --amber: #fbbf24;
+            --text-muted: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: #f4f4f5;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .anomaly-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .anomaly-card.quarantined {
+            border-left: 4px solid var(--red);
+            background: rgba(248, 113, 113, 0.05);
+        }
+
+        .anomaly-card.flagged {
+            border-left: 4px solid var(--amber);
+            background: rgba(251, 191, 36, 0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quarantined .status {
+            color: var(--red);
+        }
+
+        .flagged .status {
+            color: var(--amber);
+        }
+
+        .endpoint {
+            font-family: 'JetBrains Mono';
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .risk {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .reasons {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            padding-left: 1rem;
+        }
+
+        .reasons li {
+            margin-bottom: 0.25rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            padding: 1rem;
+            border-radius: 12px;
+            transform: translateX(150%);
+            transition: 0.4s;
+        }
+
+        .toast.visible {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="navbar-placeholder"></nav>
+
+    <div class="container">
+        <header>
+            <div>
+                <h1>Quantum <span>Anomaly</span> Radar</h1>
+                <p style="color: var(--text-muted);">Real-time Zero-Day Payload Detection</p>
+            </div>
+            <button class="btn" onclick="injectTestAnomaly()">🧪 Inject Test Payload</button>
+        </header>
+
+        <div id="anomaly-feed"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="frontend/js/quantum-anomaly.js"></script>
+    <script>
+        fetch('navbar.html').then(r => r.text()).then(html => {
+            document.getElementById('navbar-placeholder').innerHTML = html;
+        });
+    </script>
+</body>
+
+</html>
