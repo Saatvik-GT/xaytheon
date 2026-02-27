@@ -1,4 +1,6 @@
 (function () {
+  "use strict";
+
   const API_BASE_URL = "http://127.0.0.1:5000/api/auth";
   const REQUEST_TIMEOUT = 30000;
 
@@ -7,16 +9,21 @@
 
   function ensureClient() {
     if (supabaseClient) return supabaseClient;
-    
+
     // Replace with your actual project credentials
-    const SUPABASE_URL = "https://your-project.supabase.co";
-    const SUPABASE_KEY = "your-anon-key";
-    
-    if (typeof supabase === 'undefined') {
+    const SUPABASE_URL = window.__SUPABASE_URL__;
+    const SUPABASE_KEY = window.__SUPABASE_ANON_KEY__;
+
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error("Supabase config not provided");
+      return null;
+    }
+
+    if (typeof supabase === "undefined") {
       console.error("Supabase SDK not loaded");
       return null;
     }
-    
+
     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     return supabaseClient;
   }
@@ -33,28 +40,100 @@
   let tokenExpiryTime = null;
   let refreshTimer = null;
 
+  const authChannel = new BroadcastChannel("xaytheon_auth");
+
+  function clearRefreshTimer() {
+    if (refreshTimer) {
+      clearTimeout(refreshTimer);
+      refreshTimer = null;
+    }
+  }
+
+  function scheduleTokenRefresh() {
+    clearRefreshTimer();
+    if (!tokenExpiryTime) return;
+
+    const delay = tokenExpiryTime - Date.now() - 5000;
+    if (delay <= 0) return;
+
+    refreshTimer = setTimeout(async () => {
+      try {
+        await refreshAccessToken();
+      } catch (err) {
+        console.error("Token refresh failed", err);
+        logout(false);
+      }
+    }, delay);
+  }
+
+  function updateAuthUI() {
+    document
+      .querySelectorAll("[data-requires-auth]")
+      .forEach(el => (el.style.display = accessToken ? "" : "none"));
+
+    document
+      .querySelectorAll("[data-requires-guest]")
+      .forEach(el => (el.style.display = accessToken ? "none" : ""));
+  }
+
   function setAccessToken(token, expiresIn, user) {
     accessToken = token;
     currentUser = user || null;
-    tokenExpiryTime = Date.now() + (expiresIn * 1000);
+    tokenExpiryTime = Date.now() + expiresIn * 1000;
+
     scheduleTokenRefresh();
+    updateAuthUI();
 
     window.dispatchEvent(
-      new CustomEvent("xaytheon:authchange", { detail: { user: currentUser } })
+      new CustomEvent("xaytheon:authchange", {
+        detail: { user: currentUser }
+      })
     );
+
+    authChannel.postMessage({ type: "authchange" });
   }
 
   // ... (existing session management: getSession, refreshAccessToken, authenticatedFetch)
 
-  async function logout() {
+  async function logout(shouldReload = true) {
     try {
       await fetch(`${API_BASE_URL}/logout`, { method: "POST" });
-    } catch { }
+    } catch {}
+
+    clearRefreshTimer();
+
     accessToken = null;
     currentUser = null;
+    tokenExpiryTime = null;
+
     localStorage.removeItem("x_refresh_token");
-    window.location.reload();
+
+    updateAuthUI();
+
+    window.dispatchEvent(
+      new CustomEvent("xaytheon:authchange", {
+        detail: { user: null }
+      })
+    );
+
+    authChannel.postMessage({ type: "logout" });
+
+    if (shouldReload) window.location.reload();
   }
+
+  authChannel.onmessage = event => {
+    if (event.data.type === "logout") {
+      clearRefreshTimer();
+      accessToken = null;
+      currentUser = null;
+      tokenExpiryTime = null;
+      updateAuthUI();
+    }
+
+    if (event.data.type === "authchange") {
+      updateAuthUI();
+    }
+  };
 
   // UPDATED: Expose ensureClient in the public API
   window.XAYTHEON_AUTH = {
@@ -70,11 +149,17 @@
 
   // Init logic
   window.addEventListener("DOMContentLoaded", async () => {
-    // Session restoration
     if (localStorage.getItem("x_refresh_token")) {
-      await refreshAccessToken();
+      try {
+        await refreshAccessToken();
+      } catch (err) {
+        console.error("Session restoration failed", err);
+        localStorage.removeItem("x_refresh_token");
+      }
     }
-    document.querySelectorAll("[data-requires-auth]").forEach(el => el.style.display = !!accessToken ? "" : "none");
-    document.querySelectorAll("[data-requires-guest]").forEach(el => el.style.display = !!accessToken ? "none" : "");
+
+    updateAuthUI();
   });
+
+  window.addEventListener("xaytheon:authchange", updateAuthUI);
 })();
