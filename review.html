@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Review — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .review-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+    .review-sidebar { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; }
+    .sidebar-title { font-size: 1.2em; font-weight: 600; margin-bottom: 16px; }
+    .pr-list { display: grid; gap: 12px; }
+    .pr-item { padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .pr-item:hover { border-color: #000; background: #f9f9f9; }
+    .pr-item.active { border-color: #000; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .pr-title { font-weight: 600; font-size: 0.9em; }
+    .pr-meta { display: flex; gap: 8px; align-items: center; margin-top: 8px; font-size: 0.8em; opacity: 0.6; }
+    .pr-status { padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: 600; }
+    .status-open { background: #dbeafe; color: #2563eb; }
+    .status-approved { background: #d1fae5; color: #059669; }
+    .status-changes { background: #fef3c7; color: #d97706; }
+    .main-review { background: #f5f5f5; border-radius: 12px; padding: 20px; }
+    .review-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; }
+    .review-title { font-size: 1.4em; font-weight: 600; }
+    .review-actions { display: flex; gap: 10px; }
+    .review-meta { display: flex; gap: 20px; margin-bottom: 20px; padding: 16px; background: #fff; border-radius: 8px; }
+    .meta-item { font-size: 0.9em; }
+    .meta-label { opacity: 0.6; margin-bottom: 4px; }
+    .meta-value { font-weight: 600; }
+    .diff-view { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .diff-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .diff-file { font-weight: 600; font-size: 0.95em; }
+    .diff-stats { font-size: 0.85em; opacity: 0.6; }
+    .diff-content { font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.5; }
+    .diff-line { padding: 0 8px; white-space: pre; }
+    .diff-added { background: #d1fae5; color: #059669; }
+    .diff-removed { background: #fee2e2; color: #dc2626; }
+    .diff-context { background: transparent; }
+    .diff-line-num { display: inline-block; width: 40px; color: rgba(0,0,0,0.4); user-select: none; }
+    .comment-section { margin-top: 12px; padding: 12px; background: #f9f9f9; border-radius: 6px; }
+    .comment-input { width: 100%; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.9em; }
+    .comment-list { margin-top: 8px; }
+    .comment { padding: 8px; background: #fff; border-radius: 6px; font-size: 0.85em; margin-bottom: 6px; }
+    .reviewers-section { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .reviewers-title { font-weight: 600; margin-bottom: 12px; }
+    .reviewer-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .reviewer-name { font-size: 0.9em; }
+    .reviewer-status { font-size: 0.8em; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .status-approved { background: #d1fae5; color: #059669; }
+    .status-pending { background: #fef3c7; color: #d97706; }
+    .review-actions-panel { display: flex; gap: 10px; justify-content: flex-end; padding: 16px; background: #fff; border-radius: 8px; }
+    .metrics-section { background: #fff; border-radius: 8px; padding: 16px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .metric-item { text-align: center; padding: 12px; background: #f9f9f9; border-radius: 6px; }
+    .metric-value { font-size: 1.5em; font-weight: 600; }
+    .metric-label { font-size: 0.8em; opacity: 0.6; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="logo" href="index.html" aria-label="Back to Home">
+        <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a class="nav-link" href="index.html#home">Home</a></li>
+        <li><a class="nav-link" href="github.html">GitHub</a></li>
+        <li><a class="nav-link" href="community.html">Community</a></li>
+        <li><a class="nav-link" href="explore.html">Explore</a></li>
+        <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content" style="padding-top: 40px;">
+    <h1>Code Review</h1>
+    <p style="opacity: 0.7; margin-bottom: 24px;">Review pull requests and provide feedback</p>
+
+    <div class="review-layout">
+      <aside class="review-sidebar">
+        <div class="sidebar-title">Pull Requests</div>
+        <div class="pr-list" id="pr-list"></div>
+      </aside>
+
+      <main class="main-review" id="review-content">
+        <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+          <div style="font-size: 3em; margin-bottom: 16px;">🔍</div>
+          <div>Select a pull request to review</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const prList = document.getElementById('pr-list');
+    const reviewContent = document.getElementById('review-content');
+    let currentPR = null;
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function getPRs() {
+      const prs = JSON.parse(localStorage.getItem('xaytheon:prs') || '[]');
+      if (prs.length === 0) {
+        return [
+          {
+            id: generateId(),
+            title: 'Add new feature to dashboard',
+            author: 'developer1',
+            status: 'open',
+            createdAt: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
+            files: [
+              {
+                path: 'src/dashboard.js',
+                additions: 45,
+                deletions: 12
+              },
+              {
+                path: 'styles/dashboard.css',
+                additions: 20,
+                deletions: 5
+              }
+            ],
+            reviewers: [
+              { name: 'reviewer1', status: 'approved' },
+              { name: 'reviewer2', status: 'pending' }
+            ],
+            comments: [],
+            diff: [
+              { type: 'context', line: 1, content: 'function initDashboard() {' },
+              { type: 'added', line: 2, content: '+  const config = loadConfig();' },
+              { type: 'context', line: 3, content: '  renderWidgets();' },
+              { type: 'added', line: 4, content: '+  applyTheme(config.theme);' },
+              { type: 'removed', line: 5, content: '-  oldFunction();' },
+              { type: 'context', line: 6, content: '}' }
+            ]
+          },
+          {
+            id: generateId(),
+            title: 'Fix authentication bug',
+            author: 'developer2',
+            status: 'approved',
+            createdAt: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(),
+            files: [
+              {
+                path: 'src/auth.js',
+                additions: 12,
+                deletions: 8
+              }
+            ],
+            reviewers: [
+              { name: 'reviewer1', status: 'approved' }
+            ],
+            comments: [
+              { line: 3, text: 'Good fix!', author: 'reviewer1' }
+            ],
+            diff: [
+              { type: 'context', line: 1, content: 'function authenticate() {' },
+              { type: 'removed', line: 2, content: '-  if (!user) return null;' },
+              { type: 'added', line: 3, content: '+  if (!user || !user.id) return null;' },
+              { type: 'context', line: 4, content: '  return user;' }
+            ]
+          },
+          {
+            id: generateId(),
+            title: 'Update README documentation',
+            author: 'developer3',
+            status: 'changes',
+            createdAt: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(),
+            files: [
+              {
+                path: 'README.md',
+                additions: 100,
+                deletions: 20
+              }
+            ],
+            reviewers: [
+              { name: 'reviewer1', status: 'pending' }
+            ],
+            comments: [],
+            diff: [
+              { type: 'added', line: 1, content: '+ # Project Documentation' },
+              { type: 'added', line: 2, content: '+ ' },
+              { type: 'added', line: 3, content: '+ ## Features' }
+            ]
+          }
+        ];
+      }
+      return prs;
+    }
+
+    function renderPRList() {
+      const prs = getPRs();
+      
+      if (prs.length === 0) {
+        prList.innerHTML = '<div style="opacity: 0.6; padding: 12px; text-align: center;">No pull requests</div>';
+        return;
+      }
+
+      prList.innerHTML = prs.map(pr => `
+        <div class="pr-item ${currentPR && currentPR.id === pr.id ? 'active' : ''}" data-id="${pr.id}">
+          <div class="pr-title">${escapeHtml(pr.title)}</div>
+          <div class="pr-meta">
+            <span class="pr-status status-${pr.status}">${pr.status}</span>
+            <span>${pr.author}</span>
+            <span>${timeAgo(pr.createdAt)}</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.pr-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const prId = item.dataset.id;
+          const prs = getPRs();
+          currentPR = prs.find(p => p.id === prId);
+          renderPRList();
+          renderReviewContent();
+        });
+      });
+    }
+
+    function renderReviewContent() {
+      if (!currentPR) {
+        reviewContent.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; opacity: 0.6;">
+            <div style="font-size: 3em; margin-bottom: 16px;">🔍</div>
+            <div>Select a pull request to review</div>
+          </div>`;
+        return;
+      }
+
+      const totalAdditions = currentPR.files.reduce((sum, f) => sum + f.additions, 0);
+      const totalDeletions = currentPR.files.reduce((sum, f) => sum + f.deletions, 0);
+
+      reviewContent.innerHTML = `
+        <div class="review-header">
+          <div>
+            <div class="review-title">${escapeHtml(currentPR.title)}</div>
+            <div style="opacity: 0.6; margin-top: 4px;">by ${escapeHtml(currentPR.author)}</div>
+          </div>
+          <div class="review-actions">
+            <button class="btn btn-outline" onclick="addComment()">Add Comment</button>
+            <button class="btn btn-primary" onclick="approvePR()">Approve</button>
+          </div>
+        </div>
+
+        <div class="metrics-section" style="margin-bottom: 16px;">
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <div class="metric-value">${currentPR.files.length}</div>
+              <div class="metric-label">Files Changed</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value" style="color: #059669;">+${totalAdditions}</div>
+              <div class="metric-label">Additions</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value" style="color: #dc2626;">-${totalDeletions}</div>
+              <div class="metric-label">Deletions</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reviewers-section">
+          <div class="reviewers-title">Reviewers</div>
+          ${currentPR.reviewers.map(r => `
+            <div class="reviewer-item">
+              <span class="reviewer-name">${escapeHtml(r.name)}</span>
+              <span class="reviewer-status status-${r.status}">${r.status}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        ${currentPR.files.map((file, idx) => `
+          <div class="diff-view">
+            <div class="diff-header">
+              <span class="diff-file">${escapeHtml(file.path)}</span>
+              <span class="diff-stats">+${file.additions} -${file.deletions}</span>
+            </div>
+            <div class="diff-content">
+              ${currentPR.diff.slice(idx * 6, (idx + 1) * 6).map(line => `
+                <div class="diff-line diff-${line.type}" data-line="${line.line}">
+                  <span class="diff-line-num">${line.line}</span>${escapeHtml(line.content)}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+
+        <div class="review-actions-panel">
+          <button class="btn btn-outline" style="color: #d97706; border-color: #d97706;" onclick="requestChanges()">Request Changes</button>
+          <button class="btn btn-primary" onclick="approvePR()">Approve PR</button>
+        </div>
+      `;
+    }
+
+    function addComment() {
+      const text = prompt('Enter your comment:');
+      if (text && currentPR) {
+        currentPR.comments.push({
+          text,
+          author: 'You',
+          timestamp: new Date().toISOString()
+        });
+        alert('Comment added!');
+      }
+    }
+
+    function approvePR() {
+      if (confirm('Approve this pull request?')) {
+        if (currentPR) {
+          currentPR.status = 'approved';
+          const prs = getPRs();
+          const index = prs.findIndex(p => p.id === currentPR.id);
+          if (index >= 0) {
+            prs[index] = currentPR;
+            localStorage.setItem('xaytheon:prs', JSON.stringify(prs));
+          }
+          renderPRList();
+          renderReviewContent();
+        }
+        alert('Pull request approved!');
+      }
+    }
+
+    function requestChanges() {
+      if (confirm('Request changes for this pull request?')) {
+        if (currentPR) {
+          currentPR.status = 'changes';
+          const prs = getPRs();
+          const index = prs.findIndex(p => p.id === currentPR.id);
+          if (index >= 0) {
+            prs[index] = currentPR;
+            localStorage.setItem('xaytheon:prs', JSON.stringify(prs));
+          }
+          renderPRList();
+          renderReviewContent();
+        }
+        alert('Changes requested!');
+      }
+    }
+
+    function timeAgo(dateStr) {
+      const d = new Date(dateStr);
+      const s = Math.floor((Date.now() - d.getTime()) / 1000);
+      const units = [
+        ['year', 365*24*3600],
+        ['month', 30*24*3600],
+        ['day', 24*3600],
+        ['hour', 3600],
+        ['minute', 60]
+      ];
+      for (const [name, secs] of units) {
+        const v = Math.floor(s / secs);
+        if (v >= 1) return `${v} ${name}${v>1?'s':''} ago`;
+      }
+      return 'just now';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+    }
+
+    renderPRList();
+  </script>
+</body>
+</html>
