@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Builder — XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .dashboard-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; min-height: calc(100vh - 80px); }
+    .widget-library { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 20px; height: calc(100vh - 100px); overflow-y: auto; }
+    .library-title { font-size: 1.2em; font-weight: 600; margin-bottom: 16px; }
+    .widget-list { display: grid; gap: 12px; }
+    .widget-item { padding: 12px; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; cursor: grab; background: #f9f9f9; transition: all 0.2s; }
+    .widget-item:hover { border-color: #000; background: #fff; transform: translateX(4px); }
+    .widget-item:active { cursor: grabbing; }
+    .widget-icon { font-size: 1.5em; margin-bottom: 8px; }
+    .widget-name { font-weight: 600; font-size: 0.95em; }
+    .widget-desc { font-size: 0.85em; opacity: 0.7; margin-top: 4px; }
+    .dashboard-area { background: #f5f5f5; border-radius: 12px; padding: 20px; min-height: calc(100vh - 100px); }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; min-height: 400px; }
+    .grid-slot { background: #fff; border: 2px dashed rgba(0,0,0,0.15); border-radius: 8px; min-height: 150px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.4); transition: all 0.2s; position: relative; }
+    .grid-slot.drag-over { border-color: #000; background: rgba(0,0,0,0.05); }
+    .grid-slot.has-widget { border: none; background: #fff; padding: 16px; }
+    .dashboard-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .dashboard-title { font-size: 1.5em; font-weight: 600; }
+    .control-buttons { display: flex; gap: 10px; }
+    .widget-content { width: 100%; height: 100%; }
+    .widget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .widget-title { font-weight: 600; font-size: 0.95em; }
+    .widget-remove { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 1.2em; padding: 0; }
+    .widget-remove:hover { color: #b91c1c; }
+    .widget-chart { width: 100%; height: calc(100% - 30px); display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 6px; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100%; padding: 12px; }
+    .bar { background: #000; border-radius: 4px 4px 0 0; flex: 1; min-width: 20px; transition: height 0.3s; }
+    .line-chart { position: relative; width: 100%; height: 100%; }
+    .line { stroke: #000; stroke-width: 2; fill: none; }
+    .stat-card { text-align: center; padding: 20px; }
+    .stat-value { font-size: 2em; font-weight: 600; color: #000; }
+    .stat-label { opacity: 0.6; font-size: 0.9em; margin-top: 4px; }
+    .pie-chart { position: relative; width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(#000 0% 33%, #666 33% 66%, #ccc 66% 100%); }
+    .saved-dashboards { display: grid; gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.1); }
+    .dashboard-list-title { font-weight: 600; margin-bottom: 12px; }
+    .dashboard-item { padding: 10px 12px; background: #f9f9f9; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .dashboard-item:hover { background: #fff; border: 1px solid rgba(0,0,0,0.1); }
+    .dashboard-name { font-size: 0.9em; font-weight: 500; }
+    .dashboard-date { font-size: 0.8em; opacity: 0.6; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="logo" href="index.html" aria-label="Back to Home">
+        <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+      </a>
+      <ul class="nav-menu">
+        <li><a class="nav-link" href="index.html#home">Home</a></li>
+        <li><a class="nav-link" href="github.html">GitHub</a></li>
+        <li><a class="nav-link" href="community.html">Community</a></li>
+        <li><a class="nav-link" href="explore.html">Explore</a></li>
+        <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content" style="padding-top: 40px;">
+    <h1>Dashboard Builder</h1>
+    <p style="opacity: 0.7; margin-bottom: 24px;">Create custom dashboards with drag-and-drop widgets</p>
+
+    <div class="dashboard-layout">
+      <aside class="widget-library">
+        <div class="library-title">Widget Library</div>
+        <div class="widget-list">
+          <div class="widget-item" draggable="true" data-widget="bar-chart">
+            <div class="widget-icon">📊</div>
+            <div class="widget-name">Bar Chart</div>
+            <div class="widget-desc">Visualize data with bars</div>
+          </div>
+          <div class="widget-item" draggable="true" data-widget="line-chart">
+            <div class="widget-icon">📈</div>
+            <div class="widget-name">Line Chart</div>
+            <div class="widget-desc">Show trends over time</div>
+          </div>
+          <div class="widget-item" draggable="true" data-widget="pie-chart">
+            <div class="widget-icon">🥧</div>
+            <div class="widget-name">Pie Chart</div>
+            <div class="widget-desc">Display proportions</div>
+          </div>
+          <div class="widget-item" draggable="true" data-widget="stat-card">
+            <div class="widget-icon">🔢</div>
+            <div class="widget-name">Stat Card</div>
+            <div class="widget-desc">Key metric display</div>
+          </div>
+          <div class="widget-item" draggable="true" data-widget="activity-log">
+            <div class="widget-icon">📝</div>
+            <div class="widget-name">Activity Log</div>
+            <div class="widget-desc">Recent activity list</div>
+          </div>
+          <div class="widget-item" draggable="true" data-widget="repo-list">
+            <div class="widget-icon">📦</div>
+            <div class="widget-name">Repository List</div>
+            <div class="widget-desc">Show top repositories</div>
+          </div>
+        </div>
+
+        <div class="saved-dashboards">
+          <div class="dashboard-list-title">Saved Dashboards</div>
+          <div id="dashboard-list"></div>
+        </div>
+      </aside>
+
+      <main class="dashboard-area">
+        <div class="dashboard-controls">
+          <input type="text" id="dashboard-name-input" placeholder="Dashboard name..." style="padding: 10px 14px; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; width: 250px;" />
+          <div class="control-buttons">
+            <button id="reset-dashboard" class="btn btn-outline">Reset</button>
+            <button id="save-dashboard" class="btn btn-primary">Save Dashboard</button>
+            <button id="load-dashboard" class="btn btn-outline">Load</button>
+          </div>
+        </div>
+
+        <div class="dashboard-grid" id="dashboard-grid">
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const dashboardGrid = document.getElementById('dashboard-grid');
+    const widgets = document.querySelectorAll('.widget-item');
+    let draggedWidget = null;
+    let dashboardState = {};
+
+    function initGrid() {
+      dashboardGrid.innerHTML = '';
+      for (let i = 0; i < 9; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'grid-slot';
+        slot.dataset.slot = i;
+        slot.innerHTML = '<span>Drop widget here</span>';
+        
+        slot.addEventListener('dragover', handleDragOver);
+        slot.addEventListener('dragleave', handleDragLeave);
+        slot.addEventListener('drop', handleDrop);
+        
+        dashboardGrid.appendChild(slot);
+      }
+      loadSavedDashboardsList();
+    }
+
+    widgets.forEach(widget => {
+      widget.addEventListener('dragstart', handleDragStart);
+      widget.addEventListener('dragend', handleDragEnd);
+    });
+
+    function handleDragStart(e) {
+      draggedWidget = e.target.closest('.widget-item');
+      e.dataTransfer.setData('text/plain', draggedWidget.dataset.widget);
+      draggedWidget.style.opacity = '0.5';
+    }
+
+    function handleDragEnd(e) {
+      if (draggedWidget) {
+        draggedWidget.style.opacity = '1';
+      }
+      draggedWidget = null;
+      document.querySelectorAll('.grid-slot').forEach(slot => {
+        slot.classList.remove('drag-over');
+      });
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const slot = e.currentTarget;
+      slot.classList.remove('drag-over');
+      
+      const widgetType = e.dataTransfer.getData('text/plain');
+      if (!widgetType) return;
+
+      renderWidget(slot, widgetType);
+    }
+
+    function renderWidget(slot, widgetType) {
+      slot.classList.add('has-widget');
+      slot.dataset.widget = widgetType;
+      
+      let content = '';
+      switch(widgetType) {
+        case 'bar-chart':
+          content = `
+            <div class="widget-content">
+              <div class="widget-header">
+                <span class="widget-title">Bar Chart</span>
+                <button class="widget-remove" onclick="removeWidget(this)">&times;</button>
+              </div>
+              <div class="widget-chart">
+                <div class="bar-chart">
+                  <div class="bar" style="height: 60%;"></div>
+                  <div class="bar" style="height: 80%;"></div>
+                  <div class="bar" style="height: 40%;"></div>
+                  <div class="bar" style="height: 90%;"></div>
+                  <div class="bar" style="height: 55%;"></div>
+                </div>
+              </div>
+            </div>`;
+          break;
+        case 'line-chart':
+          content = `
+            <div class="widget-content">
+              <div class="widget-header">
+                <span class="widget-title">Line Chart</span>
+                <button class="widget-remove" onclick="removeWidget(this)">&times;</button>
+              </div>
+              <div class="widget-chart">
+                <svg class="line-chart" viewBox="0 0 200 100">
+                  <polyline class="line" points="10,80 50,40 90,60 130,20 170,50 190,30" />
+                </svg>
+              </div>
+            </div>`;
+          break;
+        case 'pie-chart':
+          content = `
+            <div class="widget-content">
+              <div class="widget-header">
+                <span class="widget-title">Pie Chart</span>
+                <button class="widget-remove" onclick="removeWidget(this)">&times;</button>
+              </div>
+              <div class="widget-chart">
+                <div class="pie-chart"></div>
+              </div>
+            </div>`;
+          break;
+        case 'stat-card':
+          content = `
+            <div class="widget-content">
+              <div class="widget-header">
+                <span class="widget-title">Key Metric</span>
+                <button class="widget-remove" onclick="removeWidget(this)">&times;</button>
+              </div>
+              <div class="widget-chart stat-card">
+                <div class="stat-value">1,234</div>
+                <div class="stat-label">Total Contributions</div>
+              </div>
+            </div>`;
+          break;
+        case 'activity-log':
+          content = `
+            <div class="widget-content">
+              <div class="widget-header">
+                <span class="widget-title">Recent Activity</span>
+                <button class="widget-remove" onclick="removeWidget(this)">&times;</button>
+              </div>
+              <div class="widget-chart" style="align-items: flex-start; padding: 12px; text-align: left;">
+                <div style="font-size: 0.85em; margin-bottom: 8px;">• Pushed to main</div>
+                <div style="font-size: 0.85em; margin-bottom: 8px;">• Opened PR #42</div>
+                <div style="font-size: 0.85em; margin-bottom: 8px;">• Merged PR #40</div>
+                <div style="font-size: 0.85em;">• Starred repo</div>
+              </div>
+            </div>`;
+          break;
+        case 'repo-list':
+          content = `
+            <div class="widget-content">
+              <div class="widget-header">
+                <span class="widget-title">Top Repositories</span>
+                <button class="widget-remove" onclick="removeWidget(this)">&times;</button>
+              </div>
+              <div class="widget-chart" style="align-items: flex-start; padding: 12px; text-align: left;">
+                <div style="font-size: 0.85em; margin-bottom: 8px;">⭐ awesome-project</div>
+                <div style="font-size: 0.85em; margin-bottom: 8px;">⭐ cool-lib</div>
+                <div style="font-size: 0.85em;">⭐ tools-app</div>
+              </div>
+            </div>`;
+          break;
+      }
+      
+      slot.innerHTML = content;
+    }
+
+    function removeWidget(btn) {
+      const slot = btn.closest('.grid-slot');
+      slot.classList.remove('has-widget');
+      slot.innerHTML = '<span>Drop widget here</span>';
+      delete slot.dataset.widget;
+    }
+
+    document.getElementById('save-dashboard').addEventListener('click', () => {
+      const name = document.getElementById('dashboard-name-input').value.trim();
+      if (!name) {
+        alert('Please enter a dashboard name');
+        return;
+      }
+
+      const slots = {};
+      document.querySelectorAll('.grid-slot').forEach(slot => {
+        const slotNum = slot.dataset.slot;
+        const widgetType = slot.dataset.widget;
+        if (widgetType) {
+          slots[slotNum] = widgetType;
+        }
+      });
+
+      const dashboard = {
+        name,
+        widgets: slots,
+        createdAt: new Date().toISOString()
+      };
+
+      const savedDashboards = JSON.parse(localStorage.getItem('xaytheon:dashboards') || '[]');
+      const existingIndex = savedDashboards.findIndex(d => d.name === name);
+      
+      if (existingIndex >= 0) {
+        savedDashboards[existingIndex] = dashboard;
+      } else {
+        savedDashboards.push(dashboard);
+      }
+
+      localStorage.setItem('xaytheon:dashboards', JSON.stringify(savedDashboards));
+      loadSavedDashboardsList();
+      alert('Dashboard saved successfully!');
+    });
+
+    document.getElementById('reset-dashboard').addEventListener('click', () => {
+      initGrid();
+      document.getElementById('dashboard-name-input').value = '';
+    });
+
+    document.getElementById('load-dashboard').addEventListener('click', () => {
+      const name = document.getElementById('dashboard-name-input').value.trim();
+      if (!name) {
+        alert('Please enter a dashboard name to load');
+        return;
+      }
+
+      const savedDashboards = JSON.parse(localStorage.getItem('xaytheon:dashboards') || '[]');
+      const dashboard = savedDashboards.find(d => d.name === name);
+      
+      if (!dashboard) {
+        alert('Dashboard not found');
+        return;
+      }
+
+      initGrid();
+      Object.entries(dashboard.widgets).forEach(([slotNum, widgetType]) => {
+        const slot = document.querySelector(`.grid-slot[data-slot="${slotNum}"]`);
+        if (slot) {
+          renderWidget(slot, widgetType);
+        }
+      });
+    });
+
+    function loadSavedDashboardsList() {
+      const savedDashboards = JSON.parse(localStorage.getItem('xaytheon:dashboards') || '[]');
+      const listEl = document.getElementById('dashboard-list');
+      
+      if (savedDashboards.length === 0) {
+        listEl.innerHTML = '<div style="opacity: 0.6; font-size: 0.9em;">No saved dashboards</div>';
+        return;
+      }
+
+      listEl.innerHTML = savedDashboards.map(d => `
+        <div class="dashboard-item" data-name="${d.name}">
+          <span class="dashboard-name">${d.name}</span>
+          <span class="dashboard-date">${new Date(d.createdAt).toLocaleDateString()}</span>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.dashboard-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const name = item.dataset.name;
+          document.getElementById('dashboard-name-input').value = name;
+        });
+      });
+    }
+
+    initGrid();
+  </script>
+</body>
+</html>
