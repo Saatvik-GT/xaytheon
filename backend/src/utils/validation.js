@@ -1,5 +1,6 @@
 // Input validation utilities
 const validator = require('validator');
+const sanitizeHtml = require('sanitize-html'); // Added for proper HTML sanitization
 
 class ValidationError extends Error {
   constructor(message, field) {
@@ -20,7 +21,7 @@ function sanitizeString(input, options = {}) {
 
   if (!allowHtml) {
     // Remove HTML tags and encode special characters
-    sanitized = validator.escape(sanitized);
+    sanitized = sanitizeHtml(sanitized, { allowedTags: [], allowedAttributes: {} });
   }
 
   return sanitized.substring(0, maxLength);
@@ -43,14 +44,11 @@ function validateEmail(email) {
     throw new ValidationError('Email is required', 'email');
   }
 
-  const sanitized = sanitizeEmail(email);
-  if (!sanitized) {
-    throw new ValidationError('Invalid email format', 'email');
-  }
-
-  if (!validator.isEmail(sanitized)) {
+  if (!validator.isEmail(email)) {
     throw new ValidationError('Please provide a valid email address', 'email');
   }
+
+  const sanitized = sanitizeEmail(email);
 
   if (sanitized.length > 254) {
     throw new ValidationError('Email is too long', 'email');
@@ -72,9 +70,14 @@ function validatePassword(password) {
     throw new ValidationError('Password must be less than 128 characters', 'password');
   }
 
-  // Check for common weak passwords (optional)
-  const weakPasswords = ['password', '12345678', 'qwerty', 'abc123'];
-  if (weakPasswords.includes(password.toLowerCase())) {
+  // Strong password validation
+  if (!validator.isStrongPassword(password, {
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1
+  })) {
     throw new ValidationError('Password is too weak', 'password');
   }
 
@@ -94,14 +97,15 @@ function validateString(input, fieldName, options = {}) {
     throw new ValidationError(`${fieldName} must be a string`, fieldName);
   }
 
+  // Validate length before truncation
+  if (input.length < minLength) {
+    throw new ValidationError(`${fieldName} must be at least ${minLength} characters`, fieldName);
+  }
+
   const sanitized = sanitizeString(input, { maxLength });
 
   if (required && sanitized.length === 0 && !allowEmpty) {
     throw new ValidationError(`${fieldName} cannot be empty`, fieldName);
-  }
-
-  if (sanitized.length < minLength) {
-    throw new ValidationError(`${fieldName} must be at least ${minLength} characters`, fieldName);
   }
 
   return sanitized;
@@ -110,7 +114,7 @@ function validateString(input, fieldName, options = {}) {
 function validateUrl(url, fieldName) {
   if (!url || typeof url !== 'string') return '';
 
-  const sanitized = sanitizeString(url, { maxLength: 500 });
+  const sanitized = url.trim();
 
   if (sanitized && !validator.isURL(sanitized, {
     protocols: ['http', 'https'],
@@ -133,11 +137,15 @@ function validateNumber(input, fieldName, options = {}) {
     return null;
   }
 
-  const num = integer ? parseInt(input, 10) : parseFloat(input);
+  const numStr = String(input).trim();
 
-  if (isNaN(num)) {
+  // Strict numeric validation
+  const isValid = integer ? /^-?\d+$/.test(numStr) : /^-?\d+(\.\d+)?$/.test(numStr);
+  if (!isValid) {
     throw new ValidationError(`${fieldName} must be a valid number`, fieldName);
   }
+
+  const num = integer ? parseInt(numStr, 10) : parseFloat(numStr);
 
   if (num < min || num > max) {
     throw new ValidationError(`${fieldName} must be between ${min} and ${max}`, fieldName);
@@ -160,21 +168,23 @@ function validateArray(input, fieldName, options = {}) {
   }
 
   if (itemValidator) {
-    for (let i = 0; i < input.length; i++) {
+    // Avoid mutating input array
+    const validated = input.map((item, i) => {
       try {
-        input[i] = itemValidator(input[i], `${fieldName}[${i}]`);
+        return itemValidator(item, `${fieldName}[${i}]`);
       } catch (error) {
         throw new ValidationError(`${fieldName}[${i}]: ${error.message}`, fieldName);
       }
-    }
+    });
+    return validated;
   }
 
-  return input;
+  return [...input];
 }
 
 // Middleware for handling validation errors
 function handleValidationError(err, req, res, next) {
-  if (err instanceof ValidationError) {
+  if (err.name === 'ValidationError') {
     return res.status(err.statusCode).json({
       message: err.message,
       field: err.field
