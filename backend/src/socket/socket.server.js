@@ -194,6 +194,17 @@ function initializeSocket(server) {
             });
         });
 
+        // ARCH DRIFT: Join room
+        socket.on("join_arch_auditor", () => {
+            socket.join("arch_auditor_room");
+            console.log(`🏛️ User ${socket.userId} joined Arch Drift Auditor`);
+        });
+
+        // ARCH DRIFT: Broadcast audit
+        socket.on("arch_drift_broadcast", (audit) => {
+            io.to("arch_auditor_room").emit("drift_update", audit);
+        });
+
         // GOVERNANCE: Join governance monitors
         socket.on("join_governance", () => {
             socket.join("governance_room");
