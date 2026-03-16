@@ -194,6 +194,17 @@ function initializeSocket(server) {
             });
         });
 
+        // MERGE SIMULATOR: Join room
+        socket.on("join_merge_simulator", () => {
+            socket.join("merge_simulator_room");
+            console.log(`🔀 User ${socket.userId} joined Neural Merge Simulator`);
+        });
+
+        // MERGE SIMULATOR: Broadcast state
+        socket.on("merge_state_broadcast", (state) => {
+            io.to("merge_simulator_room").emit("merge_update", state);
+        });
+
         // GOVERNANCE: Join governance monitors
         socket.on("join_governance", () => {
             socket.join("governance_room");
