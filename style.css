@@ -131,6 +131,7 @@ body.eightgon-page {
     position: fixed;
     top: 0;
     width: 100%;
+    font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
