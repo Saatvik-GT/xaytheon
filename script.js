@@ -396,6 +396,8 @@ function initGithubDashboard() {
         return;
     }
 
+        setGithubStatus('Preparing request...');
+
     // Clear previous debounce timer
     clearTimeout(debounceTimer);
 

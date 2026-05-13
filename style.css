@@ -34,7 +34,7 @@ html {
 }
 
 body {
-    font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', sans-serif;
     background: #ffffff;
     color: #000000;
     overflow-x: hidden;
@@ -162,8 +162,9 @@ body.eightgon-page {
 }
 
 .logo-text {
+    font-family: 'OriginTech', sans-serif;
     font-size: 1.8em;
-    font-weight: bold;
+    font-weight: 700;
     color: #000000;
     letter-spacing: 2px;
 }
@@ -177,7 +178,9 @@ body.eightgon-page {
 .nav-link {
     text-decoration: none;
     color: #000000;
+    font-size: 0.95rem;
     font-weight: 500;
+    letter-spacing: 0.3px;
     transition: all 0.3s ease;
     position: relative;
 }
@@ -250,10 +253,10 @@ body.eightgon-page {
 
 .title-line {
     display: block;
-    font-size: 1.4em;
-    font-weight: 400;
+    font-size: 1.2rem;
+    font-weight: 500;
     margin-bottom: 15px;
-    opacity: 0.8;
+    opacity: 0.75;
     letter-spacing: 1px;
 }
 
@@ -286,10 +289,11 @@ body.eightgon-page {
 
 .title-subtitle {
     display: block;
-    font-size: 1.6em;
-    font-weight: 300;
-    opacity: 0.7;
-    margin-top: 10px;
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin-top: 14px;
 }
 
 /* Light blue accent with subtle glow */
@@ -320,13 +324,14 @@ body.eightgon-page {
     padding: 15px 30px;
     border: none;
     border-radius: 8px;
-    font-size: 1em;
-    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
-    font-family: 'OriginTech', sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
 }
 
 .btn-primary {
@@ -377,8 +382,9 @@ section {
     font-size: 2.5em;
     text-align: center;
     margin-bottom: 60px;
-    font-weight: bold;
-    letter-spacing: 2px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.3;
 }
 
 
@@ -452,6 +458,8 @@ section {
     border-radius: 8px;
     outline: none;
     font-size: 0.95em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
 }
 
 /* Community form fields */
@@ -554,6 +562,27 @@ section {
 .activity-list { list-style: none; display: grid; gap: 12px; }
 .activity-item { padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
 .activity-time { opacity: 0.7; font-size: 0.85em; }
+
+/* Typography Improvements */
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.repo-name {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.repo-desc,
+.activity-item,
+.profile-bio {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #444;
+}
 
 .contrib-svg {
     min-height: 140px;
@@ -902,4 +931,25 @@ section {
 
 .contact-method:hover::before {
     opacity: 1;
+}
+
+/* Global Typography Hierarchy */
+
+h1 {
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+h2 {
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h3 {
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+p {
+    line-height: 1.7;
 }
