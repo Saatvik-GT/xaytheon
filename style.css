@@ -903,3 +903,69 @@ section {
 .contact-method:hover::before {
     opacity: 1;
 }
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+.theme-toggle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.08);
+    background: rgba(240,240,240,0.9);
+}
+
+/* Dark body */
+body.dark-mode {
+    background: #121212;
+    color: #ffffff;
+}
+
+/* Canvas background */
+body.dark-mode .canvas-container {
+    background: #121212;
+}
+
+/* Navbar */
+body.dark-mode .navbar {
+    background: rgba(0,0,0,0.92);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Nav links */
+body.dark-mode .nav-link {
+    color: #ffffff;
+}
+
+body.dark-mode .nav-link::after {
+    background: #ffffff;
+}
+
+/* Hero text */
+body.dark-mode .title-line,
+body.dark-mode .title-subtitle,
+body.dark-mode p,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #ffffff;
+}
+
+/* Footer */
+body.dark-mode .footer {
+    background: #000000;
+    color: white;
+}
