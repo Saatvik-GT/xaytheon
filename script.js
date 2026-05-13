@@ -386,17 +386,37 @@ function initGithubDashboard() {
 
   // When the form is submitted, fetch data for that username
   form.addEventListener('submit', function(event) {
-    event.preventDefault();  // prevent the browser from reloading the page
 
-    var username = usernameInput.value.trim();
+    event.preventDefault();
+
+    const username = usernameInput.value.trim();
+
     if (!username) {
-      setGithubStatus('Please enter a GitHub username.', true);
-      return;
+        setGithubStatus('Please enter a GitHub username.', true);
+        return;
     }
 
-    localStorage.setItem('xaytheon:ghUsername', username);
-    loadGithubDashboard(username);
-  });
+        setGithubStatus('Preparing request...');
+
+    // Clear previous debounce timer
+    clearTimeout(debounceTimer);
+
+    // Debounce API request
+    debounceTimer = setTimeout(() => {
+
+        // Prevent duplicate requests
+        if (isDashboardLoading) {
+            setGithubStatus('Please wait, loading dashboard...');
+            return;
+        }
+
+        localStorage.setItem('xaytheon:ghUsername', username);
+
+        loadGithubDashboard(username);
+
+    }, 400);
+
+});
 
   // Clear the dashboard when Clear is clicked
   clearBtn.addEventListener('click', function() {
@@ -422,10 +442,19 @@ function initGithubDashboard() {
 }
 
 
+
+/* =========================
+   REQUEST CONTROL
+========================= */
+
+let isDashboardLoading = false;
+let debounceTimer;
+
 // Fetch and display GitHub data for a username
 // "async" means this function makes network requests and waits for responses
 async function loadGithubDashboard(username) {
   setGithubStatus('Loading profile…');
+  isDashboardLoading = true;
 
   try {
     // --- Step 1: Load the user's profile ---
@@ -476,7 +505,12 @@ async function loadGithubDashboard(username) {
 
   } catch (error) {
     setGithubStatus(error.message || 'Failed to load GitHub data', true);
-  }
+
+} finally {
+
+    isDashboardLoading = false;
+
+}
 }
 
 
