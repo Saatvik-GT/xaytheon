@@ -1,4 +1,120 @@
-/* Reset and Base Styles */
+
+/* Theme Variables */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-card: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hero-gradient-start: #e8f0fe;
+    --hero-gradient-end: #ffffff;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+    --input-bg: #ffffff;
+    --btn-secondary-bg: #f0f0f0;
+    --btn-secondary-text: #333333;
+    --footer-bg: #1a1a2e;
+    --footer-text: #ffffff;
+}
+
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode :root,
+body.dark-mode {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-card: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --border-color: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --hero-gradient-start: #1a1a2e;
+    --hero-gradient-end: #121212;
+    --nav-bg: rgba(18, 18, 18, 0.95);
+    --input-bg: #1e1e1e;
+    --btn-secondary-bg: #2a2a2a;
+    --btn-secondary-text: #e0e0e0;
+    --footer-bg: #0a0a14;
+    --footer-text: #b0b0b0;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode nav,
+body.dark-mode .navbar {
+    background: var(--nav-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .feature-card,
+body.dark-mode .pricing-card {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 4px 6px var(--shadow-color) !important;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode footer {
+    background: var(--footer-bg) !important;
+    color: var(--footer-text) !important;
+}
+
+body.dark-mode a {
+    color: #64b5f6 !important;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode li {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .btn-secondary,
+body.dark-mode button:not(.dark-toggle) {
+    background: var(--btn-secondary-bg) !important;
+    color: var(--btn-secondary-text) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .hero,
+body.dark-mode section {
+    background: var(--bg-primary) !important;
+}
+
+body.dark-mode table {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode th {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode td {
+    border-color: var(--border-color) !important;
+}/* Reset and Base Styles */
 @font-face {
     font-family: 'OriginTech';
     src: url('assets/fonts/OriginTech.otf') format('opentype');
@@ -35,8 +151,8 @@ html {
 
 body {
     font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #ffffff;
-    color: #000000;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     overflow-x: hidden;
     line-height: 1.6;
 }
@@ -55,7 +171,7 @@ body.eightgon-page {
     width: 100%;
     height: 100%;
     z-index: -1; /* force behind all page content */
-    background: #ffffff;
+    background: var(--bg-primary);
 }
 
 /* Ensure page content (including footer) sits above the background canvas */
@@ -70,7 +186,7 @@ body.eightgon-page {
     display: block;
     opacity: 0.2;
     transition: opacity 0.3s ease;
-    pointer-events: none; /* canvas is decorative â€” let clicks/scrolls pass through */
+    pointer-events: none; /* canvas is decorative â€?let clicks/scrolls pass through */
 }
 
 #three-canvas:hover {
@@ -114,7 +230,7 @@ body.eightgon-page {
 
 .loading-screen p {
     font-size: 1.2em;
-    color: #000000;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -164,7 +280,7 @@ body.eightgon-page {
 .logo-text {
     font-size: 1.8em;
     font-weight: bold;
-    color: #000000;
+    color: var(--text-primary);
     letter-spacing: 2px;
 }
 
@@ -176,7 +292,7 @@ body.eightgon-page {
 
 .nav-link {
     text-decoration: none;
-    color: #000000;
+    color: var(--text-primary);
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
@@ -344,7 +460,7 @@ body.eightgon-page {
 
 .btn-secondary {
     background: transparent;
-    color: #000000;
+    color: var(--text-primary);
     border: 2px solid #000000;
 }
 
@@ -357,7 +473,7 @@ body.eightgon-page {
 
 .btn-outline {
     background: transparent;
-    color: #000000;
+    color: var(--text-primary);
     border: 1px solid #000000;
     padding: 10px 20px;
     font-size: 0.9em;

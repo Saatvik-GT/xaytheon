@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<button class="dark-toggle" onclick="toggleDarkMode()" style="background:none;border:2px solid #ccc;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:20px;position:fixed;top:15px;right:15px;z-index:9999;" title="Toggle Dark Mode">??</button>
 
   <!-- 3D Background Canvas -->
   <!-- This canvas sits behind all page content. script.js draws the 3D shape here. -->
@@ -81,5 +82,25 @@
   <!-- Our main script: 3D scene + GitHub Dashboard logic -->
   <script src="script.js"></script>
 
+<script>
+function toggleDarkMode() {
+    const body = document.body;
+    const btn = document.querySelector('.dark-toggle');
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    btn.textContent = isDark ? '??' : '??';
+}
+
+// Load saved preference
+(function() {
+    const saved = localStorage.getItem('darkMode');
+    if (saved === 'enabled') {
+        document.body.classList.add('dark-mode');
+        const btn = document.querySelector('.dark-toggle');
+        if (btn) btn.textContent = '??';
+    }
+})();
+</script>
 </body>
 </html>
