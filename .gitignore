@@ -23,4 +23,5 @@ dist/
 build/
 
 # Miscellaneous
-TODO.md
+TODO.md.idea/
+.idea/
