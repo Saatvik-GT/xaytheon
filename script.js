@@ -397,11 +397,13 @@ function initGithubDashboard() {
     localStorage.setItem('xaytheon:ghUsername', username);
     loadGithubDashboard(username);
   });
-
-  // Clear the dashboard when Clear is clicked
-  clearBtn.addEventListener('click', function() {
+var avatarEl = document.getElementById('gh-avatar');
+  // Clear the dashboard when Clear is clicked and change profile image
+   clearBtn.addEventListener('click', function() {
     localStorage.removeItem('xaytheon:ghUsername');
     usernameInput.value = '';
+      // change profile image in clearing
+    avatarEl.src = "./assets/models/github.jpeg";
 
     // Reset all the card fields back to defaults
     setText('gh-name',         '—');
