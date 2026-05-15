@@ -563,8 +563,39 @@ section {
     padding: 14px 16px;
     border-bottom: 1px solid rgba(0,0,0,0.08);
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    justify-content: space-between;
     gap: 10px;
+}
+
+.sort-toggle {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.sort-btn {
+    padding: 6px 12px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 0.85em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.sort-btn:hover {
+    opacity: 0.8;
+    border-color: var(--text-color);
+}
+
+.sort-btn.active {
+    background: var(--text-color);
+    color: var(--bg-color);
+    opacity: 1;
 }
 
 .card-body { 

@@ -89,7 +89,14 @@
           <div class="card repos-card" id="gh-repos">
             <div class="card-header">
               <h3>Top Repositories</h3>
-              <div class="muted small">Sorted by stars</div>
+              <div class="sort-toggle">
+                <button class="sort-btn active" data-sort="stars" title="Sort by stars">
+                  ★ Stars
+                </button>
+                <button class="sort-btn" data-sort="forks" title="Sort by forks">
+                  ⑂ Forks
+                </button>
+              </div>
             </div>
             <div class="card-body">
               <div id="gh-repo-list" class="repo-list"></div>
