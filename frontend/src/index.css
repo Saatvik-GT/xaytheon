@@ -1,0 +1,143 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+/* AuthPage.css */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0f172a; /* Dark background */
+  padding: 20px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.auth-card {
+  max-width: 400px;
+  width: 100%;
+  background-color: #1e293b; /* Card background */
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid #334155;
+}
+
+.auth-title {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: #94a3b8;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-message {
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.auth-message.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}
+
+.auth-message.success {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input {
+  padding: 12px;
+  background-color: #334155;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #3b82f6;
+}
+
+.submit-btn {
+  background-color: #2563eb;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #3b82f6;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+.auth-toggle {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.auth-toggle button {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.auth-toggle button:hover {
+  color: #93c5fd;
+}
