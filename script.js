@@ -369,6 +369,10 @@ function addMouseEffects() {
 // (only active on github.html)
 // ============================================================
 
+//global variable to store repos for re-sorting
+var currentReposList = [];
+var currentSortType = 'stars';  //sorting with respect to 'stars' or 'forks'
+
 // Set up the GitHub Dashboard search form
 function initGithubDashboard() {
   var form = document.getElementById('github-form');
@@ -397,6 +401,24 @@ function initGithubDashboard() {
     localStorage.setItem('xaytheon:ghUsername', username);
     loadGithubDashboard(username);
   });
+
+  //repo sort toggle buttons
+  var sortBtns = document.querySelectorAll('.sort-btn');
+  for (var i = 0; i < sortBtns.length; ++i) {
+    sortBtns[i].addEventListener('click', function(e) {
+      var newSort = e.target.getAttribute('data-sort');
+      if (newSort !== currentSortType) {
+        currentSortType = newSort;
+        //update button states
+        for (var j = 0; j < sortBtns.length; ++j) {
+          sortBtns[j].classList.remove('active');
+        }
+        e.target.classList.add('active');
+        //resort and render
+        sortAndRenderRepos();
+      }
+    });
+  }
 
   // Clear the dashboard when Clear is clicked
   clearBtn.addEventListener('click', function() {
@@ -451,15 +473,14 @@ async function loadGithubDashboard(username) {
 
     setText('gh-repos-count', user.public_repos || repos.length);
 
-    // Filter out forks, sort by stars, show top 8
+    //filter out forks and store for resorting
     var ownRepos = [];
     for (var i = 0; i < repos.length; i++) {
       if (!repos[i].fork) ownRepos.push(repos[i]);
     }
-    ownRepos.sort(function(a, b) {
-      return (b.stargazers_count || 0) - (a.stargazers_count || 0);
-    });
-    renderRepos(ownRepos.slice(0, 8));
+    currentReposList = ownRepos;
+    currentSortType = 'stars';
+    sortAndRenderRepos();
 
     // --- Step 3: Load recent activity ---
     setGithubStatus('Loading activity…');
@@ -497,6 +518,26 @@ async function fetchFromGitHub(url) {
   return response.json();  // parse and return the JSON data
 }
 
+
+//sort repos by current sort type and render
+function sortAndRenderRepos() {
+  if (currentReposList.length === 0) {
+    renderRepos([]);
+    return;
+  }
+
+  var sorted = currentReposList.slice();
+  if (currentSortType === 'forks') {
+    sorted.sort(function(a, b) {
+      return (b.forks_count || 0) - (a.forks_count || 0);
+    });
+  } else {
+    sorted.sort(function(a, b) {
+      return (b.stargazers_count || 0) - (a.stargazers_count || 0);
+    });
+  }
+  renderRepos(sorted.slice(0, 8));
+}
 
 // Build and display the repository list
 function renderRepos(repos) {
