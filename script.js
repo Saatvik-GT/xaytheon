@@ -425,6 +425,7 @@ function initGithubDashboard() {
 // Fetch and display GitHub data for a username
 // "async" means this function makes network requests and waits for responses
 async function loadGithubDashboard(username) {
+  console.log('Fetching dashboard for:', username);
   setGithubStatus('Loading profile…');
 
   try {
@@ -496,7 +497,7 @@ async function fetchFromGitHub(url) {
       var errJson = JSON.parse(errorText);
       if (errJson.message) {
         if (response.status === 403 && errJson.message.toLowerCase().includes('rate limit')) {
-          message = 'Rate limit exceeded. Please try again later or use a token.';
+          message = '🚀 API Rate Limit Exceeded. Please try again in an hour or use a personal access token for higher limits.';
         } else if (response.status === 404) {
           message = 'GitHub user not found.';
         } else {
