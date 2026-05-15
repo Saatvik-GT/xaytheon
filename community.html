@@ -22,6 +22,8 @@
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
+        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
+
       </div>
     </nav>
 
@@ -99,5 +101,28 @@
   </div>
 
   <script src="community.js"></script>
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    const savedTheme = localStorage.getItem('theme') || 
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateButtonLabel(savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateButtonLabel(newTheme);
+        console.log(currentTheme);
+    });
+
+    function updateButtonLabel(theme) {
+        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+    </script>
 </body>
 </html>
