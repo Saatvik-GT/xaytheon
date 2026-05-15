@@ -7,6 +7,7 @@
     --shadow-color: rgba(0, 0, 0, 0.701);
     --button-color: #000000;
     --card-color: #ffffff;
+    --link-color: #1d4ed8;
 }
 [data-theme="dark"]{
     --bg-color: #000000;
@@ -15,6 +16,7 @@
     --shadow-color: rgba(255, 255, 255, 0.200);
     --button-color: #ffffff;
     --card-color: #0d1117;
+    --link-color: #a5f3fc;
 }
 @font-face {
     font-family: 'OriginTech';
@@ -595,7 +597,19 @@ section {
 
 .repo-list { display: grid; gap: 12px; }
 .repo-item { padding: 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
-.repo-name { font-weight: 700; }
+
+.repo-name a ,
+.activity-item a{ 
+    color: var(--link-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 700; }
+
+.repo-name a:hover,
+.activity-item a:hover{
+    opacity: 0.7;
+}
+
 .repo-meta { display: flex; gap: 12px; font-size: 0.9em; opacity: 0.8; margin-top: 6px; }
 .repo-desc { margin-top: 6px; }
 
