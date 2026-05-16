@@ -607,14 +607,17 @@ function showContributionsChart(username, events) {
   var noteEl    = document.getElementById('gh-contrib-note');
   if (!container) return;
 
+  // Show placeholder before anything else so it can't overwrite the result
+  container.innerHTML = '<div class="muted">Loading contributions chart…</div>';
+
   // Try the third-party full-year chart image first
   var chartImg = new Image();
-  chartImg.src              = 'https://ghchart.rshah.org/' + encodeURIComponent(username);
   chartImg.alt              = username + "'s contributions";
   chartImg.style.maxWidth   = '100%';
   chartImg.referrerPolicy   = 'no-referrer';
 
-  // If the image loads — display it
+  // Attach handlers BEFORE setting src to avoid a race condition where a
+  // cached image fires onload synchronously before the handler is registered.
   chartImg.onload = function() {
     container.innerHTML = '';
     container.appendChild(chartImg);
@@ -628,7 +631,18 @@ function showContributionsChart(username, events) {
     if (noteEl) noteEl.textContent = 'Approximate heatmap based on recent public activity.';
   };
 
-  container.innerHTML = '<div class="muted">Loading contributions chart…</div>';
+  // Set src last so the browser starts loading only after handlers are in place.
+  chartImg.src = 'https://ghchart.rshah.org/' + encodeURIComponent(username);
+
+  // Safety net: if the browser resolved the image from cache synchronously
+  // before onload could fire, manually trigger the appropriate handler.
+  if (chartImg.complete) {
+    if (chartImg.naturalWidth > 0) {
+      chartImg.onload();
+    } else {
+      chartImg.onerror();
+    }
+  }
 }
 
 
