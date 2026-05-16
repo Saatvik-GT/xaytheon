@@ -490,8 +490,15 @@ async function fetchFromGitHub(url) {
   });
 
   if (!response.ok) {
-    var errorText = await response.text();
-    throw new Error('GitHub API ' + response.status + ': ' + errorText);
+    var friendlyMsg;
+    switch (response.status) {
+      case 404: friendlyMsg = 'GitHub user not found. Please check the username and try again.'; break;
+      case 403: friendlyMsg = 'GitHub API rate limit exceeded. Please try again later.'; break;
+      case 401: friendlyMsg = 'Authentication required. Please check your GitHub token.'; break;
+      case 422: friendlyMsg = 'Invalid request. Please check the username format.'; break;
+      default:  friendlyMsg = 'Unable to load GitHub data right now. (Error ' + response.status + ')';
+    }
+    throw new Error(friendlyMsg);
   }
 
   return response.json();  // parse and return the JSON data
