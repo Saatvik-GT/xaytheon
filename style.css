@@ -221,6 +221,15 @@ body.eightgon-page {
     width: 100%;
 }
 
+.nav-link.active {
+    opacity: 100%;
+    font-weight: 700;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
 /* Auth user dropdown */
 .user-menu { position: relative; display: flex; align-items: center; }
 .user-button { background: transparent; border: none; border-radius: 999px; padding: 4px 6px; cursor: pointer; font: inherit; display: inline-flex; align-items: center; gap: 6px; }

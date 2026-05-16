@@ -892,4 +892,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up the mini 3D viewer if we're on github.html
   initMiniViewer();
 
+  // Mark the current page's nav link as active
+  var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-link').forEach(function(link) {
+    var linkPage = link.getAttribute('href').split('/').pop();
+    if (linkPage === currentPage) {
+      link.classList.add('active');
+    }
+  });
+
 });
