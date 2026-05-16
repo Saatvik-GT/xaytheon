@@ -394,6 +394,13 @@ function initGithubDashboard() {
       return;
     }
 
+    // If the user pasted a full GitHub URL, extract just the username
+    var urlMatch = username.match(/github\.com\/([^/?#\s]+)/);
+    if (urlMatch) {
+      username = urlMatch[1];
+      usernameInput.value = username;
+    }
+
     localStorage.setItem('xaytheon:ghUsername', username);
     loadGithubDashboard(username);
   });
