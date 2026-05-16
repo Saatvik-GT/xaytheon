@@ -426,6 +426,7 @@ function initGithubDashboard() {
 // "async" means this function makes network requests and waits for responses
 async function loadGithubDashboard(username) {
   setGithubStatus('Loading profile…');
+  showSkeletons();
 
   try {
     // --- Step 1: Load the user's profile ---
@@ -434,7 +435,11 @@ async function loadGithubDashboard(username) {
     );
 
     var avatarEl = document.getElementById('gh-avatar');
-    if (avatarEl) avatarEl.src = user.avatar_url;
+    if (avatarEl) {
+      avatarEl.src = user.avatar_url;
+      // Remove avatar skeleton styling once the real image is set
+      avatarEl.classList.remove('skeleton', 'skeleton-avatar');
+    }
 
     setText('gh-name',      user.name  || '—');
     setText('gh-login',     '@' + user.login);
@@ -613,6 +618,10 @@ function showContributionsChart(username, events) {
   chartImg.alt              = username + "'s contributions";
   chartImg.style.maxWidth   = '100%';
   chartImg.referrerPolicy   = 'no-referrer';
+
+  if (container) {
+    container.innerHTML = '<div class="skeleton skeleton-chart"></div>';
+  }
 
   // If the image loads — display it
   chartImg.onload = function() {
@@ -829,6 +838,70 @@ function safeHtml(str) {
 function setText(id, value) {
   var el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+// General purpose skeletons helper — shows skeleton placeholders for
+// profile, repos, activity and contributions chart. Reusable and non-destructive
+// to the existing DOM structure: text placeholders use innerHTML so later
+// `setText` calls replace them cleanly.
+function showSkeletons() {
+  // Profile skeletons
+  var avatarEl = document.getElementById('gh-avatar');
+  if (avatarEl) {
+    // clear any existing image and apply circular skeleton style
+    avatarEl.removeAttribute('src');
+    avatarEl.classList.add('skeleton', 'skeleton-avatar');
+  }
+
+  var nameEl = document.getElementById('gh-name');
+  if (nameEl) nameEl.innerHTML = '<div class="skeleton skeleton-line" style="width:60%"></div>';
+
+  var loginEl = document.getElementById('gh-login');
+  if (loginEl) loginEl.innerHTML = '<div class="skeleton skeleton-line short"></div>';
+
+  var bioEl = document.getElementById('gh-bio');
+  if (bioEl) bioEl.innerHTML = '<div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div>';
+
+  var followersEl = document.getElementById('gh-followers');
+  if (followersEl) followersEl.innerHTML = '<div class="skeleton skeleton-line" style="width:40px;height:18px;border-radius:8px"></div>';
+
+  var followingEl = document.getElementById('gh-following');
+  if (followingEl) followingEl.innerHTML = '<div class="skeleton skeleton-line" style="width:40px;height:18px;border-radius:8px"></div>';
+
+  var reposCountEl = document.getElementById('gh-repos-count');
+  if (reposCountEl) reposCountEl.innerHTML = '<div class="skeleton skeleton-line" style="width:40px;height:18px;border-radius:8px"></div>';
+
+  // Delegate repo/activity/contrib skeletons to existing helper
+  showDashboardSkeletons();
+}
+
+function showDashboardSkeletons() {
+  var repoList = document.getElementById('gh-repo-list');
+  if (repoList) {
+    var html = '';
+    for (var i = 0; i < 3; i++) {
+      html +=
+        '<div class="repo-item skeleton-card">' +
+          '<div class="skeleton skeleton-line"></div>' +
+          '<div class="skeleton skeleton-line short"></div>' +
+        '</div>';
+    }
+    repoList.innerHTML = html;
+  }
+
+  var activityList = document.getElementById('gh-activity-list');
+  if (activityList) {
+    var html = '';
+    for (var i = 0; i < 4; i++) {
+      html += '<li class="activity-item"><div class="skeleton skeleton-line"></div></li>';
+    }
+    activityList.innerHTML = html;
+  }
+
+  var contribSvg = document.getElementById('gh-contrib-svg');
+  if (contribSvg) {
+    contribSvg.innerHTML = '<div class="skeleton skeleton-chart"></div>';
+  }
 }
 
 // Set the inner HTML of an element by its id

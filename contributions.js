@@ -83,6 +83,183 @@ function safeHtml(text) {
     .replace(/'/g, '&#39;');
 }
 
+function normalizeContributionDate(contribution) {
+  var rawDate = contribution.date || contribution.created_at || '';
+  var date = new Date(rawDate);
+  return isNaN(date.getTime()) ? null : date;
+}
+
+function getContributionDates(contributions) {
+  var dates = [];
+  for (var i = 0; i < contributions.length; i++) {
+    var date = normalizeContributionDate(contributions[i]);
+    if (date) {
+      dates.push(date);
+    }
+  }
+  return dates;
+}
+
+function getWeekStart(date) {
+  var start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - start.getDay());
+  return start.getTime();
+}
+
+function countByWeek(dates) {
+  var counts = {};
+  for (var i = 0; i < dates.length; i++) {
+    var week = getWeekStart(dates[i]);
+    counts[week] = (counts[week] || 0) + 1;
+  }
+  return counts;
+}
+
+function getSortedWeekCounts(counts) {
+  var weekStarts = Object.keys(counts).map(Number).sort(function(a, b) {
+    return a - b;
+  });
+  var sorted = [];
+  for (var i = 0; i < weekStarts.length; i++) {
+    sorted.push({ weekStart: weekStarts[i], count: counts[weekStarts[i]] });
+  }
+  return sorted;
+}
+
+function averageCount(items) {
+  if (!items || items.length === 0) return 0;
+  var total = 0;
+  for (var i = 0; i < items.length; i++) {
+    total += items[i];
+  }
+  return total / items.length;
+}
+
+function getTrendLabel(contributions) {
+  var dates = getContributionDates(contributions);
+  var weekCounts = getSortedWeekCounts(countByWeek(dates));
+  if (weekCounts.length < 2) {
+    return 'Stable';
+  }
+
+  var recentWindow = weekCounts.slice(-4);
+  var priorWindow = weekCounts.slice(-8, -4);
+  if (priorWindow.length === 0) {
+    priorWindow = weekCounts.slice(0, Math.max(1, weekCounts.length - recentWindow.length));
+  }
+
+  var recentAverage = averageCount(recentWindow.map(function(item) { return item.count; }));
+  var priorAverage = averageCount(priorWindow.map(function(item) { return item.count; }));
+
+  if (priorAverage === 0) {
+    return recentAverage > 0 ? 'Increasing' : 'Stable';
+  }
+
+  if (recentAverage >= priorAverage * 1.25) {
+    return 'Increasing';
+  }
+  if (recentAverage <= priorAverage * 0.75) {
+    return 'Decreasing';
+  }
+  return 'Stable';
+}
+
+function estimateNextMonth(contributions) {
+  var dates = getContributionDates(contributions);
+  var weekCounts = getSortedWeekCounts(countByWeek(dates));
+  if (weekCounts.length === 0) {
+    return 0;
+  }
+
+  var recentWindow = weekCounts.slice(-4);
+  var recentAverage = averageCount(recentWindow.map(function(item) { return item.count; }));
+  return Math.round(recentAverage * 4);
+}
+
+function getMostActiveWeekday(contributions) {
+  var dates = getContributionDates(contributions);
+  if (dates.length === 0) {
+    return 'Not available';
+  }
+
+  var weekdayCount = [0, 0, 0, 0, 0, 0, 0];
+  for (var i = 0; i < dates.length; i++) {
+    weekdayCount[dates[i].getDay()] += 1;
+  }
+
+  var names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var bestIndex = 0;
+  for (var j = 1; j < weekdayCount.length; j++) {
+    if (weekdayCount[j] > weekdayCount[bestIndex]) {
+      bestIndex = j;
+    }
+  }
+
+  if (weekdayCount[bestIndex] === 0) {
+    return 'Not available';
+  }
+  return names[bestIndex];
+}
+
+function getMostCommonContributionType(contributions) {
+  var frequency = {};
+  for (var i = 0; i < contributions.length; i++) {
+    var type = contributions[i].type ? contributions[i].type.trim() : '';
+    if (!type) continue;
+    var key = type.toLowerCase();
+    frequency[key] = frequency[key] || { label: type, count: 0 };
+    frequency[key].count += 1;
+  }
+
+  var bestType = null;
+  var bestCount = 0;
+  for (var key in frequency) {
+    if (frequency[key].count > bestCount) {
+      bestCount = frequency[key].count;
+      bestType = frequency[key].label;
+    }
+  }
+
+  return bestType || 'Not specified';
+}
+
+function renderContributionInsights(contributions) {
+  var insightsBody = document.getElementById('contrib-insights-body');
+  if (!insightsBody) return;
+
+  if (!contributions || contributions.length === 0) {
+    insightsBody.innerHTML = '<div class="muted">Add contributions to see insights.</div>';
+    return;
+  }
+
+  var estimate = estimateNextMonth(contributions);
+  var trend = getTrendLabel(contributions);
+  var weekday = getMostActiveWeekday(contributions);
+  var commonType = getMostCommonContributionType(contributions);
+
+  insightsBody.innerHTML =
+    '<div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px;">' +
+      '<div style="background:#f8fafc; padding:12px; border-radius:10px;">' +
+        '<div class="repo-meta" style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">Next month</div>' +
+        '<div style="font-size:1.3rem; font-weight:700;">' + estimate + '</div>' +
+      '</div>' +
+      '<div style="background:#f8fafc; padding:12px; border-radius:10px;">' +
+        '<div class="repo-meta" style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">Trend</div>' +
+        '<div style="font-size:1.3rem; font-weight:700;">' + trend + '</div>' +
+      '</div>' +
+      '<div style="background:#f8fafc; padding:12px; border-radius:10px;">' +
+        '<div class="repo-meta" style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">Best weekday</div>' +
+        '<div style="font-size:1.3rem; font-weight:700;">' + weekday + '</div>' +
+      '</div>' +
+      '<div style="background:#f8fafc; padding:12px; border-radius:10px;">' +
+        '<div class="repo-meta" style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">Top type</div>' +
+        '<div style="font-size:1.3rem; font-weight:700;">' + commonType + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="repo-meta">Based on recent contribution frequency, expect about <strong>' + estimate + '</strong> contributions next month.</div>';
+}
+
 
 // ============================================================
 // SAVE A CONTRIBUTION
@@ -186,6 +363,7 @@ function renderContributions() {
 
   if (contributions.length === 0) {
     list.innerHTML = '<div class="muted">No contributions yet. Add one above!</div>';
+    renderContributionInsights(contributions);
     return;
   }
 
@@ -197,6 +375,7 @@ function renderContributions() {
   list.innerHTML = html;
 
   // Wire up the Delete button on each row
+  renderContributionInsights(contributions);
   var deleteButtons = list.querySelectorAll('.contrib-delete-btn');
   for (var i = 0; i < deleteButtons.length; i++) {
     // We wrap in a function so each button remembers its own "id"
