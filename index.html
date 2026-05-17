@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>XAYTHEON - Collaborative Innovation Platform</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
 
@@ -76,12 +76,15 @@
 
   <!-- Three.js: the 3D graphics library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- OrbitControls: lets you click and drag to rotate the 3D view -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- GLTFLoader: loads .glb 3D model files -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <!-- Our main script: 3D scene + GitHub Dashboard logic -->
-  <script src="script.js"></script>
+  <script type="module">
+    import { initBackground, addMouseEffects } from './js/Modules/background.js';
+    document.addEventListener('DOMContentLoaded', function() {
+      initBackground();
+      addMouseEffects();
+    });
+  </script>
 
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
