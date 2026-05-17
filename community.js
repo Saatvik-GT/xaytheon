@@ -27,6 +27,8 @@ window.addEventListener('DOMContentLoaded', function() {
   // Format: { "cacheKey": { time: timestamp, results: [repo, repo, ...] } }
   var searchCache       = {};
   var CACHE_MINUTES     = 5;  // how long to keep cached results
+  var latestTrendingRequest = 0;
+  var DEBOUNCE_DELAY = 400;
 
 
   // ============================================================
@@ -38,6 +40,26 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.style.color = isError ? '#b91c1c' : '#111827';
+  }
+
+  function debounce(callback, delay) {
+    var timeoutId;
+
+    function debounced() {
+      var context = this;
+      var args = arguments;
+
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function() {
+        callback.apply(context, args);
+      }, delay);
+    }
+
+    debounced.cancel = function() {
+      clearTimeout(timeoutId);
+    };
+
+    return debounced;
   }
 
   // Make text safe to put in HTML (prevents code injection attacks)
@@ -188,6 +210,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Fetch and display trending repos based on the current filter settings
   async function loadTrending() {
+    var requestId = ++latestTrendingRequest;
+
     var language = langInput.value.trim();
     var topic    = topicInput.value.trim();
     var days     = parseInt(windowInput.value) || 30;
@@ -212,6 +236,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     try {
       var repos    = await fetchRepos(language, topic, days);
+      if (requestId !== latestTrendingRequest) return;
+
       var topRepos = pickTopK(repos, k);
 
       // Save to cache for next time
@@ -221,6 +247,7 @@ window.addEventListener('DOMContentLoaded', function() {
       setStatus('Done');
 
     } catch (error) {
+      if (requestId !== latestTrendingRequest) return;
       setStatus(error.message || 'Failed to load repos', true);
       resultsEl.innerHTML = '<div class="muted">Could not load repositories right now.</div>';
     }
@@ -231,14 +258,28 @@ window.addEventListener('DOMContentLoaded', function() {
   // WIRE UP THE PAGE
   // ============================================================
 
+  var debouncedLoadTrending = debounce(loadTrending, DEBOUNCE_DELAY);
+
+  function scheduleLoadTrending() {
+    latestTrendingRequest++;
+    debouncedLoadTrending();
+  }
+
+  langInput.addEventListener('change', scheduleLoadTrending);
+  topicInput.addEventListener('input', scheduleLoadTrending);
+  windowInput.addEventListener('change', scheduleLoadTrending);
+  kInput.addEventListener('input', scheduleLoadTrending);
+
   // Search when the form is submitted
   form.addEventListener('submit', function(event) {
     event.preventDefault();  // stop the browser from reloading the page
+    debouncedLoadTrending.cancel();
     loadTrending();
   });
 
   // Reset filters and reload when the reset button is clicked
   resetBtn.addEventListener('click', function() {
+    debouncedLoadTrending.cancel();
     langInput.value   = '';
     topicInput.value  = '';
     windowInput.value = '30';
