@@ -374,11 +374,21 @@ function initGithubDashboard() {
   var form = document.getElementById('github-form');
   if (!form) return;  // we're not on github.html — stop here
 
-  var usernameInput = document.getElementById('gh-username');
-  var clearBtn      = document.getElementById('gh-clear');
+  var usernameInput  = document.getElementById('gh-username');
+  var repoSortInput  = document.getElementById('gh-repo-sort');
+  var clearBtn       = document.getElementById('gh-clear');
+  var usernameKey    = 'xaytheon:ghUsername';
+  var repoSortKey    = 'xaytheon:ghRepoSort';
+  var dashboardRepos = [];
+
+  var savedRepoSort = localStorage.getItem(repoSortKey);
+  if (repoSortInput && savedRepoSort) {
+    repoSortInput.value = savedRepoSort;
+  }
+  updateRepoSortLabel(repoSortInput ? repoSortInput.value : 'stars');
 
   // If the user searched before, restore that username automatically
-  var savedUsername = localStorage.getItem('xaytheon:ghUsername');
+  var savedUsername = localStorage.getItem(usernameKey);
   if (savedUsername) {
     usernameInput.value = savedUsername;
     loadGithubDashboard(savedUsername);
@@ -394,14 +404,29 @@ function initGithubDashboard() {
       return;
     }
 
-    localStorage.setItem('xaytheon:ghUsername', username);
+    localStorage.setItem(usernameKey, username);
+    if (repoSortInput) localStorage.setItem(repoSortKey, repoSortInput.value);
     loadGithubDashboard(username);
   });
 
+  if (repoSortInput) {
+    repoSortInput.addEventListener('change', function() {
+      localStorage.setItem(repoSortKey, repoSortInput.value);
+      updateRepoSortLabel(repoSortInput.value);
+      if (dashboardRepos.length > 0) {
+        renderRepos(sortDashboardRepos(dashboardRepos).slice(0, 8));
+      }
+    });
+  }
+
   // Clear the dashboard when Clear is clicked
   clearBtn.addEventListener('click', function() {
-    localStorage.removeItem('xaytheon:ghUsername');
+    localStorage.removeItem(usernameKey);
+    localStorage.removeItem(repoSortKey);
     usernameInput.value = '';
+    if (repoSortInput) repoSortInput.value = 'stars';
+    dashboardRepos = [];
+    updateRepoSortLabel('stars');
 
     // Reset all the card fields back to defaults
     setText('gh-name',         '—');
@@ -419,6 +444,41 @@ function initGithubDashboard() {
 
     setGithubStatus('Dashboard cleared.');
   });
+
+  function sortDashboardRepos(repos) {
+    var sortBy = repoSortInput ? repoSortInput.value : 'stars';
+    var sorted = repos.slice();
+
+    sorted.sort(function(a, b) {
+      if (sortBy === 'forks') {
+        return (b.forks_count || 0) - (a.forks_count || 0);
+      }
+      if (sortBy === 'updated') {
+        return new Date(b.updated_at) - new Date(a.updated_at);
+      }
+      if (sortBy === 'name') {
+        return a.full_name.localeCompare(b.full_name);
+      }
+      return (b.stargazers_count || 0) - (a.stargazers_count || 0);
+    });
+
+    return sorted;
+  }
+
+  function updateRepoSortLabel(sortBy) {
+    var labels = {
+      stars:   'stars',
+      forks:   'forks',
+      updated: 'recent updates',
+      name:    'name'
+    };
+    setText('gh-repo-sort-label', 'Sorted by ' + (labels[sortBy] || labels.stars));
+  }
+
+  window.xaytheonSortDashboardRepos = function(repos) {
+    dashboardRepos = repos.slice();
+    return sortDashboardRepos(dashboardRepos);
+  };
 }
 
 
@@ -451,15 +511,15 @@ async function loadGithubDashboard(username) {
 
     setText('gh-repos-count', user.public_repos || repos.length);
 
-    // Filter out forks, sort by stars, show top 8
+    // Filter out forks, apply the saved sort preference, show top 8
     var ownRepos = [];
     for (var i = 0; i < repos.length; i++) {
       if (!repos[i].fork) ownRepos.push(repos[i]);
     }
-    ownRepos.sort(function(a, b) {
-      return (b.stargazers_count || 0) - (a.stargazers_count || 0);
-    });
-    renderRepos(ownRepos.slice(0, 8));
+    var sortedRepos = window.xaytheonSortDashboardRepos
+      ? window.xaytheonSortDashboardRepos(ownRepos)
+      : ownRepos;
+    renderRepos(sortedRepos.slice(0, 8));
 
     // --- Step 3: Load recent activity ---
     setGithubStatus('Loading activity…');

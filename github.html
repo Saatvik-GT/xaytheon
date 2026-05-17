@@ -43,12 +43,21 @@
 
         <!-- Search form: enter a GitHub username -->
         <form id="github-form" class="github-form" autocomplete="off">
-          <div class="field-group" style="grid-column: span 6;">
+          <div class="field-group" style="grid-column: span 5;">
             <label for="gh-username">GitHub Username</label>
             <input id="gh-username" name="username" type="text" placeholder="e.g. octocat" required />
           </div>
-          <button class="btn btn-outline" type="submit">Load Dashboard</button>
-          <button class="btn btn-outline" type="button" id="gh-clear">Clear</button>
+          <div class="field-group" style="grid-column: span 3;">
+            <label for="gh-repo-sort">Repository Sort</label>
+            <select id="gh-repo-sort" name="repoSort">
+              <option value="stars" selected>Stars</option>
+              <option value="forks">Forks</option>
+              <option value="updated">Recently Updated</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+          <button class="btn btn-outline" type="submit" style="grid-column: span 2;">Load Dashboard</button>
+          <button class="btn btn-outline" type="button" id="gh-clear" style="grid-column: span 2;">Clear</button>
           <!-- Status message shown while loading or on error -->
           <div id="github-status" class="github-status" aria-live="polite"></div>
         </form>
@@ -89,7 +98,7 @@
           <div class="card repos-card" id="gh-repos">
             <div class="card-header">
               <h3>Top Repositories</h3>
-              <div class="muted small">Sorted by stars</div>
+              <div class="muted small" id="gh-repo-sort-label">Sorted by stars</div>
             </div>
             <div class="card-body">
               <div id="gh-repo-list" class="repo-list"></div>
