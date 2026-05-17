@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,71 +8,78 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <!-- 3D Background Canvas -->
   <!-- This canvas sits behind all page content. script.js draws the 3D shape here. -->
-  <div class="canvas-container">
-    <canvas id="three-canvas"></canvas>
-    <!-- Loading spinner shown while the 3D scene sets up -->
-    <div id="loading-screen" class="loading-screen">
-      <div class="loader"></div>
-      <p>Initializing XAYTHEON...</p>
-    </div>
+  <!-- Fullscreen Loader -->
+  <div id="page-loader">
+    <div class="loader"></div>
+    <p>Initializing XAYTHEON...</p>
   </div>
 
-  <!-- Main Page Content (sits on top of the 3D canvas) -->
-  <div class="content">
+  <!-- Main Website -->
+  <div id="main-content">
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <a class="logo" href="index.html" aria-label="XAYTHEON home">
-          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
-        </a>
-        <ul class="nav-menu">
-          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
-          <li><a class="nav-link" href="community.html">Community Highlights</a></li>
-          <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
-          <li><a class="nav-link" href="contributions.html">Contributions</a></li>
-        </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
+    <!-- 3D Background Canvas -->
+    <div class="canvas-container">
+      <canvas id="three-canvas"></canvas>
+    </div>
 
-      </div>
-    </nav>
+    <!-- Main Page Content (sits on top of the 3D canvas) -->
+    <div class="content">
 
-    <!-- Hero Section: the big centered text on the home page -->
-    <section id="home" class="hero">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          <span class="title-line">Welcome to</span>
-          <span class="title-main title-main--logo">
-            <img src="assets/logo/thelogo.png" alt="XAYTHEON" class="title-logo-img" />
-          </span>
-          <span class="title-subtitle">
-            Where <span class="accent-glow">INNOVATION</span> Meets
-            <span class="accent-glow">COLLAB</span>ORATION
-          </span>
-        </h1>
-      </div>
-    </section>
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+        <div class="nav-container">
+          <a class="logo" href="index.html" aria-label="XAYTHEON home">
+            <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+          </a>
+          <ul class="nav-menu">
+            <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+            <li><a class="nav-link" href="community.html">Community Highlights</a></li>
+            <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
+            <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+          </ul>
+          <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <span class="logo-text">XAYTHEON</span>
-            <p>Empowering the next generation of innovators</p>
+        </div>
+      </nav>
+
+      <!-- Hero Section: the big centered text on the home page -->
+      <section id="home" class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            <span class="title-line">Welcome to</span>
+            <span class="title-main title-main--logo">
+              <img src="assets/logo/thelogo.png" alt="XAYTHEON" class="title-logo-img" />
+            </span>
+            <span class="title-subtitle">
+              Where <span class="accent-glow">INNOVATION</span> Meets
+              <span class="accent-glow">COLLAB</span>ORATION
+            </span>
+          </h1>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-brand">
+              <span class="logo-text">XAYTHEON</span>
+              <p>Empowering the next generation of innovators</p>
+            </div>
+            <span class="footer-label">XAYTHEON</span>
           </div>
-          <span class="footer-label">XAYTHEON</span>
+          <div class="footer-bottom">
+            <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+          </div>
         </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+      </footer>
 
+    </div>
   </div>
 
   <!-- Three.js: the 3D graphics library -->
@@ -86,26 +94,37 @@
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
 
-    const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const savedTheme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateButtonLabel(savedTheme);
 
     toggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateButtonLabel(newTheme);
-        console.log(currentTheme);
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateButtonLabel(newTheme);
+      console.log(currentTheme);
     });
 
     function updateButtonLabel(theme) {
-        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+      toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
     }
-    </script>
+
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("page-loader");
+      const content = document.getElementById("main-content");
+
+      setTimeout(() => {
+        loader.classList.add("hide");
+        content.classList.add("show");
+      }, 1500);
+    });
+  </script>
 
 </body>
+
 </html>
