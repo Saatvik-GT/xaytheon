@@ -891,5 +891,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Set up the mini 3D viewer if we're on github.html
   initMiniViewer();
+  // Back To Top Button
 
+const backToTopBtn = document.getElementById("backToTop");
+
+if (backToTopBtn) {
+
+    window.addEventListener("scroll", () => {
+
+        if (window.scrollY > 300) {
+           backToTopBtn.style.opacity = "1";
+           backToTopBtn.style.visibility = "visible";
+        } 
+        
+        else {
+            backToTopBtn.style.opacity = "0";
+            backToTopBtn.style.visibility = "hidden";
+        }
+
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    });
+
+}
 });
