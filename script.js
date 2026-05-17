@@ -369,6 +369,9 @@ function addMouseEffects() {
 // (only active on github.html)
 // ============================================================
 
+var githubDashboardRequestId = 0;
+var GITHUB_DASHBOARD_DEBOUNCE_DELAY = 400;
+
 // Set up the GitHub Dashboard search form
 function initGithubDashboard() {
   var form = document.getElementById('github-form');
@@ -377,6 +380,27 @@ function initGithubDashboard() {
   var usernameInput = document.getElementById('gh-username');
   var clearBtn      = document.getElementById('gh-clear');
 
+  function loadUsernameFromInput() {
+    var username = usernameInput.value.trim();
+    if (!username) {
+      githubDashboardRequestId++;
+      return;
+    }
+
+    localStorage.setItem('xaytheon:ghUsername', username);
+    loadGithubDashboard(username);
+  }
+
+  var debouncedLoadGithubDashboard = debounce(
+    loadUsernameFromInput,
+    GITHUB_DASHBOARD_DEBOUNCE_DELAY
+  );
+
+  function scheduleLoadGithubDashboard() {
+    githubDashboardRequestId++;
+    debouncedLoadGithubDashboard();
+  }
+
   // If the user searched before, restore that username automatically
   var savedUsername = localStorage.getItem('xaytheon:ghUsername');
   if (savedUsername) {
@@ -384,9 +408,12 @@ function initGithubDashboard() {
     loadGithubDashboard(savedUsername);
   }
 
+  usernameInput.addEventListener('input', scheduleLoadGithubDashboard);
+
   // When the form is submitted, fetch data for that username
   form.addEventListener('submit', function(event) {
     event.preventDefault();  // prevent the browser from reloading the page
+    debouncedLoadGithubDashboard.cancel();
 
     var username = usernameInput.value.trim();
     if (!username) {
@@ -400,6 +427,8 @@ function initGithubDashboard() {
 
   // Clear the dashboard when Clear is clicked
   clearBtn.addEventListener('click', function() {
+    debouncedLoadGithubDashboard.cancel();
+    githubDashboardRequestId++;
     localStorage.removeItem('xaytheon:ghUsername');
     usernameInput.value = '';
 
@@ -425,6 +454,8 @@ function initGithubDashboard() {
 // Fetch and display GitHub data for a username
 // "async" means this function makes network requests and waits for responses
 async function loadGithubDashboard(username) {
+  var requestId = ++githubDashboardRequestId;
+
   setGithubStatus('Loading profile…');
 
   try {
@@ -432,6 +463,7 @@ async function loadGithubDashboard(username) {
     var user = await fetchFromGitHub(
       'https://api.github.com/users/' + encodeURIComponent(username)
     );
+    if (requestId !== githubDashboardRequestId) return;
 
     var avatarEl = document.getElementById('gh-avatar');
     if (avatarEl) avatarEl.src = user.avatar_url;
@@ -448,6 +480,7 @@ async function loadGithubDashboard(username) {
       'https://api.github.com/users/' + encodeURIComponent(username) +
       '/repos?per_page=100&sort=updated'
     );
+    if (requestId !== githubDashboardRequestId) return;
 
     setText('gh-repos-count', user.public_repos || repos.length);
 
@@ -467,14 +500,17 @@ async function loadGithubDashboard(username) {
       'https://api.github.com/users/' + encodeURIComponent(username) +
       '/events/public?per_page=25'
     );
+    if (requestId !== githubDashboardRequestId) return;
+
     renderActivity(events.slice(0, 10));
 
     // --- Step 4: Show contributions chart ---
-    showContributionsChart(username, events);
+    showContributionsChart(username, events, requestId);
 
     setGithubStatus('Done');
 
   } catch (error) {
+    if (requestId !== githubDashboardRequestId) return;
     setGithubStatus(error.message || 'Failed to load GitHub data', true);
   }
 }
@@ -602,7 +638,7 @@ function describeEvent(ev) {
 
 
 // Show the contributions calendar (green squares chart)
-function showContributionsChart(username, events) {
+function showContributionsChart(username, events, requestId) {
   var container = document.getElementById('gh-contrib-svg');
   var noteEl    = document.getElementById('gh-contrib-note');
   if (!container) return;
@@ -619,6 +655,7 @@ function showContributionsChart(username, events) {
   // Attach handlers BEFORE setting src to avoid a race condition where a
   // cached image fires onload synchronously before the handler is registered.
   chartImg.onload = function() {
+    if (requestId !== githubDashboardRequestId) return;
     container.innerHTML = '';
     container.appendChild(chartImg);
     if (noteEl) noteEl.textContent = 'Full-year contribution chart.';
@@ -626,6 +663,7 @@ function showContributionsChart(username, events) {
 
   // If the image fails — build a heatmap from the events we already fetched
   chartImg.onerror = function() {
+    if (requestId !== githubDashboardRequestId) return;
     var svgHtml = buildHeatmapFromEvents(events);
     container.innerHTML = svgHtml;
     if (noteEl) noteEl.textContent = 'Approximate heatmap based on recent public activity.';
@@ -826,6 +864,26 @@ function initMiniViewer() {
 // ============================================================
 // PART 4 — SHARED UTILITY FUNCTIONS
 // ============================================================
+
+function debounce(callback, delay) {
+  var timeoutId;
+
+  function debounced() {
+    var context = this;
+    var args = arguments;
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function() {
+      callback.apply(context, args);
+    }, delay);
+  }
+
+  debounced.cancel = function() {
+    clearTimeout(timeoutId);
+  };
+
+  return debounced;
+}
 
 // Make text safe to put inside HTML (prevents XSS injection attacks)
 // e.g. "<script>" becomes "&lt;script&gt;" which the browser shows as text, not code

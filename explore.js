@@ -44,6 +44,8 @@ window.addEventListener('DOMContentLoaded', function() {
   var nodesById  = {};
   var linksArray = [];
   var linkSet    = {};
+  var latestExploreRequest = 0;
+  var DEBOUNCE_DELAY = 400;
 
 
   // ============================================================
@@ -54,6 +56,26 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.style.color = isError ? '#b91c1c' : '#111827';
+  }
+
+  function debounce(callback, delay) {
+    var timeoutId;
+
+    function debounced() {
+      var context = this;
+      var args = arguments;
+
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function() {
+        callback.apply(context, args);
+      }, delay);
+    }
+
+    debounced.cancel = function() {
+      clearTimeout(timeoutId);
+    };
+
+    return debounced;
   }
 
   // Add a node to the graph (skips if it already exists)
@@ -257,6 +279,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Start fresh: clear everything and load repos for a base topic
   async function startExploring() {
+    var requestId = ++latestExploreRequest;
+
     // Reset all data
     nodesById  = {};
     linksArray = [];
@@ -272,6 +296,7 @@ window.addEventListener('DOMContentLoaded', function() {
     try {
       setStatus('Loading repos for topic "' + baseTopic + '"…');
       var repos = await fetchReposByTopic(baseTopic, language, limit);
+      if (requestId !== latestExploreRequest) return;
 
       var added = 0;
       for (var i = 0; i < repos.length; i++) {
@@ -286,6 +311,7 @@ window.addEventListener('DOMContentLoaded', function() {
       renderGraph();
 
     } catch (error) {
+      if (requestId !== latestExploreRequest) return;
       setStatus(error.message || 'Failed to load repos', true);
     }
   }
@@ -295,12 +321,25 @@ window.addEventListener('DOMContentLoaded', function() {
   // WIRE UP THE PAGE
   // ============================================================
 
+  var debouncedStartExploring = debounce(startExploring, DEBOUNCE_DELAY);
+
+  function scheduleStartExploring() {
+    latestExploreRequest++;
+    debouncedStartExploring();
+  }
+
+  topicInput.addEventListener('input', scheduleStartExploring);
+  langInput.addEventListener('change', scheduleStartExploring);
+  limitInput.addEventListener('input', scheduleStartExploring);
+
   form.addEventListener('submit', function(event) {
     event.preventDefault();
+    debouncedStartExploring.cancel();
     startExploring();
   });
 
   clearBtn.addEventListener('click', function() {
+    debouncedStartExploring.cancel();
     topicInput.value  = 'threejs';
     langInput.value   = '';
     limitInput.value  = '50';
