@@ -892,4 +892,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up the mini 3D viewer if we're on github.html
   initMiniViewer();
 
+
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.querySelector(".nav-menu");
+
+  if (hamburger && navMenu) {
+    hamburger.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });}
+
 });
