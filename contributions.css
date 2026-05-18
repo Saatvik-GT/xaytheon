@@ -1,0 +1,42 @@
+/* Contributions Specific Styles */
+
+.github-form input[type="url"],
+.github-form input[type="date"] {
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+.card-full-width {
+    grid-column: 1 / -1;
+}
+
+#contrib-form {
+    margin-bottom: 20px;
+}
+
+.group-span-4 { grid-column: span 4; }
+.group-span-6 { grid-column: span 6; }
+.group-span-12 { grid-column: span 12; }
+
+#contrib-form .btn-submit {
+    grid-column: span 3;
+}
+
+#contrib-status {
+    grid-column: 1 / -1;
+}
+
+#contrib-list {
+    /* Contributions list styles */
+}
+
+@media (max-width: 768px) {
+    .group-span-4,
+    .group-span-6,
+    .group-span-12,
+    #contrib-form .btn-submit {
+        grid-column: 1 / -1 !important;
+    }
+}

@@ -1,0 +1,89 @@
+/* GitHub Dashboard Specific */
+.github-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    position: relative;
+}
+
+.mini-3d {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: -90px;
+    right: -80px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    background: transparent;
+    pointer-events: none;
+}
+
+.mini-3d canvas { width: 100%; height: 100%; display: block; opacity: 0.78; transition: opacity 0.3s ease; }
+.mini-3d:hover canvas { opacity: 0.88; }
+.mini-3d-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+
+@media (max-width: 900px) {
+    .github-header { flex-direction: column; }
+    .mini-3d { position: relative; width: 100%; height: 240px; top: auto; right: auto; }
+}
+
+.github-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+}
+
+.card.profile-card { grid-column: span 5; color: var(--text-color);}
+.card.contributions-card { grid-column: span 7; color: var(--text-color)}
+.card.repos-card { grid-column: span 7; color: var(--text-color)}
+.card.activity-card { grid-column: span 5; color: var(--text-color) }
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    margin-right: 14px;
+}
+
+.profile-row { display: flex; align-items: center; }
+.profile-name { font-size: 1.2em; font-weight: 700; }
+.profile-login { opacity: 0.7; margin-top: 2px; }
+.profile-bio { margin-top: 8px; }
+
+.profile-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.profile-stats span { font-weight: 700; font-size: 1.1em; display: block; }
+.profile-stats label { font-size: 0.85em; opacity: 0.7; }
+
+.activity-list { list-style: none; display: grid; gap: 12px; }
+.activity-item { padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
+.activity-time { opacity: 0.7; font-size: 0.85em; }
+
+.contrib-svg {
+    min-height: 140px;
+    display: grid;
+    place-items: center;
+}
+
+/* Responsive layout for GitHub grid */
+@media (max-width: 1024px) {
+    .card.profile-card,
+    .card.contributions-card,
+    .card.repos-card,
+    .card.activity-card { grid-column: span 12; }
+}

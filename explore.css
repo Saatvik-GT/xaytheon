@@ -1,0 +1,58 @@
+/* Explore Specific Styles */
+
+.github-form select,
+.github-form input[type="number"] {
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+#explore-form {
+    margin-bottom: 16px;
+}
+
+.group-span-4 {
+    grid-column: span 4;
+}
+
+.card-full-width {
+    grid-column: 1 / -1;
+}
+
+#graph-wrap {
+    width: 100%;
+    height: 560px;
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#graph-legend {
+    position: absolute;
+    color: black;
+    right: 12px;
+    top: 12px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+}
+
+.legend-item {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.legend-topic {
+    background: #0ea5e9;
+}
+
+.legend-repo {
+    background: #111827;
+}
