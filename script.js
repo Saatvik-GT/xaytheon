@@ -892,4 +892,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up the mini 3D viewer if we're on github.html
   initMiniViewer();
 
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    const linkPage = link.getAttribute("href").split("/").pop();
+
+    if (linkPage === currentPage) {
+      link.classList.add("active");
+      link.setAttribute("aria-current", "page");
+    }
+  });
 });

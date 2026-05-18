@@ -221,6 +221,23 @@ body.eightgon-page {
     width: 100%;
 }
 
+.nav-link.active {
+  font-weight: 700;
+  opacity: 1;
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+
+[data-theme="dark"] .nav-link.active {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .nav-link.active::after {
+  background-color: #ffffff;
+}
+
 /* Auth user dropdown */
 .user-menu { position: relative; display: flex; align-items: center; }
 .user-button { background: transparent; border: none; border-radius: 999px; padding: 4px 6px; cursor: pointer; font: inherit; display: inline-flex; align-items: center; gap: 6px; }
