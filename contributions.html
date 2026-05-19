@@ -16,12 +16,17 @@
         <a class="logo" href="index.html" aria-label="Back to Home">
           <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
         </a>
-        <ul class="nav-menu">
+        <ul id="primary-nav-menu" class="nav-menu">
           <li><a class="nav-link" href="index.html">Home</a></li>
           <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
         </ul>
+        <button class="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav-menu">
+          <span class="bar" aria-hidden="true"></span>
+          <span class="bar" aria-hidden="true"></span>
+          <span class="bar" aria-hidden="true"></span>
+        </button>
         <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
 
       </div>
@@ -100,6 +105,7 @@
   </div>
 
   <script src="contributions.js"></script>
+  <script src="nav.js"></script>
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
 

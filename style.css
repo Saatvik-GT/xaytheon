@@ -164,6 +164,7 @@ body.eightgon-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
     height: 70px;
 }
 
@@ -191,6 +192,7 @@ body.eightgon-page {
     display: flex;
     list-style: none;
     gap: 30px;
+    margin-left: auto;
 }
 
 .nav-link {
@@ -238,15 +240,37 @@ body.eightgon-page {
 .hamburger {
     display: none;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: transparent;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .bar {
     width: 25px;
     height: 3px;
-    background: #000000;
-    margin: 3px 0;
+    background: var(--text-color);
+    border-radius: 999px;
     transition: 0.3s;
+}
+
+.hamburger.active .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
 }
 
 #theme-toggle{
@@ -255,6 +279,7 @@ body.eightgon-page {
     border-radius: 100%;
     background: none;
     border-color: var(--border-color);
+    flex-shrink: 0;
 }
 /* Hero Section */
 .hero {
@@ -689,28 +714,55 @@ section {
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
+        order: 2;
+    }
+
+    #theme-toggle {
+        order: 3;
+        width: 42px;
+        min-width: 42px;
+        max-width: none;
+        height: 42px;
+        padding: 0;
     }
 
     .nav-menu {
         position: fixed;
-        left: -100%;
         top: 70px;
+        left: 0;
+        right: 0;
+        transform: translateX(-100%);
         flex-direction: column;
-        background-color: rgba(255, 255, 255, 0.95);
+        align-items: stretch;
+        gap: 0;
+        margin-left: 0;
+        background-color: var(--bg-color);
         backdrop-filter: blur(10px);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 2px var(--shadow-color);
-        padding: 20px 0;
+        width: 100vw;
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
+        text-align: left;
+        transition: transform 0.3s ease;
+        box-shadow: 0 10px 10px var(--shadow-color);
+        padding: 12px 20px 20px;
+        z-index: 99;
     }
 
     .nav-menu.active {
-        left: 0;
+        transform: translateX(0);
     }
 
     .nav-menu li {
-        margin: 15px 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .nav-link {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
     }
 
     .title-main {
