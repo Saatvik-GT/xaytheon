@@ -555,7 +555,8 @@ async function generateAIInsights(username) {
   try {
     // Hardcoded API key as requested by user for this task
     var API_KEY = 'AIzaSyDQZyqgmrKr9qw7jMP4l3CyRwvO4Sty64U';
-    var url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    // Using gemini-flash-latest which was confirmed to exist in the environment
+    var url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`;
 
     var response = await fetch(url, {
       method: 'POST',
