@@ -955,3 +955,74 @@ section {
 .contact-method:hover::before {
     opacity: 1;
 }
+
+
+/* About Section */
+
+.about-section {
+  padding: 100px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-title {
+  font-size: 3rem;
+  margin-bottom: 25px;
+}
+
+.about-description {
+  max-width: 850px;
+  margin: 0 auto 60px;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.about-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.about-card {
+  width: 320px;
+  padding: 30px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-8px);
+}
+
+.about-card h3 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.about-card p {
+  line-height: 1.6;
+}
+
+/* Mobile Responsive */
+
+@media (max-width: 768px) {
+  .about-title {
+    font-size: 2.2rem;
+  }
+
+  .about-description {
+    font-size: 1rem;
+  }
+
+  .about-card {
+    width: 100%;
+  }
+}
