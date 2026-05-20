@@ -1,0 +1,18 @@
+{
+  "name": "xaytheon",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Selected in Social Winter of Code (SWoC)\r <img width=\"1300\" height=\"400\" alt=\"image\" src=\"https://github.com/user-attachments/assets/6bf856a4-0da4-4505-a433-f54797283dc4\" />",
+  "main": "auth.js",
+  "scripts": {
+     "start": "live-server --open=./index.html",
+    "dev": "live-server --open=./index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
