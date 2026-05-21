@@ -1,4 +1,21 @@
 /* Reset and Base Styles */
+
+:root, [data-theme="light"]{
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --border-color: #000000;
+    --shadow-color: rgba(0, 0, 0, 0.701);
+    --button-color: #000000;
+    --card-color: #ffffff;
+}
+[data-theme="dark"]{
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --border-color: #ffffff;
+    --shadow-color: rgba(255, 255, 255, 0.200);
+    --button-color: #ffffff;
+    --card-color: #0d1117;
+}
 @font-face {
     font-family: 'OriginTech';
     src: url('assets/fonts/OriginTech.otf') format('opentype');
@@ -35,8 +52,8 @@ html {
 
 body {
     font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #ffffff;
-    color: #000000;
+    background: var(--bg-color);
+    color: var(--text-color);
     overflow-x: hidden;
     line-height: 1.6;
 }
@@ -55,7 +72,7 @@ body.eightgon-page {
     width: 100%;
     height: 100%;
     z-index: -1; /* force behind all page content */
-    background: #ffffff;
+    background: var(--bg-color);
 }
 
 /* Ensure page content (including footer) sits above the background canvas */
@@ -84,7 +101,8 @@ body.eightgon-page {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-color);
+    opacity: 95%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -114,7 +132,7 @@ body.eightgon-page {
 
 .loading-screen p {
     font-size: 1.2em;
-    color: #000000;
+    color: var(--text-color);
     font-weight: 500;
 }
 
@@ -131,9 +149,10 @@ body.eightgon-page {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-color);
+    opacity: 95%;
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 10px var(--shadow-color);
     z-index: 100;
     transition: all 0.3s ease;
 }
@@ -164,7 +183,7 @@ body.eightgon-page {
 .logo-text {
     font-size: 1.8em;
     font-weight: bold;
-    color: #000000;
+    color: var(--text-color);
     letter-spacing: 2px;
 }
 
@@ -176,14 +195,15 @@ body.eightgon-page {
 
 .nav-link {
     text-decoration: none;
-    color: #000000;
+    color: var(--text-color);
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
 }
 
 .nav-link:hover {
-    color: #333333;
+    color: var(--text-color);
+    opacity: 75%;
 }
 
 .nav-link::after {
@@ -229,6 +249,13 @@ body.eightgon-page {
     transition: 0.3s;
 }
 
+#theme-toggle{
+    padding: 10px;
+    border-width: 1px;
+    border-radius: 100%;
+    background: none;
+    border-color: var(--border-color);
+}
 /* Hero Section */
 .hero {
     min-height: 100vh;
@@ -357,7 +384,8 @@ body.eightgon-page {
 
 .btn-outline {
     background: transparent;
-    color: #000000;
+    color: var(--button-color);
+    opacity: 50%;
     border: 1px solid #000000;
     padding: 10px 20px;
     font-size: 0.9em;
@@ -366,6 +394,7 @@ body.eightgon-page {
 .btn-outline:hover {
     background: #000000;
     color: #ffffff;
+    opacity: 100%;
 }
 
 /* Section Styles */
@@ -385,7 +414,7 @@ section {
 /* Projects Section */
 /* GitHub Dashboard */
 .github-section {
-    background: transparent; /* allow 3D background to show through */
+    background: var(--bg-color); /* allow 3D background to show through */
 }
 
 .github-header {
@@ -418,7 +447,7 @@ section {
     display: grid;
     place-items: center;
     font-size: 0.9em;
-    color: rgba(0,0,0,0.6);
+    color: var(--text-color);
 }
 
 @media (max-width: 900px) {
@@ -432,6 +461,7 @@ section {
     gap: 16px;
     align-items: end;
     margin-bottom: 30px;
+    color: var(--text-color);
 }
 
 .github-form .field-group {
@@ -440,37 +470,48 @@ section {
     flex-direction: column;
     gap: 6px;
 }
+.github-form .field-group input[type="text"]{
+    border: 0.1px solid rgba(0,0,0,0.2);
+}
 
 .github-form label {
     font-weight: 600;
 }
 
-.github-form input[type="text"],
-.github-form input[type="password"] {
+.field-group input[type="number"]
+{
     padding: 12px 14px;
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 8px;
-    outline: none;
+    font-size: 0.95em;
+}
+
+.github-form input[type="text"],
+.github-form input[type="password"] {
+    padding: 12px 14px;
+    border: 10px;
+    border-color: var(--border-color);
+    border-radius: 8px;
     font-size: 0.95em;
 }
 
 /* Community form fields */
-.github-form select,
+.github-form select, .github-form input[type="text"]
 .github-form input[type="number"],
 .github-form input[type="url"],
 .github-form input[type="date"] {
     padding: 12px 14px;
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 8px;
-    outline: none;
     font-size: 0.95em;
+
 }
 
 .github-form input:focus {
-    border-color: #000;
+    border-color: var(--border-color);
 }
 
-.github-form .btn { grid-column: span 2; }
+.github-form .btn { grid-column: span 3; padding: 14px}
 
 .github-form .remember {
     display: inline-flex;
@@ -501,17 +542,22 @@ section {
 
 .card {
     grid-column: span 6;
-    background: #fff;
+    background: var(--card-color);
+    color: var(--text-color);
     border: 1px solid rgba(0,0,0,0.1);
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    box-shadow: 0 5px 10px var(--shadow-color);
 }
 
-.card.profile-card { grid-column: span 5; }
-.card.contributions-card { grid-column: span 7; }
-.card.repos-card { grid-column: span 7; }
-.card.activity-card { grid-column: span 5; }
+.card:hover{
+    box-shadow: 0 10px 10px var(--shadow-color);
+}
+
+.card.profile-card { grid-column: span 5; color: var(--text-color);}
+.card.contributions-card { grid-column: span 7; color: var(--text-color)}
+.card.repos-card { grid-column: span 7; color: var(--text-color)}
+.card.activity-card { grid-column: span 5; color: var(--text-color) }
 
 .card-header {
     padding: 14px 16px;
@@ -521,7 +567,9 @@ section {
     gap: 10px;
 }
 
-.card-body { padding: 16px; }
+.card-body { 
+    padding: 16px;
+}
 
 .avatar {
     width: 72px;
@@ -653,7 +701,7 @@ section {
         width: 100%;
         text-align: center;
         transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 2px var(--shadow-color);
         padding: 20px 0;
     }
 
@@ -686,6 +734,7 @@ section {
     .btn {
         width: 100%;
         max-width: 300px;
+        background-color: var(--text-color);
     }
 
     .section-title {
@@ -796,6 +845,9 @@ section {
 .btn {
     position: relative;
     overflow: hidden;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+
 }
 
 .btn::before {
