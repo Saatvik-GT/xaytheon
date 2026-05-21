@@ -879,3 +879,37 @@ document.addEventListener('DOMContentLoaded', function() {
   initMiniViewer();
 
 });
+
+// ============================================================
+// PART 6 — BACK TO TOP BUTTON
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  var backToTopBtn = document.getElementById('backToTopBtn');
+
+  // Stop if button does not exist on page
+  if (!backToTopBtn) return;
+
+  // Show/hide button on scroll
+  window.addEventListener('scroll', function () {
+
+    if (window.scrollY > 100) {
+      backToTopBtn.classList.add('show');
+    } else {
+      backToTopBtn.classList.remove('show');
+    }
+
+  });
+
+  // Smooth scroll to top
+  backToTopBtn.addEventListener('click', function () {
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  });
+
+});
