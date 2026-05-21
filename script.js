@@ -26,6 +26,7 @@
 var scene;     // The 3D world — like an empty stage
 var camera;    // The virtual eye looking at the scene
 var renderer;  // Draws everything onto the HTML canvas
+var animationFrameId;  // Stores the current animation frame id
 // (no OrbitControls on the background — it was making the page laggy)
 
 var currentMesh;   // The current primitive shape (cube, sphere, etc.)
@@ -99,7 +100,23 @@ function init() {
   });
 
   // Handle the browser window being resized
-  window.addEventListener('resize', onWindowResize);
+  var resizeTimeout;
+
+  window.addEventListener('resize', function() {
+     clearTimeout(resizeTimeout);
+
+     resizeTimeout = setTimeout(function() { 
+      onWindowResize();
+       }, 200);
+     });
+
+     // Pause auto-rotation when the tab becomes inactive
+     document.addEventListener('visibilitychange', function() { 
+      isAutoRotating = !document.hidden;
+     });
+
+     // Clean up resources when leaving the page
+      window.addEventListener('beforeunload', cleanupScene);
 
   // Hide the loading spinner after 1 second
   setTimeout(function() {
@@ -178,7 +195,7 @@ function createShape(shapeType) {
 // The animation loop — called ~60 times per second by the browser
 function animate() {
   // Ask the browser to call this function again next frame
-  requestAnimationFrame(animate);
+  animationFrameId = requestAnimationFrame(animate);
 
   // Rotate the loaded model around the Y axis
   if (currentModel && isAutoRotating) {
@@ -213,6 +230,43 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
 }
+
+// Clean up Three.js resources to avoid memory leaks
+  function cleanupScene() { 
+    
+    // Stop the animation loop 
+    if (animationFrameId) {
+       cancelAnimationFrame(animationFrameId);
+       } 
+    // Dispose renderer
+     if (renderer) {
+       renderer.dispose(); 
+      } 
+      
+      // Dispose meshes, geometries, and materials
+       if (scene) {
+         scene.traverse(function(object) {
+          
+            if (object.geometry) { 
+              object.geometry.dispose();
+             } 
+             
+             if (object.material) { 
+              
+              if (Array.isArray(object.material)) {
+                
+                for (var i = 0; i < object.material.length; i++) { 
+                  object.material[i].dispose();
+                 }
+                
+                } else {
+                  
+                  object.material.dispose();
+                 }
+                }
+               });
+             }
+           }
 
 
 // Load a 3D model from a file URL (e.g. 'assets/models/prism.glb')
