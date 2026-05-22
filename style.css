@@ -194,9 +194,12 @@ body.eightgon-page {
 }
 
 .nav-link {
+    font-family: 'Researcher', 'OriginTech', sans-serif;
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 1px;
     transition: all 0.3s ease;
     position: relative;
 }
