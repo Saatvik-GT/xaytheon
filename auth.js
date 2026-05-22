@@ -14,6 +14,7 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 // This variable will hold our Supabase connection.
 // We set it up inside the DOMContentLoaded listener below.
 var sb = null;
+var isUserMenuOutsideClickBound = false;
 
 
 // ============================================================
@@ -43,6 +44,77 @@ function getInitial(email) {
 async function getCurrentUser() {
   var result = await sb.auth.getUser();
   return result.data.user;  // null if not logged in
+}
+
+function normalizeAuthError(error) {
+  var rawMessage = (error && error.message) ? String(error.message) : '';
+  var message = rawMessage.toLowerCase();
+  var normalizedCode = 'AUTH_ERROR';
+  var normalizedMessage = 'Could not sign in. Please try again.';
+
+  if (message.indexOf('invalid login credentials') !== -1 ||
+      message.indexOf('invalid credentials') !== -1) {
+    normalizedCode = 'INVALID_CREDENTIALS';
+    normalizedMessage = 'Invalid email or password.';
+  } else if (message.indexOf('email not confirmed') !== -1) {
+    normalizedCode = 'EMAIL_NOT_CONFIRMED';
+    normalizedMessage = 'Please verify your email before signing in.';
+  } else if (message.indexOf('too many requests') !== -1 ||
+             message.indexOf('rate limit') !== -1) {
+    normalizedCode = 'RATE_LIMITED';
+    normalizedMessage = 'Too many attempts. Please wait a moment and try again.';
+  } else if (message.indexOf('network') !== -1) {
+    normalizedCode = 'NETWORK_ERROR';
+    normalizedMessage = 'Network error. Please check your connection and try again.';
+  }
+
+  var err = new Error(normalizedMessage);
+  err.code = normalizedCode;
+  err.rawMessage = rawMessage;
+  err.original = error || null;
+  return err;
+}
+
+function getAuthErrorMessage(error) {
+  var normalized = normalizeAuthError(error);
+  return normalized.message;
+}
+
+async function login(email, password) {
+  if (!sb) {
+    var notReadyError = new Error('Authentication service is still loading. Please try again.');
+    notReadyError.code = 'AUTH_NOT_READY';
+    throw notReadyError;
+  }
+
+  var result = await sb.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (result.error) {
+    throw normalizeAuthError(result.error);
+  }
+
+  return result.data ? result.data.user : null;
+}
+
+function bindUserMenuOutsideClickHandler() {
+  if (isUserMenuOutsideClickBound) return;
+  isUserMenuOutsideClickBound = true;
+
+  document.addEventListener('click', function(event) {
+    var dropdown = getEl('user-dropdown');
+    var btn = getEl('user-btn');
+    if (!dropdown || dropdown.hasAttribute('hidden')) return;
+
+    var clickedInsideBtn = btn && btn.contains(event.target);
+    var clickedInsideDd = dropdown.contains(event.target);
+
+    if (!clickedInsideBtn && !clickedInsideDd) {
+      dropdown.setAttribute('hidden', '');
+    }
+  });
 }
 
 // Update the #auth-area in the navbar based on whether the user is logged in
@@ -76,20 +148,9 @@ async function updateNavbar() {
       }
     });
 
-    // Close the dropdown if the user clicks anywhere else on the page
-    document.addEventListener('click', function(event) {
-      var dropdown = getEl('user-dropdown');
-      var btn = getEl('user-btn');
-      if (!dropdown || dropdown.hasAttribute('hidden')) return;
-
-      // Check if the click was inside the dropdown or button
-      var clickedInsideBtn = btn && btn.contains(event.target);
-      var clickedInsideDd  = dropdown && dropdown.contains(event.target);
-
-      if (!clickedInsideBtn && !clickedInsideDd) {
-        dropdown.setAttribute('hidden', '');  // close it
-      }
-    });
+    // Close the dropdown if the user clicks anywhere else on the page.
+    // Bound once to avoid stacking multiple global listeners on re-render.
+    bindUserMenuOutsideClickHandler();
 
     // Sign out when the "Sign out" button is clicked
     getEl('signout-btn').addEventListener('click', async function() {
@@ -145,8 +206,10 @@ async function sendMagicLink(email) {
 // contributions.js needs getCurrentUser.
 // We attach them to window.XAYTHEON_AUTH so any script can call them.
 window.XAYTHEON_AUTH = {
+  login: login,
   sendMagicLink: sendMagicLink,
-  getCurrentUser: getCurrentUser
+  getCurrentUser: getCurrentUser,
+  getAuthErrorMessage: getAuthErrorMessage
 };
 
 
