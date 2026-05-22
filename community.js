@@ -78,37 +78,51 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   // Build the HTML for one repo card
-  function buildRepoCard(repo) {
-    // Optional description line
-    var description = '';
-    if (repo.description) {
-      description = '<div class="repo-desc">' + safeHtml(repo.description) + '</div>';
-    }
+function buildRepoCard(repo) {
 
-    // Optional language tag
-    var language = '';
-    if (repo.language) {
-      language = '<span>' + safeHtml(repo.language) + '</span>';
-    }
+  var description = '';
+  if (repo.description) {
+    description = '<div class="repo-desc">' + safeHtml(repo.description) + '</div>';
+  }
 
-    return (
-      '<div class="repo-item">' +
+  var language = '';
+  if (repo.language) {
+    language = '<span>' + safeHtml(repo.language) + '</span>';
+  }
+
+  return (
+    '<div class="repo-item">' +
+
+      '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">' +
+
         '<div class="repo-name">' +
           '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
             safeHtml(repo.full_name) +
           '</a>' +
         '</div>' +
-        description +
-        '<div class="repo-meta">' +
-          '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
-          '<span>⑂ ' + (repo.forks_count      || 0) + '</span>' +
-          language +
-          '<span>Updated ' + timeAgo(repo.pushed_at) + '</span>' +
-        '</div>' +
-      '</div>'
-    );
-  }
 
+        '<button class="bookmark-btn" ' +
+          'data-name="' + safeHtml(repo.full_name) + '" ' +
+          'data-url="' + repo.html_url + '" ' +
+          'data-desc="' + safeHtml(repo.description || '') + '" ' +
+          'data-lang="' + safeHtml(repo.language || '') + '">' +
+          '🔖 Save' +
+        '</button>' +
+
+      '</div>' +
+
+      description +
+
+      '<div class="repo-meta">' +
+        '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
+        '<span>⑂ ' + (repo.forks_count || 0) + '</span>' +
+        language +
+        '<span>Updated ' + timeAgo(repo.pushed_at) + '</span>' +
+      '</div>' +
+
+    '</div>'
+  );
+}
   // Render a list of repos onto the page
   function showResults(repos) {
     if (!repos || repos.length === 0) {
@@ -248,5 +262,40 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Load results immediately when the page opens
   loadTrending();
+
+  resultsEl.addEventListener('click', function(event) {
+
+  if (event.target.classList.contains('bookmark-btn')) {
+
+    var button = event.target;
+
+    var repoData = {
+      name: button.dataset.name,
+      url: button.dataset.url,
+      description: button.dataset.desc,
+      language: button.dataset.lang
+    };
+
+    var bookmarks = JSON.parse(localStorage.getItem('bookmarkedRepos')) || [];
+
+    var alreadySaved = bookmarks.some(function(repo) {
+      return repo.url === repoData.url;
+    });
+
+    if (alreadySaved) {
+      alert('Repository already bookmarked!');
+      return;
+    }
+
+    bookmarks.push(repoData);
+
+    localStorage.setItem('bookmarkedRepos', JSON.stringify(bookmarks));
+
+    button.textContent = 'Saved';
+
+    alert('Repository bookmarked successfully!');
+  }
+
+});
 
 });  // end DOMContentLoaded
