@@ -8,6 +8,7 @@
 
 // The key we use to store contributions in localStorage
 var STORAGE_KEY = 'xaytheon:contributions';
+var editingContributionId = null;
 
 
 // ============================================================
@@ -116,10 +117,43 @@ function saveContribution(event) {
 
   // Load existing contributions, add the new one at the top, save back
   var contributions = loadContributionsFromStorage();
-  contributions.unshift(contribution);  // unshift adds to the beginning of the array
-  saveContributionsToStorage(contributions);
+
+if (editingContributionId) {
+
+  for (var i = 0; i < contributions.length; i++) {
+
+    if (contributions[i].id === editingContributionId) {
+
+      contribution.id = editingContributionId;
+
+      contribution.created_at =
+        contributions[i].created_at;
+
+      contributions[i] = contribution;
+
+      break;
+    }
+  }
+
+  editingContributionId = null;
+
+  var submitButton =
+    document.querySelector('#contrib-form button[type="submit"]');
+
+  if (submitButton) {
+    submitButton.textContent = 'Save Contribution';
+  }
+
+  setStatus('Contribution updated!');
+
+} else {
+
+  contributions.unshift(contribution);
 
   setStatus('Saved!');
+}
+
+saveContributionsToStorage(contributions);
 
   // Clear the form and refresh the displayed list
   document.getElementById('contrib-form').reset();
@@ -165,8 +199,11 @@ function buildContributionRow(contribution) {
             metaParts.join(' • ') +
           '</div>' +
         '</div>' +
-        '<button class="btn btn-outline contrib-delete-btn" data-id="' + contribution.id + '">' +
-          'Delete' +
+        '<button class="btn btn-outline contrib-edit-btn" data-id="' + contribution.id + '">' +
+  'Edit' +
+'</button>' +
+'<button class="btn btn-outline contrib-delete-btn" data-id="' + contribution.id + '">' + 
+'Delete' +
         '</button>' +
       '</div>' +
     '</div>'
@@ -206,13 +243,62 @@ function renderContributions() {
       });
     })(deleteButtons[i]);
   }
+  var editButtons = list.querySelectorAll('.contrib-edit-btn');
+
+for (var j = 0; j < editButtons.length; j++) {
+
+  (function(btn) {
+
+    btn.addEventListener('click', function() {
+
+      startEditContribution(btn.getAttribute('data-id'));
+
+    });
+
+  })(editButtons[j]);
+
+}
 }
 
 
 // ============================================================
 // DELETE A CONTRIBUTION
 // ============================================================
+// Load an existing contribution into the form for editing
+function startEditContribution(id) 
+{
 
+  var contributions = loadContributionsFromStorage();
+
+  for (var i = 0; i < contributions.length; i++) {
+
+    if (contributions[i].id === id) {
+
+      var contribution = contributions[i];
+
+      document.getElementById('cf-project').value = contribution.project || '';
+      document.getElementById('cf-link').value = contribution.link || '';
+      document.getElementById('cf-program').value = contribution.program || '';
+      document.getElementById('cf-date').value = contribution.date || '';
+      document.getElementById('cf-type').value = contribution.type || '';
+      document.getElementById('cf-desc').value = contribution.description || '';
+      document.getElementById('cf-tech').value = contribution.tech || '';
+
+      editingContributionId = id;
+
+      var submitButton =
+        document.querySelector('#contrib-form button[type="submit"]');
+
+      if (submitButton) {
+        submitButton.textContent = 'Update Contribution';
+      }
+
+      setStatus('Editing contribution...');
+
+      break;
+    }
+  }
+}
 function deleteContribution(id) {
   if (!confirm('Delete this contribution?')) return;
 
