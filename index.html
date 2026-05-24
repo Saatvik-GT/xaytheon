@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <!-- 3D Background Canvas -->
@@ -29,14 +31,22 @@
         <a class="logo" href="index.html" aria-label="XAYTHEON home">
           <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
         </a>
-        <ul class="nav-menu">
+
+        <!-- Add hamburger button -->
+        <div class="hamburger" id="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+
+        <ul class="nav-menu" id="nav-menu">
           <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
 
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
       </div>
     </nav>
 
@@ -86,26 +96,52 @@
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
 
-    const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const savedTheme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateButtonLabel(savedTheme);
 
     toggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateButtonLabel(newTheme);
-        console.log(currentTheme);
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateButtonLabel(newTheme);
+      console.log(currentTheme);
     });
 
     function updateButtonLabel(theme) {
-        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+      toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
     }
-    </script>
+
+      // Hamburger menu functionality
+      const hamburger = document.getElementById('hamburger');
+      const navMenu = document.getElementById('nav-menu');
+
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+
+      // Close menu when clicking a nav link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          navMenu.classList.remove('active');
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+          hamburger.classList.remove('active');
+          navMenu.classList.remove('active');
+        }
+      });
+  </script>
 
 </body>
+
 </html>

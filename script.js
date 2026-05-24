@@ -34,10 +34,10 @@ var currentModel;  // The current loaded 3D model (.glb file)
 var lastFetchedEvents = null;  // Stores the last fetched events for theme-aware chart reloads
 
 var autoRotationSpeed = 0.005;  // How fast the shape spins
-var isAutoRotating    = true;   // Whether auto-spin is on
+var isAutoRotating = true;   // Whether auto-spin is on
 
 // These are used for the subtle parallax effect (scene follows mouse)
-var targetOrbitOffset  = { x: 0, y: 0 };  // where we want the camera to aim
+var targetOrbitOffset = { x: 0, y: 0 };  // where we want the camera to aim
 var currentOrbitOffset = { x: 0, y: 0 };  // where it currently aims (catches up slowly)
 
 // The camera's "home" position — set once after the model loads.
@@ -50,17 +50,17 @@ var baseCameraPos = { x: 5, y: 5, z: 5 };
 // A collection of functions that each return a Three.js geometry (shape data).
 // We pick one of these when we want to show a primitive shape.
 var shapes = {
-  cube:       function() { return new THREE.BoxGeometry(2, 2, 2); },
-  sphere:     function() { return new THREE.SphereGeometry(1.5, 32, 32); },
-  torus:      function() { return new THREE.TorusGeometry(1.5, 0.5, 16, 100); },
-  cylinder:   function() { return new THREE.CylinderGeometry(1, 1, 2, 32); },
-  octahedron: function() { return new THREE.OctahedronGeometry(1.5); }
+  cube: function () { return new THREE.BoxGeometry(2, 2, 2); },
+  sphere: function () { return new THREE.SphereGeometry(1.5, 32, 32); },
+  torus: function () { return new THREE.TorusGeometry(1.5, 0.5, 16, 100); },
+  cylinder: function () { return new THREE.CylinderGeometry(1, 1, 2, 32); },
+  octahedron: function () { return new THREE.OctahedronGeometry(1.5); }
 };
 
 
 // Set up the entire 3D scene (called once when the page loads)
 function init() {
-  var canvas    = document.getElementById('three-canvas');
+  var canvas = document.getElementById('three-canvas');
   var container = document.querySelector('.canvas-container');
 
   // Create the scene (the 3D world — starts empty)
@@ -74,9 +74,9 @@ function init() {
 
   // Create the renderer — this draws the scene onto the canvas element
   renderer = new THREE.WebGLRenderer({
-    canvas:    canvas,
+    canvas: canvas,
     antialias: true,  // smooth edges (anti-aliasing)
-    alpha:     true   // transparent background so the white page shows through
+    alpha: true   // transparent background so the white page shows through
   });
   renderer.setSize(container.clientWidth, container.clientHeight);
   // Cap at 1.5x pixel ratio — 2x on Retina screens doubles the pixels rendered
@@ -95,7 +95,7 @@ function init() {
 
   // Try to load the 3D model file.
   // If it fails to load, fall back to a simple octahedron shape.
-  loadModel('assets/models/prism.glb', function() {
+  loadModel('assets/models/prism.glb', function () {
     console.log('prism.glb failed, showing octahedron instead');
     createShape('octahedron');
   });
@@ -104,7 +104,7 @@ function init() {
   window.addEventListener('resize', onWindowResize);
 
   // Hide the loading spinner after 1 second
-  setTimeout(function() {
+  setTimeout(function () {
     var loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
       loadingScreen.classList.add('hidden');
@@ -159,15 +159,15 @@ function createShape(shapeType) {
 
   // Get color from a color picker if one exists on this page
   var colorEl = document.getElementById('color-picker');
-  var color   = colorEl ? colorEl.value : '#66ccff';
+  var color = colorEl ? colorEl.value : '#66ccff';
 
   // Build the shape: geometry = the 3D points, material = the surface appearance
   var geometry = shapes[shapeType]();
   var material = new THREE.MeshPhongMaterial({
-    color:       color,
-    shininess:   100,
+    color: color,
+    shininess: 100,
     transparent: true,
-    opacity:     0.9
+    opacity: 0.9
   });
 
   // A Mesh joins geometry + material into one visible 3D object
@@ -226,7 +226,7 @@ function loadModel(url, onError) {
     url,
 
     // Success: this function runs when the model finishes loading
-    function(gltf) {
+    function (gltf) {
       // Remove old shape/model if present
       if (currentMesh) {
         scene.remove(currentMesh);
@@ -249,7 +249,7 @@ function loadModel(url, onError) {
     undefined,  // progress callback — we don't need to track progress
 
     // Error: this function runs if the model fails to load
-    function(err) {
+    function (err) {
       console.warn('Model failed to load:', url, err);
       if (onError) onError(err);
     }
@@ -260,9 +260,9 @@ function loadModel(url, onError) {
 // Prepare a loaded model: enable shadows and center/scale it in the scene
 function prepareModel(model) {
   // Walk through every object inside the model and enable shadows
-  model.traverse(function(child) {
+  model.traverse(function (child) {
     if (child.isMesh) {
-      child.castShadow    = true;
+      child.castShadow = true;
       child.receiveShadow = true;
     }
   });
@@ -275,8 +275,8 @@ function prepareModel(model) {
 // Center a model at the origin (0,0,0) and scale it to a target size
 function centerAndScaleModel(model, targetSize) {
   // A Box3 is an axis-aligned bounding box — it wraps the whole model
-  var box    = new THREE.Box3().setFromObject(model);
-  var size   = new THREE.Vector3();
+  var box = new THREE.Box3().setFromObject(model);
+  var size = new THREE.Vector3();
   var center = new THREE.Vector3();
 
   box.getSize(size);      // fills "size" with the model's width/height/depth
@@ -296,13 +296,13 @@ function centerAndScaleModel(model, targetSize) {
 
 // Move the camera to a good distance to see the model
 function zoomCameraToFit(model) {
-  var box  = new THREE.Box3().setFromObject(model);
+  var box = new THREE.Box3().setFromObject(model);
   var size = new THREE.Vector3();
   box.getSize(size);
   var maxDimension = Math.max(size.x, size.y, size.z);
 
   // Place camera at a 45-degree angle, far enough to see the whole model
-  var distance  = maxDimension * 0.95;
+  var distance = maxDimension * 0.95;
   var direction = new THREE.Vector3(1, 1, 1).normalize();
   camera.position.copy(direction.multiplyScalar(distance));
   camera.fov = 60;
@@ -319,7 +319,7 @@ function zoomCameraToFit(model) {
 
 // Free the GPU memory used by a 3D model (important to avoid memory leaks)
 function disposeModel(model) {
-  model.traverse(function(child) {
+  model.traverse(function (child) {
     if (child.isMesh) {
       if (child.geometry) child.geometry.dispose();
       if (child.material) {
@@ -339,13 +339,13 @@ function disposeModel(model) {
 // Add mouse-based effects to the background
 function addMouseEffects() {
   // Track mouse position for the parallax effect
-  window.addEventListener('mousemove', function(event) {
+  window.addEventListener('mousemove', function (event) {
     // Convert mouse position from pixels to a -1 to +1 range
-    var normalizedX = (event.clientX / window.innerWidth)  * 2 - 1;
+    var normalizedX = (event.clientX / window.innerWidth) * 2 - 1;
     var normalizedY = (event.clientY / window.innerHeight) * 2 - 1;
 
     // Subtly shift the camera target toward the mouse position
-    targetOrbitOffset.x =  normalizedX * 0.5;
+    targetOrbitOffset.x = normalizedX * 0.5;
     targetOrbitOffset.y = -normalizedY * 0.3;
   });
 
@@ -353,10 +353,10 @@ function addMouseEffects() {
   var canvas = renderer.domElement;
 
   function updateOpacity() {
-    var scrollY     = window.scrollY;
-    var maxScroll   = 600;
+    var scrollY = window.scrollY;
+    var maxScroll = 600;
     var baseOpacity = 0.18;
-    var maxOpacity  = 0.35;
+    var maxOpacity = 0.35;
     var extra = Math.min(scrollY / maxScroll, 1) * (maxOpacity - baseOpacity);
     canvas.style.opacity = (baseOpacity + extra).toFixed(2);
   }
@@ -377,7 +377,7 @@ function initGithubDashboard() {
   if (!form) return;  // we're not on github.html — stop here
 
   var usernameInput = document.getElementById('gh-username');
-  var clearBtn      = document.getElementById('gh-clear');
+  var clearBtn = document.getElementById('gh-clear');
 
   // If the user searched before, restore that username automatically
   var savedUsername = localStorage.getItem('xaytheon:ghUsername');
@@ -387,7 +387,7 @@ function initGithubDashboard() {
   }
 
   // When the form is submitted, fetch data for that username
-  form.addEventListener('submit', function(event) {
+  form.addEventListener('submit', function (event) {
     event.preventDefault();  // prevent the browser from reloading the page
 
     var username = usernameInput.value.trim();
@@ -401,20 +401,20 @@ function initGithubDashboard() {
   });
 
   // Clear the dashboard when Clear is clicked
-  clearBtn.addEventListener('click', function() {
+  clearBtn.addEventListener('click', function () {
     localStorage.removeItem('xaytheon:ghUsername');
     usernameInput.value = '';
 
     // Reset all the card fields back to defaults
-    setText('gh-name',         '—');
-    setText('gh-login',        '—');
-    setText('gh-bio',          '');
-    setText('gh-followers',    '0');
-    setText('gh-following',    '0');
-    setText('gh-repos-count',  '0');
-    setHtml('gh-repo-list',    '');
-    setHtml('gh-activity-list','');
-    setHtml('gh-contrib-svg',  '');
+    setText('gh-name', '—');
+    setText('gh-login', '—');
+    setText('gh-bio', '');
+    setText('gh-followers', '0');
+    setText('gh-following', '0');
+    setText('gh-repos-count', '0');
+    setHtml('gh-repo-list', '');
+    setHtml('gh-activity-list', '');
+    setHtml('gh-contrib-svg', '');
 
     var noteEl = document.getElementById('gh-contrib-note');
     if (noteEl) noteEl.textContent = 'Enter a username and press Load Dashboard.';
@@ -438,9 +438,9 @@ async function loadGithubDashboard(username) {
     var avatarEl = document.getElementById('gh-avatar');
     if (avatarEl) avatarEl.src = user.avatar_url;
 
-    setText('gh-name',      user.name  || '—');
-    setText('gh-login',     '@' + user.login);
-    setText('gh-bio',       user.bio   || '');
+    setText('gh-name', user.name || '—');
+    setText('gh-login', '@' + user.login);
+    setText('gh-bio', user.bio || '');
     setText('gh-followers', user.followers || 0);
     setText('gh-following', user.following || 0);
 
@@ -458,7 +458,7 @@ async function loadGithubDashboard(username) {
     for (var i = 0; i < repos.length; i++) {
       if (!repos[i].fork) ownRepos.push(repos[i]);
     }
-    ownRepos.sort(function(a, b) {
+    ownRepos.sort(function (a, b) {
       return (b.stargazers_count || 0) - (a.stargazers_count || 0);
     });
     renderRepos(ownRepos.slice(0, 8));
@@ -471,7 +471,7 @@ async function loadGithubDashboard(username) {
     );
 
     // Save for theme toggle reload
-    lastFetchedEvents = events; 
+    lastFetchedEvents = events;
 
     renderActivity(events.slice(0, 10));
 
@@ -490,7 +490,7 @@ async function loadGithubDashboard(username) {
 async function fetchFromGitHub(url) {
   var response = await fetch(url, {
     headers: {
-      'Accept':     'application/vnd.github+json',
+      'Accept': 'application/vnd.github+json',
       'User-Agent': 'XAYTHEON-Dashboard'
     }
   });
@@ -528,18 +528,18 @@ function renderRepos(repos) {
 
     html +=
       '<div class="repo-item">' +
-        '<div class="repo-name">' +
-          '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
-            safeHtml(repo.full_name) +
-          '</a>' +
-        '</div>' +
-        description +
-        '<div class="repo-meta">' +
-          '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
-          '<span>⑂ ' + (repo.forks_count     || 0) + '</span>' +
-          language +
-          '<span>Updated ' + timeAgo(repo.updated_at) + '</span>' +
-        '</div>' +
+      '<div class="repo-name">' +
+      '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
+      safeHtml(repo.full_name) +
+      '</a>' +
+      '</div>' +
+      description +
+      '<div class="repo-meta">' +
+      '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
+      '<span>⑂ ' + (repo.forks_count || 0) + '</span>' +
+      language +
+      '<span>Updated ' + timeAgo(repo.updated_at) + '</span>' +
+      '</div>' +
       '</div>';
   }
 
@@ -559,20 +559,20 @@ function renderActivity(events) {
 
   var html = '';
   for (var i = 0; i < events.length; i++) {
-    var ev       = events[i];
+    var ev = events[i];
     var repoName = ev.repo ? ev.repo.name : '';
-    var desc     = describeEvent(ev);
-    var time     = timeAgo(ev.created_at);
+    var desc = describeEvent(ev);
+    var time = timeAgo(ev.created_at);
 
     var repoLink = repoName
       ? ' in <a href="https://github.com/' + repoName + '" target="_blank" rel="noopener">' +
-          safeHtml(repoName) + '</a>'
+      safeHtml(repoName) + '</a>'
       : '';
 
     html +=
       '<li class="activity-item">' +
-        '<div>' + safeHtml(desc) + repoLink + '</div>' +
-        '<div class="activity-time">' + time + '</div>' +
+      '<div>' + safeHtml(desc) + repoLink + '</div>' +
+      '<div class="activity-time">' + time + '</div>' +
       '</li>';
   }
 
@@ -588,21 +588,21 @@ function describeEvent(ev) {
   }
   if (ev.type === 'CreateEvent') {
     var refType = ev.payload ? (ev.payload.ref_type || '') : '';
-    var ref     = ev.payload ? (ev.payload.ref      || '') : '';
+    var ref = ev.payload ? (ev.payload.ref || '') : '';
     return 'Created ' + refType + ' ' + ref;
   }
   if (ev.type === 'IssuesEvent') {
     var action = ev.payload ? (ev.payload.action || '') : '';
-    var num    = ev.payload && ev.payload.issue ? ev.payload.issue.number : '';
+    var num = ev.payload && ev.payload.issue ? ev.payload.issue.number : '';
     return 'Issue ' + action + ' #' + num;
   }
   if (ev.type === 'PullRequestEvent') {
     var action = ev.payload ? (ev.payload.action || '') : '';
-    var num    = ev.payload && ev.payload.pull_request ? ev.payload.pull_request.number : '';
+    var num = ev.payload && ev.payload.pull_request ? ev.payload.pull_request.number : '';
     return 'Pull request ' + action + ' #' + num;
   }
   if (ev.type === 'WatchEvent') return 'Starred a repository';
-  if (ev.type === 'ForkEvent')  return 'Forked a repository';
+  if (ev.type === 'ForkEvent') return 'Forked a repository';
   return ev.type;
 }
 
@@ -610,7 +610,7 @@ function describeEvent(ev) {
 // Show the contributions calendar (green squares chart)
 function showContributionsChart(username, events) {
   var container = document.getElementById('gh-contrib-svg');
-  var noteEl    = document.getElementById('gh-contrib-note');
+  var noteEl = document.getElementById('gh-contrib-note');
   if (!container) return;
 
   // Show placeholder before anything else so it can't overwrite the result
@@ -618,28 +618,28 @@ function showContributionsChart(username, events) {
 
   // Try the third-party full-year chart image first
   var chartImg = new Image();
-  chartImg.alt              = username + "'s contributions";
-  chartImg.style.maxWidth   = '100%';
-  chartImg.referrerPolicy   = 'no-referrer';
+  chartImg.alt = username + "'s contributions";
+  chartImg.style.maxWidth = '100%';
+  chartImg.referrerPolicy = 'no-referrer';
 
   // Attach handlers BEFORE setting src to avoid a race condition where a
   // cached image fires onload synchronously before the handler is registered.
-  chartImg.onload = function() {
+  chartImg.onload = function () {
     container.innerHTML = '';
     container.appendChild(chartImg);
     if (noteEl) noteEl.textContent = 'Full-year contribution chart.';
   };
 
   // If the image fails — build a heatmap from the events we already fetched
-  chartImg.onerror = function() {
+  chartImg.onerror = function () {
     var svgHtml = buildHeatmapFromEvents(events);
     container.innerHTML = svgHtml;
     if (noteEl) noteEl.textContent = 'Approximate heatmap based on recent public activity.';
   };
 
-// Set src last so the browser starts loading only after handlers are in place.
-var theme = document.documentElement.getAttribute('data-theme') || 'light';
-chartImg.src = 'https://kusa-image.deno.dev/' + encodeURIComponent(username) + '?theme=' + theme;
+  // Set src last so the browser starts loading only after handlers are in place.
+  var theme = document.documentElement.getAttribute('data-theme') || 'light';
+  chartImg.src = 'https://kusa-image.deno.dev/' + encodeURIComponent(username) + '?theme=' + theme;
 
   // Safety net: if the browser resolved the image from cache synchronously
   // before onload could fire, manually trigger the appropriate handler.
@@ -659,7 +659,7 @@ function buildHeatmapFromEvents(events) {
     return '<div class="muted">No recent public activity.</div>';
   }
 
-  var today    = new Date();
+  var today = new Date();
   var daysBack = 90;
   var startDate = new Date(today.getTime() - daysBack * 24 * 60 * 60 * 1000);
 
@@ -698,17 +698,17 @@ function buildHeatmapFromEvents(events) {
   var colors = ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127'];
   if (document.documentElement.getAttribute('data-theme') === 'dark') {
     colors[0] = '#2d333b';
-}
+  }
 
   // Calculate grid dimensions
-  var cellSize  = 10;
-  var gap       = 2;
-  var firstDay  = new Date(days[0] + 'T00:00:00Z');
+  var cellSize = 10;
+  var gap = 2;
+  var firstDay = new Date(days[0] + 'T00:00:00Z');
   var startOffset = firstDay.getUTCDay();  // 0 = Sunday
-  var totalCells  = days.length + startOffset;
-  var numCols     = Math.ceil(totalCells / 7);
-  var svgWidth    = numCols * (cellSize + gap) + gap;
-  var svgHeight   = 7 * (cellSize + gap) + gap + 20;  // +20 for the label
+  var totalCells = days.length + startOffset;
+  var numCols = Math.ceil(totalCells / 7);
+  var svgWidth = numCols * (cellSize + gap) + gap;
+  var svgHeight = 7 * (cellSize + gap) + gap + 20;  // +20 for the label
 
   // Draw one rectangle per day
   var rects = '';
@@ -717,17 +717,17 @@ function buildHeatmapFromEvents(events) {
       var dayIndex = col * 7 + row - startOffset;
       if (dayIndex < 0 || dayIndex >= days.length) continue;
 
-      var day      = days[dayIndex];
-      var count    = dayCounts[day] || 0;
+      var day = days[dayIndex];
+      var count = dayCounts[day] || 0;
       var colorIdx = count === 0 ? 0 : Math.min(4, Math.ceil((count / maxCount) * 4));
-      var color    = colors[colorIdx];
-      var x        = gap + col * (cellSize + gap);
-      var y        = gap + row * (cellSize + gap);
+      var color = colors[colorIdx];
+      var x = gap + col * (cellSize + gap);
+      var y = gap + row * (cellSize + gap);
 
       rects +=
         '<rect x="' + x + '" y="' + y + '" width="' + cellSize + '" height="' + cellSize + '"' +
         ' rx="2" fill="' + color + '">' +
-          '<title>' + day + ': ' + count + ' event(s)</title>' +
+        '<title>' + day + ': ' + count + ' event(s)</title>' +
         '</rect>';
     }
   }
@@ -737,10 +737,10 @@ function buildHeatmapFromEvents(events) {
     ' font-size="10" fill="#666">Last ' + daysBack + ' days (approx.)</text>';
 
   return '<svg width="' + svgWidth + '" height="' + svgHeight + '"' +
-         ' viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '"' +
-         ' xmlns="http://www.w3.org/2000/svg">' +
-           rects + label +
-         '</svg>';
+    ' viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '"' +
+    ' xmlns="http://www.w3.org/2000/svg">' +
+    rects + label +
+    '</svg>';
 }
 
 
@@ -764,8 +764,8 @@ function initMiniViewer() {
   var loadingEl = container.querySelector('.mini-3d-loading');
 
   // Create a separate mini scene for this viewer
-  var miniScene    = new THREE.Scene();
-  var miniCamera   = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  var miniScene = new THREE.Scene();
+  var miniCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   var miniRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
   miniRenderer.setClearColor(0x000000, 0);  // transparent background
 
@@ -794,7 +794,7 @@ function initMiniViewer() {
   loader.load(
     'assets/models/github.glb',
 
-    function(gltf) {  // success
+    function (gltf) {  // success
       var model = gltf.scene;
       centerAndScaleModel(model, 3.0);
 
@@ -806,11 +806,11 @@ function initMiniViewer() {
       if (loadingEl) loadingEl.style.display = 'none';
 
       // Position camera based on model size
-      var box  = new THREE.Box3().setFromObject(model);
+      var box = new THREE.Box3().setFromObject(model);
       var size = new THREE.Vector3();
       box.getSize(size);
       var maxDim = Math.max(size.x, size.y, size.z) || 1;
-      var dist   = maxDim * 1.8;
+      var dist = maxDim * 1.8;
       miniCamera.position.set(dist, dist * 0.8, dist);
       miniCamera.lookAt(0, 0, 0);
 
@@ -825,7 +825,7 @@ function initMiniViewer() {
 
     undefined,  // no progress callback needed
 
-    function(err) {  // error
+    function (err) {  // error
       console.warn('Mini viewer: model failed to load', err);
       if (loadingEl) loadingEl.textContent = '3D not found';
     }
@@ -865,8 +865,8 @@ function setHtml(id, value) {
 function setGithubStatus(message, isError) {
   var el = document.getElementById('github-status');
   if (!el) return;
-  el.textContent  = message;
-  el.style.color  = isError ? '#b91c1c' : '#111827';
+  el.textContent = message;
+  el.style.color = isError ? '#b91c1c' : '#111827';
 }
 
 // Convert a date string to "X days ago" format
@@ -874,10 +874,10 @@ function setGithubStatus(message, isError) {
 function timeAgo(dateString) {
   var secondsAgo = Math.floor((Date.now() - new Date(dateString)) / 1000);
 
-  if (secondsAgo < 60)       return 'just now';
-  if (secondsAgo < 3600)     return Math.floor(secondsAgo / 60)      + ' minutes ago';
-  if (secondsAgo < 86400)    return Math.floor(secondsAgo / 3600)    + ' hours ago';
-  if (secondsAgo < 2592000)  return Math.floor(secondsAgo / 86400)   + ' days ago';
+  if (secondsAgo < 60) return 'just now';
+  if (secondsAgo < 3600) return Math.floor(secondsAgo / 60) + ' minutes ago';
+  if (secondsAgo < 86400) return Math.floor(secondsAgo / 3600) + ' hours ago';
+  if (secondsAgo < 2592000) return Math.floor(secondsAgo / 86400) + ' days ago';
   if (secondsAgo < 31536000) return Math.floor(secondsAgo / 2592000) + ' months ago';
   return Math.floor(secondsAgo / 31536000) + ' years ago';
 }
@@ -887,7 +887,7 @@ function timeAgo(dateString) {
 // PART 5 — START EVERYTHING WHEN THE PAGE IS READY
 // ============================================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
   // Start the 3D background if there's a canvas on this page
   var canvas = document.getElementById('three-canvas');
@@ -903,3 +903,5 @@ document.addEventListener('DOMContentLoaded', function() {
   initMiniViewer();
 
 });
+
+
