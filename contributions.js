@@ -93,25 +93,25 @@ function saveContribution(event) {
   event.preventDefault();  // stop the browser from reloading the page
 
   // Read all the form field values
-  var project     = document.getElementById('cf-project').value.trim();
-  var link        = document.getElementById('cf-link').value.trim();
-  var program     = document.getElementById('cf-program').value.trim();
-  var date        = document.getElementById('cf-date').value || null;
-  var type        = document.getElementById('cf-type').value.trim();
+  var project = document.getElementById('cf-project').value.trim();
+  var link = document.getElementById('cf-link').value.trim();
+  var program = document.getElementById('cf-program').value.trim();
+  var date = document.getElementById('cf-date').value || null;
+  var type = document.getElementById('cf-type').value.trim();
   var description = document.getElementById('cf-desc').value.trim();
-  var tech        = document.getElementById('cf-tech').value.trim();
+  var tech = document.getElementById('cf-tech').value.trim();
 
   // Build the contribution object
   var contribution = {
-    id:          createId(),
-    project:     project,
-    link:        link,
-    program:     program,
-    date:        date,
-    type:        type,
+    id: createId(),
+    project: project,
+    link: link,
+    program: program,
+    date: date,
+    type: type,
     description: description,
-    tech:        tech,
-    created_at:  new Date().toISOString()
+    tech: tech,
+    created_at: new Date().toISOString()
   };
 
   // Load existing contributions, add the new one at the top, save back
@@ -141,9 +141,9 @@ function buildContributionRow(contribution) {
   // Build the meta line: "GSoC • Feature • Jan 1 2025 • React"
   var metaParts = [];
   if (contribution.program) metaParts.push(safeHtml(contribution.program));
-  if (contribution.type)    metaParts.push(safeHtml(contribution.type));
-  if (dateText)             metaParts.push(dateText);
-  if (contribution.tech)    metaParts.push(safeHtml(contribution.tech));
+  if (contribution.type) metaParts.push(safeHtml(contribution.type));
+  if (dateText) metaParts.push(dateText);
+  if (contribution.tech) metaParts.push(safeHtml(contribution.tech));
 
   // Optional link to the repo or PR
   var linkHtml = '';
@@ -154,21 +154,21 @@ function buildContributionRow(contribution) {
 
   return (
     '<div class="repo-item" data-id="' + contribution.id + '">' +
-      '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">' +
-        '<div>' +
-          '<div class="repo-name">' + safeHtml(contribution.project || 'Untitled') + '</div>' +
-          (contribution.description
-            ? '<div class="repo-desc">' + safeHtml(contribution.description) + '</div>'
-            : '') +
-          '<div class="repo-meta">' +
-            linkHtml +
-            metaParts.join(' • ') +
-          '</div>' +
-        '</div>' +
-        '<button class="btn btn-outline contrib-delete-btn" data-id="' + contribution.id + '">' +
-          'Delete' +
-        '</button>' +
-      '</div>' +
+    '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">' +
+    '<div>' +
+    '<div class="repo-name">' + safeHtml(contribution.project || 'Untitled') + '</div>' +
+    (contribution.description
+      ? '<div class="repo-desc">' + safeHtml(contribution.description) + '</div>'
+      : '') +
+    '<div class="repo-meta">' +
+    linkHtml +
+    metaParts.join(' • ') +
+    '</div>' +
+    '</div>' +
+    '<button class="btn btn-outline contrib-delete-btn" data-id="' + contribution.id + '">' +
+    'Delete' +
+    '</button>' +
+    '</div>' +
     '</div>'
   );
 }
@@ -200,8 +200,8 @@ function renderContributions() {
   var deleteButtons = list.querySelectorAll('.contrib-delete-btn');
   for (var i = 0; i < deleteButtons.length; i++) {
     // We wrap in a function so each button remembers its own "id"
-    (function(btn) {
-      btn.addEventListener('click', function() {
+    (function (btn) {
+      btn.addEventListener('click', function () {
         deleteContribution(btn.getAttribute('data-id'));
       });
     })(deleteButtons[i]);
@@ -236,7 +236,7 @@ function deleteContribution(id) {
 // INITIALIZE WHEN PAGE LOADS
 // ============================================================
 
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('contrib-form');
   if (form) {
     form.addEventListener('submit', saveContribution);
@@ -244,4 +244,29 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Show any existing contributions right away
   renderContributions();
+});
+
+// Hamburger menu functionality
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('active');
+});
+
+// Close menu when clicking a nav link
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('active');
+  });
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('active');
+  }
 });

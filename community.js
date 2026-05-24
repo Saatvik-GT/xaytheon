@@ -8,25 +8,25 @@
 // ============================================================
 
 // Wait for the HTML to finish loading before running any code
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function () {
 
   // --- Get references to all the elements we'll use ---
-  var form        = document.getElementById('trend-form');
+  var form = document.getElementById('trend-form');
   if (!form) return;  // safety check: only run on the community page
 
-  var langInput   = document.getElementById('trend-lang');    // language filter input
-  var topicInput  = document.getElementById('trend-topic');   // topic filter input
+  var langInput = document.getElementById('trend-lang');    // language filter input
+  var topicInput = document.getElementById('trend-topic');   // topic filter input
   var windowInput = document.getElementById('trend-window');  // time window (days) input
-  var kInput      = document.getElementById('trend-k');       // "how many results" input
-  var statusEl    = document.getElementById('trend-status');  // status message area
-  var resultsEl   = document.getElementById('trend-results'); // where cards appear
-  var resetBtn    = document.getElementById('trend-reset');   // reset button
+  var kInput = document.getElementById('trend-k');       // "how many results" input
+  var statusEl = document.getElementById('trend-status');  // status message area
+  var resultsEl = document.getElementById('trend-results'); // where cards appear
+  var resetBtn = document.getElementById('trend-reset');   // reset button
 
   // --- Cache ---
   // Instead of fetching the same data over and over, we remember recent results.
   // Format: { "cacheKey": { time: timestamp, results: [repo, repo, ...] } }
-  var searchCache       = {};
-  var CACHE_MINUTES     = 5;  // how long to keep cached results
+  var searchCache = {};
+  var CACHE_MINUTES = 5;  // how long to keep cached results
 
 
   // ============================================================
@@ -53,8 +53,8 @@ window.addEventListener('DOMContentLoaded', function() {
   // Convert a date string to "X days ago" text
   function timeAgo(dateString) {
     var seconds = Math.floor((Date.now() - new Date(dateString)) / 1000);
-    if (seconds < 60)    return 'just now';
-    if (seconds < 3600)  return Math.floor(seconds / 60)   + ' minutes ago';
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) return Math.floor(seconds / 60) + ' minutes ago';
     if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
     var days = Math.floor(seconds / 86400);
     if (days < 30) return days + ' days ago';
@@ -66,7 +66,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // Formula: stars are most important, forks second, recently updated gets a bonus.
   function scoreRepo(repo) {
     var stars = repo.stargazers_count || 0;
-    var forks = repo.forks_count      || 0;
+    var forks = repo.forks_count || 0;
 
     // Days since the repo was last pushed to
     var daysSinceUpdate = (Date.now() - new Date(repo.pushed_at)) / (1000 * 60 * 60 * 24);
@@ -93,18 +93,18 @@ window.addEventListener('DOMContentLoaded', function() {
 
     return (
       '<div class="repo-item">' +
-        '<div class="repo-name">' +
-          '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
-            safeHtml(repo.full_name) +
-          '</a>' +
-        '</div>' +
-        description +
-        '<div class="repo-meta">' +
-          '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
-          '<span>⑂ ' + (repo.forks_count      || 0) + '</span>' +
-          language +
-          '<span>Updated ' + timeAgo(repo.pushed_at) + '</span>' +
-        '</div>' +
+      '<div class="repo-name">' +
+      '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
+      safeHtml(repo.full_name) +
+      '</a>' +
+      '</div>' +
+      description +
+      '<div class="repo-meta">' +
+      '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
+      '<span>⑂ ' + (repo.forks_count || 0) + '</span>' +
+      language +
+      '<span>Updated ' + timeAgo(repo.pushed_at) + '</span>' +
+      '</div>' +
       '</div>'
     );
   }
@@ -133,13 +133,13 @@ window.addEventListener('DOMContentLoaded', function() {
   async function fetchRepos(language, topic, days) {
     // Build a date string for "X days ago": e.g. "2025-01-01"
     var since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
-                  .toISOString()
-                  .slice(0, 10);
+      .toISOString()
+      .slice(0, 10);
 
     // Build the GitHub search query string
     var query = 'pushed:>=' + since;
     if (language) query += ' language:' + language;
-    if (topic)    query += ' topic:'    + topic;
+    if (topic) query += ' topic:' + topic;
 
     var url =
       'https://api.github.com/search/repositories' +
@@ -148,7 +148,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     var response = await fetch(url, {
       headers: {
-        'Accept':     'application/vnd.github+json',
+        'Accept': 'application/vnd.github+json',
         'User-Agent': 'XAYTHEON'
       }
     });
@@ -173,7 +173,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     // Sort by score: highest first
-    repos.sort(function(a, b) {
+    repos.sort(function (a, b) {
       return b._score - a._score;
     });
 
@@ -189,9 +189,9 @@ window.addEventListener('DOMContentLoaded', function() {
   // Fetch and display trending repos based on the current filter settings
   async function loadTrending() {
     var language = langInput.value.trim();
-    var topic    = topicInput.value.trim();
-    var days     = parseInt(windowInput.value) || 30;
-    var k        = Math.min(20, parseInt(kInput.value) || 10);
+    var topic = topicInput.value.trim();
+    var days = parseInt(windowInput.value) || 30;
+    var k = Math.min(20, parseInt(kInput.value) || 10);
 
     // Check if we have recent cached results for these exact filters
     var cacheKey = language + '|' + topic + '|' + days + '|' + k;
@@ -211,7 +211,7 @@ window.addEventListener('DOMContentLoaded', function() {
     resultsEl.innerHTML = '<div class="muted">Loading…</div>';
 
     try {
-      var repos    = await fetchRepos(language, topic, days);
+      var repos = await fetchRepos(language, topic, days);
       var topRepos = pickTopK(repos, k);
 
       // Save to cache for next time
@@ -232,17 +232,17 @@ window.addEventListener('DOMContentLoaded', function() {
   // ============================================================
 
   // Search when the form is submitted
-  form.addEventListener('submit', function(event) {
+  form.addEventListener('submit', function (event) {
     event.preventDefault();  // stop the browser from reloading the page
     loadTrending();
   });
 
   // Reset filters and reload when the reset button is clicked
-  resetBtn.addEventListener('click', function() {
-    langInput.value   = '';
-    topicInput.value  = '';
+  resetBtn.addEventListener('click', function () {
+    langInput.value = '';
+    topicInput.value = '';
     windowInput.value = '30';
-    kInput.value      = '10';
+    kInput.value = '10';
     loadTrending();
   });
 
@@ -250,3 +250,28 @@ window.addEventListener('DOMContentLoaded', function() {
   loadTrending();
 
 });  // end DOMContentLoaded
+
+// Hamburger menu functionality
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('active');
+});
+
+// Close menu when clicking a nav link
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('active');
+  });
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('active');
+  }
+});

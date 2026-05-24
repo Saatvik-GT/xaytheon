@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,25 +8,33 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="eightgon-page">
   <div class="content">
 
     <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="nav-container">
-        <a class="logo" href="index.html" aria-label="Back to Home">
+        <a class="logo" href="index.html" aria-label="XAYTHEON home">
           <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
         </a>
-        <ul class="nav-menu">
-          <li><a class="nav-link" href="index.html">Home</a></li>
+
+        <!-- Add hamburger button -->
+        <div class="hamburger" id="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+
+        <ul class="nav-menu" id="nav-menu">
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
 
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
       </div>
-
     </nav>
 
     <!-- GitHub Dashboard Section -->
@@ -58,7 +67,9 @@
 
           <!-- Profile card: avatar, name, bio, follower counts -->
           <div class="card profile-card" id="gh-profile">
-            <div class="card-header"><h3>Profile</h3></div>
+            <div class="card-header">
+              <h3>Profile</h3>
+            </div>
             <div class="card-body">
               <div class="profile-row">
                 <img id="gh-avatar" alt="Avatar" class="avatar" />
@@ -78,7 +89,9 @@
 
           <!-- Contributions chart card -->
           <div class="card contributions-card" id="gh-contributions">
-            <div class="card-header"><h3>Contributions</h3></div>
+            <div class="card-header">
+              <h3>Contributions</h3>
+            </div>
             <div class="card-body">
               <div id="gh-contrib-note" class="muted">Enter a username and press Load Dashboard.</div>
               <div id="gh-contrib-svg" class="contrib-svg" role="img" aria-label="Contributions calendar"></div>
@@ -139,30 +152,33 @@
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
 
-    const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const savedTheme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateButtonLabel(savedTheme);
 
     toggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateButtonLabel(newTheme);
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-        // Reload the contributions chart with the updated theme without a new API call
-        var savedUsername = localStorage.getItem('xaytheon:ghUsername');
-        if (savedUsername && lastFetchedEvents) {
-            showContributionsChart(savedUsername, lastFetchedEvents);
-        }
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateButtonLabel(newTheme);
+
+      // Reload the contributions chart with the updated theme without a new API call
+      var savedUsername = localStorage.getItem('xaytheon:ghUsername');
+      if (savedUsername && lastFetchedEvents) {
+        showContributionsChart(savedUsername, lastFetchedEvents);
+      }
     });
 
     function updateButtonLabel(theme) {
-        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+      toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
     }
-    </script>
+
+
+  </script>
 </body>
+
 </html>
