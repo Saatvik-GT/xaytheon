@@ -18,7 +18,7 @@
 }
 @font-face {
     font-family: 'OriginTech';
-    src: url('assets/fonts/OriginTech.otf') format('opentype');
+    src: url('../assets/fonts/OriginTech.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -26,7 +26,7 @@
 
 @font-face {
     font-family: 'Researcher';
-    src: url('assets/fonts/researcher.otf') format('opentype');
+    src: url('../assets/fonts/researcher.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -34,7 +34,7 @@
 
 @font-face {
     font-family: 'Eightgon';
-    src: url('assets/fonts/Eightgon.ttf') format('truetype');
+    src: url('../assets/fonts/Eightgon.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
