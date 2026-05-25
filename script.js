@@ -421,13 +421,26 @@ function initGithubDashboard() {
 
     setGithubStatus('Dashboard cleared.');
   });
+
+  // AI Insight Button Logic
+  var insightBtn = document.getElementById('ai-insight-btn');
+  if (insightBtn) {
+    insightBtn.addEventListener('click', function() {
+      var username = usernameInput.value.trim();
+      if (username) generateAIInsights(username);
+    });
+  }
 }
 
+// Global variable to store current user data for AI analysis
+var currentGithubData = null;
 
 // Fetch and display GitHub data for a username
 // "async" means this function makes network requests and waits for responses
 async function loadGithubDashboard(username) {
   setGithubStatus('Loading profile…');
+  var insightBtn = document.getElementById('ai-insight-btn');
+  if (insightBtn) insightBtn.disabled = true;
 
   try {
     // --- Step 1: Load the user's profile ---
@@ -478,11 +491,156 @@ async function loadGithubDashboard(username) {
     // --- Step 4: Show contributions chart ---
     showContributionsChart(username, events);
 
+    // Store data for AI analysis
+    currentGithubData = {
+      profile: user,
+      repos: ownRepos.slice(0, 15), // top 15 for better context
+      events: events.slice(0, 20)
+    };
+
+    if (insightBtn) {
+      insightBtn.disabled = false;
+      setHtml('gh-insights-content', '<div class="muted">Profile loaded! Click "Generate Insights" to analyze with AI.</div>');
+    }
+
     setGithubStatus('Done');
 
   } catch (error) {
     setGithubStatus(error.message || 'Failed to load GitHub data', true);
   }
+}
+
+// Generate AI Insights using Gemini API
+async function generateAIInsights(username) {
+  var contentEl = document.getElementById('gh-insights-content');
+  var insightBtn = document.getElementById('ai-insight-btn');
+  if (!contentEl || !currentGithubData) return;
+
+  insightBtn.disabled = true;
+  contentEl.innerHTML = `
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <span style="margin-left: 8px; opacity: 0.7;">XAYTHEON AI is analyzing your profile...</span>
+    </div>
+  `;
+
+  // Prepare data summary for AI
+  var repoInfo = currentGithubData.repos.map(r => `${r.name} (${r.language}, ${r.stargazers_count} stars): ${r.description || 'No description'}`).join('\n');
+  var activityInfo = currentGithubData.events.map(e => describeEvent(e)).join(', ');
+
+  var prompt = `
+    Analyze this GitHub profile and provide developer insights.
+    Username: ${currentGithubData.profile.login}
+    Bio: ${currentGithubData.profile.bio || 'None'}
+    Public Repos: ${currentGithubData.profile.public_repos}
+    Followers: ${currentGithubData.profile.followers}
+    
+    Repositories:
+    ${repoInfo}
+    
+    Recent Activity:
+    ${activityInfo}
+
+    Please provide the response in EXACTLY this JSON format (no markdown, no other text):
+    {
+      "summary": "Short 2-sentence summary of their developer persona",
+      "skills": ["Skill1", "Skill2", "Skill3", "Skill4"],
+      "consistency": "Observation about their contribution habits",
+      "improvements": ["Area1", "Area2"],
+      "reportCard": {
+        "technical": "A+",
+        "activity": "B",
+        "impact": "A",
+        "variety": "C"
+      }
+    }
+  `;
+
+  try {
+    // Hardcoded API key as requested by user for this task
+    var API_KEY = 'AIzaSyDQZyqgmrKr9qw7jMP4l3CyRwvO4Sty64U';
+    // Using gemini-flash-latest which was confirmed to exist in the environment
+    var url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`;
+
+    var response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+
+    if (!response.ok) throw new Error('AI analysis failed');
+
+    var result = await response.json();
+    var aiText = result.candidates[0].content.parts[0].text;
+    
+    // Clean JSON from possible markdown wrappers
+    var cleanJson = aiText.replace(/```json|```/g, '').trim();
+    var insights = JSON.parse(cleanJson);
+
+    renderAIInsights(insights);
+
+  } catch (error) {
+    console.error('AI Error:', error);
+    contentEl.innerHTML = '<div class="muted" style="color: #b91c1c;">AI Insight generation failed. Please check your API key or connection.</div>';
+  } finally {
+    insightBtn.disabled = false;
+  }
+}
+
+function renderAIInsights(insights) {
+  var contentEl = document.getElementById('gh-insights-content');
+  if (!contentEl) return;
+
+  var skillsHtml = insights.skills.map(s => `<span class="insight-tag">${safeHtml(s)}</span>`).join('');
+  var improvementsHtml = insights.improvements.map(i => `<li>${safeHtml(i)}</li>`).join('');
+
+  contentEl.innerHTML = `
+    <div class="insight-section">
+      <h4>Persona Summary</h4>
+      <p>${safeHtml(insights.summary)}</p>
+    </div>
+    
+    <div class="insight-section">
+      <h4>Core Skills</h4>
+      <div class="skills-grid">${skillsHtml}</div>
+    </div>
+    
+    <div class="insight-section">
+      <h4>Consistency & Habits</h4>
+      <p>${safeHtml(insights.consistency)}</p>
+    </div>
+    
+    <div class="insight-section">
+      <h4>Growth Opportunities</h4>
+      <ul>${improvementsHtml}</ul>
+    </div>
+    
+    <div class="insight-section">
+      <h4>Developer Report Card</h4>
+      <div class="report-card">
+        <div class="report-item">
+          <span class="report-score">${insights.reportCard.technical}</span>
+          <span class="report-label">Technical</span>
+        </div>
+        <div class="report-item">
+          <span class="report-score">${insights.reportCard.activity}</span>
+          <span class="report-label">Activity</span>
+        </div>
+        <div class="report-item">
+          <span class="report-score">${insights.reportCard.impact}</span>
+          <span class="report-label">Impact</span>
+        </div>
+        <div class="report-item">
+          <span class="report-score">${insights.reportCard.variety}</span>
+          <span class="report-label">Variety</span>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 

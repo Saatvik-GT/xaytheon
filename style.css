@@ -603,6 +603,96 @@ section {
 .activity-item { padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
 .activity-time { opacity: 0.7; font-size: 0.85em; }
 
+/* AI Insights Styling */
+.insights-card {
+    background: linear-gradient(135deg, var(--card-bg), rgba(102, 204, 255, 0.05));
+    border: 1px solid rgba(102, 204, 255, 0.2);
+}
+
+#gh-insights-content {
+    line-height: 1.6;
+}
+
+.insight-section {
+    margin-bottom: 20px;
+}
+
+.insight-section h4 {
+    color: #66ccff;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.insight-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(102, 204, 255, 0.1);
+    border: 1px solid rgba(102, 204, 255, 0.3);
+    border-radius: 999px;
+    font-size: 0.85em;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    color: var(--text-color);
+}
+
+.report-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 12px;
+}
+
+.report-item {
+    text-align: center;
+}
+
+.report-score {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #66ccff;
+    display: block;
+}
+
+.report-label {
+    font-size: 0.8em;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.9em;
+}
+
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 10px;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #66ccff;
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+}
+
 .contrib-svg {
     min-height: 140px;
     display: grid;
