@@ -85,7 +85,7 @@ body.eightgon-page {
     width: 100%;
     height: 100%;
     display: block;
-    opacity: 0.2;
+    opacity: 0.3;
     transition: opacity 0.3s ease;
     pointer-events: none; /* canvas is decorative — let clicks/scrolls pass through */
 }
@@ -155,6 +155,8 @@ body.eightgon-page {
     box-shadow: 0px 0px 10px var(--shadow-color);
     z-index: 100;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
 }
 
 .nav-container {
@@ -164,7 +166,7 @@ body.eightgon-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 70px;
+    height: 80px;
 }
 
 .logo {
@@ -190,7 +192,8 @@ body.eightgon-page {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 40px;
+    align-items: center;
 }
 
 .nav-link {
@@ -199,13 +202,14 @@ body.eightgon-page {
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
+    padding: 8px 0;
+letter-spacing: 0.5px;
 }
 
 .nav-link:hover {
-    color: var(--text-color);
-    opacity: 75%;
+    color: #00d9ff;
+    opacity: 100%;
 }
-
 .nav-link::after {
     content: '';
     position: absolute;
@@ -213,10 +217,10 @@ body.eightgon-page {
     left: 0;
     width: 0;
     height: 2px;
-    background: #000000;
+    background: #00d9ff;
+    box-shadow: 0 0 10px rgba(0,217,255,0.5);
     transition: width 0.3s ease;
 }
-
 .nav-link:hover::after {
     width: 100%;
 }
@@ -249,28 +253,22 @@ body.eightgon-page {
     transition: 0.3s;
 }
 
-#theme-toggle{
-    padding: 10px;
-    border-width: 1px;
-    border-radius: 100%;
-    background: none;
-    border-color: var(--border-color);
-}
 /* Hero Section */
 .hero {
-    min-height: 100vh;
+    min-height: 92vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 120px 20px 80px;
+    padding: 120px 20px 60px;
+    position: relative;
 }
-
 .hero-content {
     max-width: 900px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
-
 .hero-title {
     margin-bottom: 40px;
 }
@@ -286,15 +284,16 @@ body.eightgon-page {
 
 .title-main {
     display: block;
-    font-size: 5em;
+    font-size: 4.5em;
     font-weight: bold;
-    letter-spacing: 6px;
-    margin-bottom: 20px;
-    background: linear-gradient(45deg, #000000, #333333);
+    letter-spacing: 4px;
+    margin-bottom: 15px;
+    background: linear-gradient(45deg, #ffffff, #00d9ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1.1;
+    text-shadow: 0 0 25px rgba(0,217,255,0.35);
 }
 
 /* When using the logo image instead of text */
@@ -313,10 +312,13 @@ body.eightgon-page {
 
 .title-subtitle {
     display: block;
-    font-size: 1.6em;
+    font-size: 1.4em;
     font-weight: 300;
-    opacity: 0.7;
+    opacity: 0.9;
     margin-top: 10px;
+    letter-spacing: 1px;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 /* Light blue accent with subtle glow */
@@ -333,6 +335,8 @@ body.eightgon-page {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.8;
+    text-align: center;
 }
 
 .hero-buttons {
@@ -357,29 +361,28 @@ body.eightgon-page {
 }
 
 .btn-primary {
-    background: #000000;
+    background: linear-gradient(45deg,#00d9ff,#0066ff);
     color: #ffffff;
-    border: 2px solid #000000;
+    border: none;
 }
 
 .btn-primary:hover {
-    background: #333333;
-    border-color: #333333;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 0 25px rgba(0,217,255,0.45);
 }
 
 .btn-secondary {
-    background: transparent;
-    color: #000000;
-    border: 2px solid #000000;
+    background: rgba(255,255,255,0.08);
+    color: var(--text-color);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
 }
 
+
 .btn-secondary:hover {
-    background: #000000;
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
 .btn-outline {
@@ -629,16 +632,18 @@ section {
 
 /* Footer */
 .footer {
-    background: #000000;
+    background: #050816;
     color: #ffffff;
-    padding: 60px 0 30px;
+    padding: 40px 0 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
-
 .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .footer-label {
@@ -660,6 +665,8 @@ section {
 .footer-brand p {
     margin-top: 10px;
     opacity: 0.7;
+    line-height: 1.7;
+letter-spacing: 0.5px;
 }
 
 .footer-links {
@@ -777,10 +784,10 @@ section {
         padding: 0 15px;
     }
 
-    .nav-container {
-        padding: 0 15px;
-    }
-
+    .nav-container{
+    padding: 0 15px;
+    gap: 20px;
+}
     .title-main {
         font-size: 2em;
     }
@@ -871,7 +878,22 @@ section {
     outline: 2px solid #000000;
     outline-offset: 2px;
 }
+.theme-toggle-btn{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-size: 1rem;
+}
 
+.theme-toggle-btn:hover{
+    transform: scale(1.08);
+    box-shadow: 0 0 15px rgba(0,217,255,0.35);
+}
 /* Loading animation improvements */
 @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -883,10 +905,14 @@ section {
 }
 
 /* Smooth transitions for all interactive elements */
-* {
+button,
+a,
+.btn,
+.nav-link,
+.project-card,
+.contact-method {
     transition: all 0.3s ease;
 }
-
 /* Enhanced project card interactions */
 .project-card {
     position: relative;
@@ -955,3 +981,29 @@ section {
 .contact-method:hover::before {
     opacity: 1;
 }
+
+@media (max-width:768px){
+
+    .hero{
+        min-height: auto;
+        padding: 120px 20px 60px;
+    }
+
+    .title-main{
+        font-size: 2.5em;
+        letter-spacing: 2px;
+    }
+
+    .nav-menu{
+        gap: 15px;
+    }
+
+    .hero-description{
+        font-size: 1rem;
+    }
+
+    .footer-content{
+        text-align:center;
+    }
+}
+
