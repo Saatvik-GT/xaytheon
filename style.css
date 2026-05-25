@@ -955,3 +955,58 @@ section {
 .contact-method:hover::before {
     opacity: 1;
 }
+
+/* Back To Top Button */
+#backToTopBtn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #000000;
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    display: none;
+
+    z-index: 999;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        background 0.3s ease;
+}
+
+#backToTopBtn:hover {
+    background: #333333;
+    transform: translateY(-3px) scale(1.05);
+}
+
+#backToTopBtn.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    #backToTopBtn {
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+
+        bottom: 20px;
+        right: 20px;
+    }
+}
