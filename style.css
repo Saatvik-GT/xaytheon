@@ -609,6 +609,59 @@ section {
     place-items: center;
 }
 
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: #ebebeb;
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.75), rgba(255,255,255,0));
+    transform: translateX(-100%);
+    animation: shimmer 1.2s infinite;
+}
+
+.skeleton-line {
+    height: 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.skeleton-line.short {
+    width: 60%;
+}
+
+.skeleton-chart {
+    width: 100%;
+    min-height: 140px;
+    border-radius: 12px;
+}
+
+/* Circular avatar skeleton matching .avatar sizing */
+.skeleton-avatar {
+    display: inline-block;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.06);
+    background: #e9e9e9;
+    object-fit: cover;
+}
+
+.skeleton-card {
+    display: grid;
+    gap: 10px;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
 /* Responsive layout for GitHub grid */
 @media (max-width: 1024px) {
     .card { grid-column: span 12; }

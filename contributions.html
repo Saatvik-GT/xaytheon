@@ -22,7 +22,7 @@
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
         </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
+        <button id="theme-toggle" type="button" class="btn btn-primary" style="margin:0 !important;"></button>
 
       </div>
     </nav>
@@ -74,6 +74,15 @@
               <div id="contrib-status" class="github-status" style="grid-column: 1 / -1;"></div>
             </form>
 
+            <div id="contrib-insights" class="card" style="margin-bottom: 18px;">
+              <div class="card-header">
+                <h3>Contribution Insights</h3>
+              </div>
+              <div class="card-body" id="contrib-insights-body">
+                <div class="muted">Add contributions to see insights.</div>
+              </div>
+            </div>
+
             <!-- List of saved contributions appears below the form -->
             <div id="contrib-list" class="repo-list"></div>
 
@@ -102,26 +111,26 @@
   <script src="contributions.js"></script>
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
+    if (toggleBtn) {
+      const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
-    const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateButtonLabel(savedTheme);
 
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateButtonLabel(savedTheme);
+      toggleBtn.addEventListener('click', function() {
+        var currentTheme = document.documentElement.getAttribute('data-theme');
+        var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-    toggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateButtonLabel(newTheme);
-        console.log(currentTheme);
-    });
+      });
+    }
 
     function updateButtonLabel(theme) {
-        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+      if (!toggleBtn) return;
+      toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
     }
-    </script>
+  </script>
 </body>
 </html>
