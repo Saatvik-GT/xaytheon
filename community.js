@@ -27,6 +27,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // Format: { "cacheKey": { time: timestamp, results: [repo, repo, ...] } }
   var searchCache       = {};
   var CACHE_MINUTES     = 5;  // how long to keep cached results
+  var FILTERS_KEY       = 'xaytheon:communityFilters';
 
 
   // ============================================================
@@ -38,6 +39,38 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.style.color = isError ? '#b91c1c' : '#111827';
+  }
+
+  function loadSavedFilters() {
+    try {
+      var raw = localStorage.getItem(FILTERS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveCurrentFilters() {
+    try {
+      localStorage.setItem(FILTERS_KEY, JSON.stringify({
+        language: langInput.value,
+        topic:    topicInput.value.trim(),
+        days:     windowInput.value,
+        count:    kInput.value
+      }));
+    } catch (error) {
+      console.warn('Could not save filters:', error);
+    }
+  }
+
+  function restoreSavedFilters() {
+    var saved = loadSavedFilters();
+    if (!saved) return;
+
+    if (typeof saved.language === 'string') langInput.value = saved.language;
+    if (typeof saved.topic === 'string')    topicInput.value = saved.topic;
+    if (typeof saved.days === 'string')     windowInput.value = saved.days;
+    if (typeof saved.count === 'string')    kInput.value = saved.count;
   }
 
   // Make text safe to put in HTML (prevents code injection attacks)
@@ -191,7 +224,10 @@ window.addEventListener('DOMContentLoaded', function() {
     var language = langInput.value.trim();
     var topic    = topicInput.value.trim();
     var days     = parseInt(windowInput.value) || 30;
-    var k        = Math.min(20, parseInt(kInput.value) || 10);
+    var k        = Math.max(1, Math.min(20, parseInt(kInput.value) || 10));
+
+    kInput.value = String(k);
+    saveCurrentFilters();
 
     // Check if we have recent cached results for these exact filters
     var cacheKey = language + '|' + topic + '|' + days + '|' + k;
@@ -239,12 +275,20 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Reset filters and reload when the reset button is clicked
   resetBtn.addEventListener('click', function() {
+    localStorage.removeItem(FILTERS_KEY);
     langInput.value   = '';
     topicInput.value  = '';
     windowInput.value = '30';
     kInput.value      = '10';
     loadTrending();
   });
+
+  langInput.addEventListener('change', saveCurrentFilters);
+  topicInput.addEventListener('input', saveCurrentFilters);
+  windowInput.addEventListener('change', saveCurrentFilters);
+  kInput.addEventListener('input', saveCurrentFilters);
+
+  restoreSavedFilters();
 
   // Load results immediately when the page opens
   loadTrending();

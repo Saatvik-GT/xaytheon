@@ -25,6 +25,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // The SVG element where D3 will draw the graph
   var svg = d3.select('#graph');
+  var FILTERS_KEY = 'xaytheon:exploreFilters';
 
 
   // ============================================================
@@ -54,6 +55,36 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.style.color = isError ? '#b91c1c' : '#111827';
+  }
+
+  function loadSavedFilters() {
+    try {
+      var raw = localStorage.getItem(FILTERS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveCurrentFilters() {
+    try {
+      localStorage.setItem(FILTERS_KEY, JSON.stringify({
+        topic:    topicInput.value.trim(),
+        language: langInput.value,
+        limit:    limitInput.value
+      }));
+    } catch (error) {
+      console.warn('Could not save explore filters:', error);
+    }
+  }
+
+  function restoreSavedFilters() {
+    var saved = loadSavedFilters();
+    if (!saved) return;
+
+    if (typeof saved.topic === 'string')    topicInput.value = saved.topic;
+    if (typeof saved.language === 'string') langInput.value = saved.language;
+    if (typeof saved.limit === 'string')    limitInput.value = saved.limit;
   }
 
   // Add a node to the graph (skips if it already exists)
@@ -266,6 +297,9 @@ window.addEventListener('DOMContentLoaded', function() {
     var language  = langInput.value.trim();
     var limit     = Math.max(10, Math.min(100, parseInt(limitInput.value) || 50));
 
+    limitInput.value = String(limit);
+    saveCurrentFilters();
+
     // Add the starting topic as the first node (blue dot in the center)
     addNode('topic:' + baseTopic, { type: 'topic', label: baseTopic });
 
@@ -301,11 +335,18 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   clearBtn.addEventListener('click', function() {
+    localStorage.removeItem(FILTERS_KEY);
     topicInput.value  = 'threejs';
     langInput.value   = '';
     limitInput.value  = '50';
     startExploring();
   });
+
+  topicInput.addEventListener('input', saveCurrentFilters);
+  langInput.addEventListener('change', saveCurrentFilters);
+  limitInput.addEventListener('input', saveCurrentFilters);
+
+  restoreSavedFilters();
 
   // Load on page start
   startExploring();
