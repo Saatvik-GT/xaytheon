@@ -1,0 +1,470 @@
+/* ==========================================
+   PREMIUM MODERN NAVBAR UI
+========================================== */
+
+:root {
+    --nav-bg:
+        rgba(10, 15, 30, 0.72);
+
+    --nav-border:
+        rgba(255, 255, 255, 0.08);
+
+    --nav-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.28);
+
+    --text-primary:
+        #ffffff;
+
+    --text-secondary:
+        rgba(255,255,255,0.72);
+
+    --primary-gradient:
+        linear-gradient(
+            135deg,
+            #3b82f6,
+            #8b5cf6
+        );
+
+    --hover-bg:
+        rgba(255,255,255,0.08);
+
+    --glass-bg:
+        rgba(255,255,255,0.05);
+}
+
+/* ==========================================
+   NAVBAR
+========================================== */
+
+.navbar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    z-index: 1000;
+
+    background: var(--nav-bg);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom:
+        1px solid var(--nav-border);
+
+    box-shadow: var(--nav-shadow);
+
+    transition:
+        all 0.4s ease;
+}
+
+/* Floating Blur Glow */
+
+.navbar::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(59,130,246,0.08),
+            rgba(139,92,246,0.08)
+        );
+
+    pointer-events: none;
+}
+
+/* ==========================================
+   CONTAINER
+========================================== */
+
+.nav-container {
+    max-width: 1350px;
+
+    height: 78px;
+
+    margin: auto;
+
+    padding: 0 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ==========================================
+   LOGO
+========================================== */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    text-decoration: none;
+
+    position: relative;
+}
+
+.logo-img {
+    height: 42px;
+
+    object-fit: contain;
+
+    transition:
+        transform 0.4s ease,
+        filter 0.4s ease;
+}
+
+.logo:hover .logo-img {
+    transform:
+        rotate(-8deg)
+        scale(1.08);
+
+    filter:
+        drop-shadow(
+            0 0 14px rgba(59,130,246,0.55)
+        );
+}
+
+.logo-text {
+    font-size: 1.45rem;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    color: var(--text-primary);
+
+    text-transform: uppercase;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #bfdbfe
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ==========================================
+   NAVIGATION MENU
+========================================== */
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+
+    list-style: none;
+}
+
+/* ==========================================
+   NAV LINKS
+========================================== */
+
+.nav-link {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 10px 0;
+
+    color: var(--text-secondary);
+
+    text-decoration: none;
+
+    font-size: 0.96rem;
+    font-weight: 600;
+
+    letter-spacing: 0.3px;
+
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+/* Hover Animation */
+
+.nav-link:hover {
+    color: var(--text-primary);
+
+    transform: translateY(-2px);
+}
+
+/* Gradient Underline */
+
+.nav-link::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -6px;
+
+    width: 0%;
+    height: 3px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #3b82f6,
+            #8b5cf6
+        );
+
+    transition:
+        width 0.35s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+/* ==========================================
+   RIGHT ACTIONS
+========================================== */
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ==========================================
+   ICON BUTTONS
+========================================== */
+
+.nav-icon-btn,
+#theme-toggle {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    background: var(--glass-bg);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition:
+        all 0.35s ease;
+}
+
+/* Hover */
+
+.nav-icon-btn:hover,
+#theme-toggle:hover {
+    transform:
+        translateY(-3px)
+        scale(1.03);
+
+    background:
+        rgba(255,255,255,0.12);
+
+    box-shadow:
+        0 8px 25px rgba(59,130,246,0.25);
+}
+
+/* SVG */
+
+.nav-icon-btn svg {
+    transition:
+        transform 0.3s ease;
+}
+
+.nav-icon-btn:hover svg {
+    transform:
+        scale(1.1);
+}
+
+/* ==========================================
+   SIGN IN BUTTON
+========================================== */
+
+.nav-signin-btn {
+    position: relative;
+
+    overflow: hidden;
+
+    padding:
+        12px 22px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+
+    transition:
+        all 0.35s ease;
+
+    box-shadow:
+        0 10px 30px rgba(37,99,235,0.35);
+}
+
+/* Shine Animation */
+
+.nav-signin-btn::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,0.35),
+            transparent
+        );
+
+    transition:
+        left 0.6s ease;
+}
+
+.nav-signin-btn:hover::before {
+    left: 120%;
+}
+
+/* Hover */
+
+.nav-signin-btn:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 14px 35px rgba(37,99,235,0.45);
+}
+
+/* ==========================================
+   HAMBURGER
+========================================== */
+
+.hamburger {
+    display: none;
+
+    flex-direction: column;
+
+    cursor: pointer;
+
+    gap: 5px;
+}
+
+.bar {
+    width: 26px;
+    height: 3px;
+
+    border-radius: 999px;
+
+    background: white;
+
+    transition:
+        all 0.3s ease;
+}
+
+/* ==========================================
+   MOBILE MENU
+========================================== */
+
+@media (max-width: 950px) {
+
+    .nav-menu {
+        position: fixed;
+
+        top: 78px;
+        left: -100%;
+
+        width: 100%;
+        height: calc(100vh - 78px);
+
+        padding-top: 50px;
+
+        flex-direction: column;
+        align-items: center;
+
+        background:
+            rgba(10,15,30,0.96);
+
+        backdrop-filter:
+            blur(22px);
+
+        transition:
+            left 0.4s ease;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-link {
+        font-size: 1.05rem;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-signin-btn {
+        display: none;
+    }
+}
+
+/* ==========================================
+   SMALL DEVICES
+========================================== */
+
+@media (max-width: 600px) {
+
+    .nav-container {
+        padding: 0 18px;
+    }
+
+    .logo-text {
+        display: none;
+    }
+
+    .logo-img {
+        height: 36px;
+    }
+
+    .nav-icon-btn,
+    #theme-toggle {
+        width: 40px;
+        height: 40px;
+    }
+}

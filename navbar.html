@@ -1,13 +1,94 @@
-<nav class="navbar" aria-label="Primary Navigation">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAvbar</title>
+  <link rel="stylesheet" href="navbar.css">
+</head>
+<body>
+  <nav class="navbar" aria-label="Primary Navigation">
   <div class="nav-container">
+
+    <!-- Logo -->
     <a class="logo" href="index.html">
-      <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON home" />
+      <img
+        class="logo-img"
+        src="assets/logo/thelogo.png"
+        alt="XAYTHEON home"
+      />
+
+      <span class="logo-text">XAYTHEON</span>
     </a>
+
+    <!-- Navigation Links -->
     <ul class="nav-menu">
-      <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
-      <li><a class="nav-link" href="community.html">Community Highlights</a></li>
-      <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
-      <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+
+      <li>
+        <a class="nav-link active" href="github.html">
+          <span>GitHub Dashboard</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-link" href="community.html">
+          <span>Community Highlights</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-link" href="explore.html">
+          <span>Explore Topics</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-link" href="contributions.html">
+          <span>Contributions</span>
+        </a>
+      </li>
+
     </ul>
+
+    <!-- Right Actions -->
+    <div class="nav-actions">
+
+      <!-- Search -->
+      <button class="nav-icon-btn" aria-label="Search">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" aria-label="Toggle Theme">
+        🌙
+      </button>
+
+      <!-- Sign In Button -->
+      <a href="signin.html" class="nav-signin-btn">
+        Sign In
+      </a>
+
+      <!-- Hamburger -->
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+
+    </div>
+
   </div>
 </nav>
+</body>
+</html>
