@@ -955,3 +955,16 @@ section {
 .contact-method:hover::before {
     opacity: 1;
 }
+.bookmark-btn {
+  background: #111827;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.bookmark-btn:hover {
+  opacity: 0.9;
+}

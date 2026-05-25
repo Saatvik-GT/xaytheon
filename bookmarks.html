@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Bookmarks — XAYTHEON</title>
+
+  <link rel="icon" href="assets/icons/bookmark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="eightgon-page">
+
+  <div class="content">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-container">
+
+        <a class="logo" href="index.html" aria-label="Back to Home">
+          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
+        </a>
+
+        <ul class="nav-menu">
+          <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+          <li><a class="nav-link" href="community.html">Community Highlights</a></li>
+          <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
+          <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+          <li><a class="nav-link" href="bookmarks.html">Bookmarks</a></li>
+        </ul>
+
+        <button id="theme-toggle" class="btn btn-primary"></button>
+
+      </div>
+    </nav>
+
+    <!-- Bookmark Section -->
+    <section class="github-section">
+
+      <div class="container">
+
+        <h2 class="section-title">Bookmarked Repositories</h2>
+
+        <div id="bookmark-list" class="repo-list"></div>
+
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo-text">XAYTHEON</span>
+            <p>Empowering the next generation of innovators</p>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
+        </div>
+
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="bookmarks.js"></script>
+
+  <!-- Theme Toggle -->
+  <script>
+
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    const savedTheme =
+      localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    updateButtonLabel(savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+
+      const currentTheme =
+        document.documentElement.getAttribute('data-theme');
+
+      const newTheme =
+        currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+
+      localStorage.setItem('theme', newTheme);
+
+      updateButtonLabel(newTheme);
+
+    });
+
+    function updateButtonLabel(theme) {
+      toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+  </script>
+
+</body>
+</html>
