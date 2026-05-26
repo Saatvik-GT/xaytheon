@@ -1,0 +1,29 @@
+{
+  "name": "xaytheon",
+  "version": "1.0.0",
+  "description": "Selected in Social Winter of Code (SWoC)\r <img width=\"1300\" height=\"400\" alt=\"image\" src=\"https://github.com/user-attachments/assets/6bf856a4-0da4-4505-a433-f54797283dc4\" />",
+  "main": "auth.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anjanaprakash777/xaytheon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anjanaprakash777/xaytheon/issues"
+  },
+  "homepage": "https://github.com/anjanaprakash777/xaytheon#readme",
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.7"
+  }
+}
