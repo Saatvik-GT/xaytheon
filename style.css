@@ -386,7 +386,7 @@ body.eightgon-page {
     background: transparent;
     color: var(--button-color);
     opacity: 50%;
-    border: 1px solid #000000;
+    border: 1px solid var(--border-color);
     padding: 10px 20px;
     font-size: 0.9em;
 }
