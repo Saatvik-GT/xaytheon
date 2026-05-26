@@ -419,6 +419,10 @@ function initGithubDashboard() {
     var noteEl = document.getElementById('gh-contrib-note');
     if (noteEl) noteEl.textContent = 'Enter a username and press Load Dashboard.';
 
+    // Clear the avatar image
+    var avatarEl = document.getElementById('gh-avatar');
+    if (avatarEl) avatarEl.src = 'assets/images/avatar-placeholder.png';
+
     setGithubStatus('Dashboard cleared.');
   });
 }
