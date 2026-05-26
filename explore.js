@@ -50,10 +50,10 @@ window.addEventListener('DOMContentLoaded', function() {
   // HELPER FUNCTIONS
   // ============================================================
 
-  function setStatus(message, isError) {
+  function setStatus(message, isError) { 
     if (!statusEl) return;
     statusEl.textContent = message;
-    statusEl.style.color = isError ? '#b91c1c' : '#111827';
+    statusEl.style.color = isError ? '#b91c1c' : 'var(--text-color)';
   }
 
   // Add a node to the graph (skips if it already exists)

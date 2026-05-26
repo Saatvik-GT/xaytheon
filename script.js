@@ -866,7 +866,7 @@ function setGithubStatus(message, isError) {
   var el = document.getElementById('github-status');
   if (!el) return;
   el.textContent  = message;
-  el.style.color  = isError ? '#b91c1c' : '#111827';
+  el.style.color  = isError ? '#b91c1c' : 'var(--text-color)';
 }
 
 // Convert a date string to "X days ago" format
