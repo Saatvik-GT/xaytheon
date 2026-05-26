@@ -398,6 +398,52 @@ body.eightgon-page {
 }
 
 /* Section Styles */
+
+/* Radar Chart styles (minimalist) */
+.radar-root { width: 100%; max-width: 100%; box-sizing: border-box; display: block; }
+.radar-root { aspect-ratio: 1 / 1; }
+.radar-svg { width: 100%; height: 100%; display: block; }
+.radar-tooltip {
+    position: fixed;
+    background: rgba(10,10,10,0.92);
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    white-space: nowrap;
+    z-index: 10000;
+}
+
+.card.radar-card {
+    grid-column: span 5;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1;
+    align-self: start;
+}
+.card.radar-card .card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    min-height: 0;
+    padding: 18px;
+    overflow: hidden;
+}
+
+/* Make sure SVG never overflows its card and labels stay visible */
+.card.radar-card svg { width: 100%; height: 100%; max-height: 100%; box-sizing: border-box; }
+
+/* Ensure radar scales nicely on small screens */
+@media (max-width: 1024px) {
+    .card.radar-card {
+        grid-column: span 12;
+        aspect-ratio: 1 / 1;
+    }
+}
+
 section {
     padding: 80px 0;
 }
