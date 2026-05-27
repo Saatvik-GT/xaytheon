@@ -153,7 +153,12 @@
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateButtonLabel(newTheme);
-        console.log(currentTheme);
+
+        // Reload the contributions chart with the updated theme without a new API call
+        var savedUsername = localStorage.getItem('xaytheon:ghUsername');
+        if (savedUsername && lastFetchedEvents) {
+            showContributionsChart(savedUsername, lastFetchedEvents);
+        }
     });
 
     function updateButtonLabel(theme) {
