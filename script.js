@@ -1295,16 +1295,7 @@ function buildCompareCard(mine, theirs, side) {
 
   var html = '';
 
-  const currentPage = window.location.pathname.split("/").pop() || "index.html";
-
-  document.querySelectorAll(".nav-link").forEach((link) => {
-    const linkPage = link.getAttribute("href").split("/").pop();
-
-    if (linkPage === currentPage) {
-      link.classList.add("active");
-      link.setAttribute("aria-current", "page");
-    }
-  });
+  
   // Avatar + name
   html += '<div class="cmp-card-head">';
   html += '<div class="cmp-avatar-wrap">';
@@ -1439,4 +1430,15 @@ document.addEventListener('DOMContentLoaded', function() {
   initGithubDashboard();
   initMiniViewer();
   injectCompareUI();
+
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    const linkPage = link.getAttribute("href").split("/").pop();
+
+    if (linkPage === currentPage) {
+      link.classList.add("active");
+      link.setAttribute("aria-current", "page");
+    }
+  });
 });
