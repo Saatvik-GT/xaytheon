@@ -496,7 +496,7 @@ function filterReposByDate(repos) {
   if (!ghDateFilter.start && !ghDateFilter.end) return repos;
  
   return repos.filter(function(repo) {
-    var d = new Date(repo.updated_at || repo.pushed_at || repo.created_at);
+    var d = new Date(repo.pushed_at || repo.updated_at || repo.created_at);
     if (ghDateFilter.start && d < ghDateFilter.start) return false;
     if (ghDateFilter.end   && d > ghDateFilter.end)   return false;
     return true;
@@ -696,7 +696,7 @@ function renderRepos(repos) {
           '<span>★ ' + (repo.stargazers_count || 0) + '</span>' +
           '<span>⑂ ' + (repo.forks_count     || 0) + '</span>' +
           language +
-          '<span>Updated ' + timeAgo(repo.updated_at) + '</span>' +
+          '<span>Updated ' + timeAgo(repo.pushed_at || repo.updated_at) + '</span>'+
         '</div>' +
       '</div>';
   }
