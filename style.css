@@ -191,12 +191,15 @@ body.eightgon-page {
     display: flex;
     list-style: none;
     gap: 30px;
+    font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .nav-link {
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
+    font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: normal;
     transition: all 0.3s ease;
     position: relative;
 }
