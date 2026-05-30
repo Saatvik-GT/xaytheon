@@ -68,18 +68,9 @@ window.addEventListener("DOMContentLoaded", function () {
       "&sort=stars&order=desc&per_page=" +
       count;
 
-    var response = await fetch(url, {
-      headers: {
-        Accept: "application/vnd.github+json",
-        "User-Agent": "XAYTHEON-Explore",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("GitHub API error: " + response.status);
-    }
-
-    var data = await response.json();
+    // Use shared helper for consistent error handling and rate-limit detection
+    var data = await fetchFromGitHub(url);
+    if (!data) return [];
     return data.items || [];
   }
 

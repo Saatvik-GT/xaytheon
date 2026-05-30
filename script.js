@@ -660,9 +660,13 @@ async function loadGithubDashboard(username) {
 }
 
 async function fetchFromGitHub(url) {
-  var response = await fetch(url, {
-    headers: { 'Accept': 'application/vnd.github+json', 'User-Agent': 'XAYTHEON-Dashboard' }
-  });
+  // Delegate to the centralized helper if available
+  if (typeof window.fetchFromGitHub === 'function') {
+    return window.fetchFromGitHub(url);
+  }
+
+  // Fallback: simple fetch with basic error handling
+  var response = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json', 'User-Agent': 'XAYTHEON-Dashboard' } });
   if (!response.ok) {
     var errorText = await response.text();
     throw new Error('GitHub API ' + response.status + ': ' + errorText);
