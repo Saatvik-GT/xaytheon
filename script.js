@@ -6,6 +6,7 @@ var scene, camera, renderer;
 var currentMesh, currentModel;
 var lastFetchedEvents = null;
 var lastFetchedRepos  = null;
+var activityTypeFilter = null; // currently selected activity type for filtering (null = none)
 var autoRotationSpeed = 0.005;
 var isAutoRotating    = true;
 var targetOrbitOffset  = { x: 0, y: 0 };
@@ -521,11 +522,159 @@ function applyDateFilterAndRender() {
   }
  
   renderRepos(filteredRepos.slice(0, 8));
-  renderActivity(filteredEvents.slice(0, 10));
+
+  // If an activity-type filter is active, apply it to the rendered activity list
+  var activityListEvents = filteredEvents;
+  if (activityTypeFilter) {
+    activityListEvents = activityListEvents.filter(function(ev) {
+      return getActivityKey(ev) === activityTypeFilter;
+    });
+  }
+  renderActivity(activityListEvents.slice(0, 10));
+
+  // Render the interactive donut chart (always based on the full filtered events)
+  renderActivityDonut(filteredEvents);
+
   showContributionsChart(
     localStorage.getItem('xaytheon:ghUsername') || '',
     filteredEvents
   );
+}
+
+function getActivityKey(ev) {
+  if (!ev || !ev.type) return 'Other';
+  if (ev.type === 'PushEvent') return 'Push';
+  if (ev.type === 'IssuesEvent') return 'Issues';
+  if (ev.type === 'PullRequestEvent') return 'PR';
+  if (ev.type === 'WatchEvent') return 'Star';
+  if (ev.type === 'ForkEvent') return 'Fork';
+  return 'Other';
+}
+
+function renderActivityDonut(events) {
+  var container = document.getElementById('gh-activity-donut-svg');
+  var legendEl  = document.getElementById('gh-activity-donut-legend');
+  var clearBtn  = document.getElementById('gh-activity-donut-clear');
+  if (!container || !legendEl) return;
+
+  // Ensure tooltip exists
+  var tooltip = document.getElementById('gh-donut-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'gh-donut-tooltip';
+    tooltip.style.cssText = 'position:fixed;pointer-events:none;padding:6px 8px;border-radius:6px;background:rgba(0,0,0,0.8);color:#fff;font-size:12px;z-index:9999;display:none;';
+    document.body.appendChild(tooltip);
+  }
+
+  if (!events || events.length === 0) {
+    container.innerHTML = '<div class="muted">No activity to chart.</div>';
+    legendEl.innerHTML = '';
+    return;
+  }
+
+  // Count activity types
+  var counts = { Push:0, Issues:0, PR:0, Star:0, Fork:0, Other:0 };
+  for (var i = 0; i < events.length; i++) counts[getActivityKey(events[i])]++;
+
+  var data = Object.keys(counts).map(function(k){ return { key:k, value: counts[k] }; }).filter(function(d){ return d.value > 0; });
+  var total = data.reduce(function(s,d){ return s + d.value; }, 0);
+
+  // Colors
+  var colors = { Push:'#0ea5e9', Issues:'#f59e0b', PR:'#16a34a', Star:'#f97316', Fork:'#7c3aed', Other:'#64748b' };
+
+  // Build SVG pie/donut
+  var w = 220, h = 220, cx = w/2, cy = h/2, r = 80, ir = 44;
+  var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+
+  var startAngle = -Math.PI/2; // start at top
+  data.forEach(function(d, idx) {
+    var sliceAngle = (d.value / total) * Math.PI * 2;
+    var endAngle = startAngle + sliceAngle;
+
+    var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var large = sliceAngle > Math.PI ? 1 : 0;
+    var startOuter = polarToCartesian(cx,cy,r,endAngle);
+    var endOuter   = polarToCartesian(cx,cy,r,startAngle);
+    var startInner = polarToCartesian(cx,cy,ir,startAngle);
+    var endInner   = polarToCartesian(cx,cy,ir,endAngle);
+
+    var dAttr = [
+      'M', startOuter.x, startOuter.y,
+      'A', r, r, 0, large, 0, endOuter.x, endOuter.y,
+      'L', startInner.x, startInner.y,
+      'A', ir, ir, 0, large, 1, endInner.x, endInner.y,
+      'Z'
+    ].join(' ');
+    path.setAttribute('d', dAttr);
+    path.setAttribute('fill', colors[d.key] || '#999');
+    path.setAttribute('data-key', d.key);
+    path.style.cursor = 'pointer';
+
+    // highlight if selected
+    if (activityTypeFilter && activityTypeFilter !== d.key) path.style.opacity = '0.35';
+
+    // mouse events
+    path.addEventListener('mouseenter', function(ev) {
+      tooltip.style.display = 'block';
+      tooltip.textContent = d.key + ': ' + d.value + ' (' + Math.round((d.value/total)*100) + '%)';
+      var rect = document.body.getBoundingClientRect();
+      tooltip.style.left = (ev.clientX + 12) + 'px';
+      tooltip.style.top  = (ev.clientY + 12) + 'px';
+    });
+    path.addEventListener('mousemove', function(ev) {
+      tooltip.style.left = (ev.clientX + 12) + 'px';
+      tooltip.style.top  = (ev.clientY + 12) + 'px';
+    });
+    path.addEventListener('mouseleave', function() { tooltip.style.display = 'none'; });
+
+    path.addEventListener('click', function() {
+      // toggle filter
+      if (activityTypeFilter === d.key) activityTypeFilter = null;
+      else activityTypeFilter = d.key;
+      applyDateFilterAndRender();
+    });
+
+    svg.appendChild(path);
+    startAngle = endAngle;
+  });
+
+  // center hole
+  var hole = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  hole.setAttribute('cx', cx);
+  hole.setAttribute('cy', cy);
+  hole.setAttribute('r', ir-2);
+  hole.setAttribute('fill', 'transparent');
+  svg.appendChild(hole);
+
+  // replace container
+  container.innerHTML = '';
+  container.appendChild(svg);
+
+  // build legend
+  legendEl.innerHTML = '';
+  data.forEach(function(d){
+    var item = document.createElement('div');
+    item.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,0.03);cursor:pointer;font-size:12px;';
+    var sw = document.createElement('span');
+    sw.style.cssText = 'width:10px;height:10px;border-radius:2px;display:inline-block;background:' + (colors[d.key]||'#999') + ';';
+    var label = document.createElement('span');
+    label.textContent = d.key + ' (' + d.value + ')';
+    item.appendChild(sw); item.appendChild(label);
+    item.addEventListener('click', function(){ if (activityTypeFilter===d.key) activityTypeFilter=null; else activityTypeFilter=d.key; applyDateFilterAndRender(); });
+    legendEl.appendChild(item);
+  });
+
+  // clear button
+  if (clearBtn) {
+    clearBtn.onclick = function(){ activityTypeFilter = null; applyDateFilterAndRender(); };
+  }
+}
+
+function polarToCartesian(cx, cy, r, angle) {
+  return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
 }
 
 
