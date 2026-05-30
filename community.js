@@ -146,22 +146,9 @@ window.addEventListener('DOMContentLoaded', function() {
       '?q=' + encodeURIComponent(query) +
       '&sort=stars&order=desc&per_page=100';
 
-    var response = await fetch(url, {
-      headers: {
-        'Accept':     'application/vnd.github+json',
-        'User-Agent': 'XAYTHEON'
-      }
-    });
-
-    // Check for GitHub rate limit (403 = too many requests)
-    if (response.status === 403) {
-      throw new Error('GitHub rate limit reached. Please wait a few minutes and try again.');
-    }
-    if (!response.ok) {
-      throw new Error('GitHub API error: ' + response.status);
-    }
-
-    var data = await response.json();
+    // Use the centralized helper which provides improved error/rate-limit handling
+    var data = await fetchFromGitHub(url);
+    if (!data) return [];
     return data.items || [];
   }
 
