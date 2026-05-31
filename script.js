@@ -1418,6 +1418,59 @@ function fmtNum(n) {
 }
 
 
+function initThreeController() {
+  var toggleBtn = document.getElementById('toggle-panel-btn');
+  var panelContent = document.getElementById('panel-content');
+  if (!toggleBtn || !panelContent) return;
+
+  toggleBtn.addEventListener('click', function() {
+    panelContent.classList.toggle('hidden');
+  });
+
+  var shapeSelect = document.getElementById('shape-select');
+  if (shapeSelect) {
+    shapeSelect.addEventListener('change', function() {
+      createShape(shapeSelect.value);
+    });
+  }
+
+  var colorPicker = document.getElementById('color-picker');
+  if (colorPicker) {
+    colorPicker.addEventListener('input', function() {
+      if (currentMesh && currentMesh.material) {
+        currentMesh.material.color.set(colorPicker.value);
+      }
+    });
+  }
+
+  var rotSpeedRange = document.getElementById('rotation-speed');
+  if (rotSpeedRange) {
+    rotSpeedRange.addEventListener('input', function() {
+      autoRotationSpeed = parseFloat(rotSpeedRange.value);
+    });
+  }
+
+  var scaleRange = document.getElementById('mesh-scale');
+  if (scaleRange) {
+    scaleRange.addEventListener('input', function() {
+      var val = parseFloat(scaleRange.value);
+      if (currentMesh) {
+        currentMesh.scale.set(val, val, val);
+      }
+      if (currentModel) {
+        currentModel.scale.setScalar(val * 16);
+      }
+    });
+  }
+
+  var autoRotateCheck = document.getElementById('auto-rotate-check');
+  if (autoRotateCheck) {
+    autoRotateCheck.addEventListener('change', function() {
+      isAutoRotating = autoRotateCheck.checked;
+    });
+  }
+}
+
 // ============================================================
 // PART 7 — START EVERYTHING
 // ============================================================
@@ -1429,4 +1482,5 @@ document.addEventListener('DOMContentLoaded', function() {
   initGithubDashboard();
   initMiniViewer();
   injectCompareUI();
+  initThreeController();
 });

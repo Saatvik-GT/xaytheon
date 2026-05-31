@@ -968,3 +968,99 @@ section {
     padding: 8px 10px;
     font-size: 12px;
 }
+
+/* Premium 3D Controller Panel */
+.three-controller-drawer {
+    margin-top: 30px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-theme="dark"] .three-controller-drawer {
+    background: rgba(13, 17, 23, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.three-controller-toggle {
+    width: 100%;
+    background: #0ea5e9;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    font-size: 0.95em;
+    letter-spacing: 0.5px;
+}
+.three-controller-toggle:hover {
+    background: #0284c7;
+}
+.three-controller-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+.three-controller-content.hidden {
+    display: none;
+}
+.control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+.control-row label {
+    font-size: 0.85em;
+    font-weight: 600;
+    opacity: 0.8;
+}
+.control-row select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: var(--bg-color);
+    color: var(--text-color);
+    outline: none;
+    font-family: inherit;
+}
+[data-theme="dark"] .control-row select {
+    border: 1px solid rgba(255,255,255,0.15);
+}
+.control-row input[type="color"] {
+    width: 100%;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+}
+.control-row input[type="range"] {
+    width: 100%;
+    accent-color: #0ea5e9;
+    cursor: pointer;
+}
+.check-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+.check-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: #0ea5e9;
+    cursor: pointer;
+}
+.check-row label {
+    cursor: pointer;
+}

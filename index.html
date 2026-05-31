@@ -53,6 +53,39 @@
             <span class="accent-glow">COLLAB</span>ORATION
           </span>
         </h1>
+
+        <!-- Premium 3D Controller Panel -->
+        <div class="three-controller-drawer" id="three-controller">
+          <button class="three-controller-toggle" id="toggle-panel-btn">🛠️ Customize 3D Background</button>
+          <div class="three-controller-content hidden" id="panel-content">
+            <div class="control-row">
+              <label for="shape-select">Geometry Shape</label>
+              <select id="shape-select">
+                <option value="octahedron">Octahedron</option>
+                <option value="cube">Cube</option>
+                <option value="sphere">Sphere</option>
+                <option value="torus">Torus</option>
+                <option value="cylinder">Cylinder</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <label for="color-picker">Mesh Color</label>
+              <input type="color" id="color-picker" value="#0ea5e9" />
+            </div>
+            <div class="control-row">
+              <label for="rotation-speed">Rotation Speed</label>
+              <input type="range" id="rotation-speed" min="0" max="0.05" step="0.001" value="0.005" />
+            </div>
+            <div class="control-row">
+              <label for="mesh-scale">Scale / Size</label>
+              <input type="range" id="mesh-scale" min="0.5" max="3" step="0.1" value="1" />
+            </div>
+            <div class="control-row check-row">
+              <input type="checkbox" id="auto-rotate-check" checked />
+              <label for="auto-rotate-check">Auto Rotate Mesh</label>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
