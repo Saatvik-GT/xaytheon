@@ -238,15 +238,31 @@ body.eightgon-page {
 .hamburger {
     display: none;
     flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
     cursor: pointer;
+    z-index: 150;
 }
 
 .bar {
-    width: 25px;
+    width: 30px;
     height: 3px;
-    background: #000000;
-    margin: 3px 0;
-    transition: 0.3s;
+    background: var(--text-color);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger.active .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
 }
 
 #theme-toggle{
@@ -698,17 +714,22 @@ section {
         left: -100%;
         top: 70px;
         flex-direction: column;
-        background-color: rgba(255, 255, 255, 0.95);
+        background-color: var(--bg-color);
         backdrop-filter: blur(10px);
         width: 100%;
         text-align: center;
         transition: 0.3s;
         box-shadow: 0 10px 2px var(--shadow-color);
         padding: 20px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .nav-menu.active {
         left: 0;
+    }
+
+    [data-theme="dark"] .nav-menu {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .nav-menu li {
