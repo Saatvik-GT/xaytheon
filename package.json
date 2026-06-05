@@ -1,0 +1,19 @@
+{
+  "name": "xaytheon",
+  "version": "1.0.0",
+  "description": "Xaytheon Open Source Discovery and Analytics Dashboard",
+  "main": "script.js",
+  "scripts": {
+    "validate": "node validate_env.js",
+    "serve": "npx -y serve .",
+    "lint": "npx htmlhint \"*.html\" && node --check *.js"
+  },
+  "keywords": [
+    "github",
+    "analytics",
+    "dashboard",
+    "open-source"
+  ],
+  "author": "Xaytheon Contributors",
+  "license": "MIT"
+}
