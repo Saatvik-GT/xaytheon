@@ -67,6 +67,16 @@ function safeHtml(text) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+function sanitizeUrl(url) {
+  if (!url) return '';
+  var clean = url.trim();
+  // Allow only http: or https: protocols
+  if (/^(https?:\/\/)/i.test(clean)) {
+    return clean;
+  }
+  return '#';
+}
+
 
 // ============================================================
 // DATE-RANGE FILTER UI (Contributions page)
@@ -318,7 +328,10 @@ function buildContributionRow(contribution) {
 
   var linkHtml = '';
   if (contribution.link) {
-    linkHtml = '<a href="' + safeHtml(contribution.link) + '" target="_blank" rel="noopener">View →</a> ';
+    var cleanLink = sanitizeUrl(contribution.link);
+    if (cleanLink !== '#') {
+      linkHtml = '<a href="' + safeHtml(cleanLink) + '" target="_blank" rel="noopener">View →</a> ';
+    }
   }
 
   return (
