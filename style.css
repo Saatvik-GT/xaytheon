@@ -968,3 +968,39 @@ section {
     padding: 8px 10px;
     font-size: 12px;
 }
+
+/* Skeleton Loader Styles */
+.skeleton {
+    background: linear-gradient(90deg, var(--border-color) 25%, var(--bg-color) 50%, var(--border-color) 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite linear;
+    border-radius: 4px;
+    display: inline-block;
+}
+.skeleton-text {
+    height: 12px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+.skeleton-text.short {
+    width: 60%;
+}
+.skeleton-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+}
+.skeleton-block {
+    height: 120px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
