@@ -775,6 +775,8 @@ function showContributionsChart(username, events) {
   chartImg.alt            = username + "'s contributions";
   chartImg.style.maxWidth = '100%';
   chartImg.referrerPolicy = 'no-referrer';
+  chartImg.loading        = 'lazy';
+  chartImg.decoding       = 'async';
 
   chartImg.onload = function() {
     container.innerHTML = '';
