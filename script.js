@@ -11,6 +11,7 @@ var isAutoRotating    = true;
 var targetOrbitOffset  = { x: 0, y: 0 };
 var currentOrbitOffset = { x: 0, y: 0 };
 var baseCameraPos = { x: 5, y: 5, z: 5 };
+var isCanvasVisible = true;
 
 // ── Date-range filter state (GitHub Dashboard) ──────────────
 var ghDateFilter = { start: null, end: null };  // null = no filter
@@ -31,6 +32,8 @@ function init() {
   var canvas    = document.getElementById('three-canvas');
   var container = document.querySelector('.canvas-container');
 
+  if (!canvas || !container) return;
+
   scene = new THREE.Scene();
   var aspectRatio = container.clientWidth / container.clientHeight;
   camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
@@ -41,6 +44,14 @@ function init() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.shadowMap.enabled = false;
   canvas.style.pointerEvents = 'none';
+
+  // Optimize performance by observing if canvas is in viewport
+  if (typeof IntersectionObserver !== 'undefined') {
+    var observer = new IntersectionObserver(function(entries) {
+      isCanvasVisible = entries[0].isIntersecting;
+    }, { threshold: 0.05 });
+    observer.observe(canvas);
+  }
 
   addLights();
   loadModel('assets/models/prism.glb', function() {
@@ -96,6 +107,10 @@ function createShape(shapeType) {
 
 function animate() {
   requestAnimationFrame(animate);
+
+  // Skip rendering if offscreen or tab is hidden
+  if (!isCanvasVisible || document.hidden) return;
+
   if (currentModel && isAutoRotating) currentModel.rotation.y += autoRotationSpeed;
   if (currentMesh  && isAutoRotating) {
     currentMesh.rotation.x += autoRotationSpeed;
