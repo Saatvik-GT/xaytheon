@@ -24,8 +24,12 @@
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
-      <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
-
+        <button id="theme-toggle" class="btn btn-primary" style="margin:0px !important"></button>
+        <div class="hamburger" id="hamburger-menu" aria-label="Toggle Navigation Menu" role="button" tabindex="0">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
       </div>
 
     </nav>
@@ -100,6 +104,7 @@
 
   </div>
 
+  <script src="nav-helper.js"></script>
   <script src="explore.js"></script>
   <script>
     const toggleBtn = document.getElementById('theme-toggle');

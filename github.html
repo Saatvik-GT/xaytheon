@@ -22,8 +22,12 @@
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
-
+        <button id="theme-toggle" class="btn btn-primary" style="margin:0px !important"></button>
+        <div class="hamburger" id="hamburger-menu" aria-label="Toggle Navigation Menu" role="button" tabindex="0">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
       </div>
 
     </nav>
@@ -133,7 +137,8 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <!-- contributions.js: needed for the contributions form on other pages -->
   <script src="contributions.js"></script>
-  <!-- script.js: contains the GitHub Dashboard + mini 3D viewer logic -->
+  <!-- navigation helper and main script -->
+  <script src="nav-helper.js"></script>
   <script src="script.js"></script>
 
   <script>

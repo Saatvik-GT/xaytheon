@@ -35,7 +35,13 @@
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
+        <div id="auth-area" style="display: flex; align-items: center; margin-right: 15px;"></div>
+        <button id="theme-toggle" class="btn btn-primary" style="margin:0px !important"></button>
+        <div class="hamburger" id="hamburger-menu" aria-label="Toggle Navigation Menu" role="button" tabindex="0">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
 
       </div>
     </nav>
@@ -80,7 +86,8 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <!-- GLTFLoader: loads .glb 3D model files -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <!-- Our main script: 3D scene + GitHub Dashboard logic -->
+  <!-- Our navigation helper and main script -->
+  <script src="nav-helper.js"></script>
   <script src="script.js"></script>
 
   <script>
