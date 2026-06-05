@@ -1,55 +1,50 @@
 ## 📝 Description
 
-<!-- Describe your changes in detail -->
+<!-- Describe your changes in detail. What problem does this solve, and how is it implemented? -->
 
 ## 🔗 Related Issue
 
-<!-- Link to the issue this PR addresses -->
-
+<!-- Link to the issue this PR addresses. E.g., Closes #123 -->
 Closes #
 
 ## 🏷️ Type of Change
 
-<!-- Mark the relevant option with an "x" -->
-
+<!-- Please check the options that are relevant: -->
 - [ ] 🐛 Bug fix (non-breaking change that fixes an issue)
 - [ ] ✨ New feature (non-breaking change that adds functionality)
 - [ ] 💥 Breaking change (fix or feature that would cause existing functionality to change)
 - [ ] 📝 Documentation update
-- [ ] 🎨 Style/UI update
-- [ ] ♻️ Code refactoring
-- [ ] ⚡ Performance improvement
-- [ ] 🧪 Test update
+- [ ] 🎨 UI/UX alignment & styling enhancements
+- [ ] ⚡ Performance optimization
+- [ ] ♻️ Code refactoring and quality improvements
+- [ ] 🤖 Github Workflow / CI/CD automation
 
-## 📸 Screenshots (if applicable)
+## 🧪 Verification & Testing
 
-<!-- Add screenshots for UI changes -->
+<!-- How did you test your changes? Please outline the steps taken to verify. -->
+### Local Test Log:
+- [ ] Tested on Chrome (Desktop/Mobile emulation)
+- [ ] Tested on Firefox
+- [ ] Tested on Safari/Edge
+- [ ] Checked for console warnings and errors
+- [ ] Validated responsive design across 320px, 768px, and 1200px viewports
+- [ ] Verified semantic HTML and keyboard navigation compatibility
+
+## 📸 Visual Evidence (if applicable)
+
+<!-- Add screenshots or screen recordings showcasing the visual differences before and after the change -->
+| Before | After |
+|--------|-------|
+|        |       |
 
 ## ✅ Checklist
 
-<!-- Mark completed items with an "x" -->
-
-- [ ] My code follows the project's style guidelines
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have tested my changes locally
-- [ ] Any dependent changes have been merged and published
-
-## 🧪 Testing
-
-<!-- Describe how you tested your changes -->
-
-- [ ] Tested on Chrome
-- [ ] Tested on Firefox
-- [ ] Tested on mobile
-- [ ] Tested API endpoints (if applicable)
-
-## 📋 Additional Notes
-
-<!-- Any additional information for reviewers -->
+- [ ] My code follows the repository's contributing guidelines and style standards.
+- [ ] I have performed a self-review of my own changes.
+- [ ] I have commented my code, particularly in hard-to-understand areas.
+- [ ] I have updated the documentation accordingly if necessary.
+- [ ] My changes do not generate new warnings or linting errors.
+- [ ] This PR contains only changes related to the targeted issue (no unrelated files modified).
 
 ---
-
-**SWOC 2026 Participant?** Add `swoc2026` label to your PR! 🎉
+*Open Source Program Participant?* Please ensure you add the correct tag or labels (e.g., `gssoc26` / `swoc26`) to categorize your contributions! 🚀
