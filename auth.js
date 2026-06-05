@@ -58,21 +58,39 @@ async function updateNavbar() {
 
     authArea.innerHTML =
       '<div class="user-menu">' +
-        '<button id="user-btn" class="user-button" title="' + user.email + '">' +
+        '<button id="user-btn" class="user-button" aria-haspopup="true" aria-expanded="false" title="' + user.email + '">' +
           initial +
         '</button>' +
-        '<div id="user-dropdown" class="user-dropdown" hidden>' +
-          '<button id="signout-btn" class="dropdown-item">Sign out</button>' +
+        '<div id="user-dropdown" class="user-dropdown" role="menu" hidden>' +
+          '<button id="signout-btn" class="dropdown-item" role="menuitem">Sign out</button>' +
         '</div>' +
       '</div>';
 
     // Toggle the dropdown open/closed when the avatar button is clicked
     getEl('user-btn').addEventListener('click', function() {
       var dropdown = getEl('user-dropdown');
-      if (dropdown.hasAttribute('hidden')) {
+      var btn = getEl('user-btn');
+      var isHidden = dropdown.hasAttribute('hidden');
+      if (isHidden) {
         dropdown.removeAttribute('hidden');   // show it
+        btn.setAttribute('aria-expanded', 'true');
+        getEl('signout-btn').focus();
       } else {
         dropdown.setAttribute('hidden', '');  // hide it
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        var dropdown = getEl('user-dropdown');
+        var btn = getEl('user-btn');
+        if (dropdown && !dropdown.hasAttribute('hidden')) {
+          dropdown.setAttribute('hidden', '');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
       }
     });
 
@@ -88,6 +106,7 @@ async function updateNavbar() {
 
       if (!clickedInsideBtn && !clickedInsideDd) {
         dropdown.setAttribute('hidden', '');  // close it
+        btn.setAttribute('aria-expanded', 'false');
       }
     });
 
