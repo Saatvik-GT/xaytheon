@@ -1,20 +1,20 @@
 /* Reset and Base Styles */
 
 :root, [data-theme="light"]{
-    --bg-color: #ffffff;
-    --text-color: #000000;
-    --border-color: #000000;
-    --shadow-color: rgba(0, 0, 0, 0.701);
-    --button-color: #000000;
+    --bg-color: #f6f8fa;
+    --text-color: #1f2328;
+    --border-color: rgba(31, 35, 40, 0.15);
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --button-color: #24292e;
     --card-color: #ffffff;
 }
 [data-theme="dark"]{
-    --bg-color: #000000;
-    --text-color: #ffffff;
-    --border-color: #ffffff;
-    --shadow-color: rgba(255, 255, 255, 0.200);
-    --button-color: #ffffff;
-    --card-color: #0d1117;
+    --bg-color: #0d1117;
+    --text-color: #e6edf3;
+    --border-color: #30363d;
+    --shadow-color: rgba(0, 0, 0, 0.35);
+    --button-color: #21262d;
+    --card-color: #161b22;
 }
 @font-face {
     font-family: 'OriginTech';
