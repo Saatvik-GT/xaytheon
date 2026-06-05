@@ -1,0 +1,34 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  security-audit:
+    name: Secrets & Code Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Secret Spills Detector
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+        continue-on-error: true
+
+      - name: Audit HTML/JS resources for vulnerabilities
+        run: |
+          echo "Auditing client-side resource files..."
+          grep -rn "eval(" . || echo "No unsafe eval usage found."
+          grep -rn "document.write(" . || echo "No unsafe document.write usage found."
