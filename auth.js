@@ -138,15 +138,32 @@ async function sendMagicLink(email) {
 }
 
 
+// Log the user in with email and password.
+// Called from login.html when the user submits their credentials.
+async function login(email, password) {
+  var result = await sb.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (result.error) {
+    throw result.error; // pass the error up to whoever called this function
+  }
+
+  return result.data.user; // success
+}
+
+
 // ============================================================
 // EXPOSE FUNCTIONS TO OTHER SCRIPTS
 // ============================================================
-// login.html needs sendMagicLink.
+// login.html needs sendMagicLink and login.
 // contributions.js needs getCurrentUser.
 // We attach them to window.XAYTHEON_AUTH so any script can call them.
 window.XAYTHEON_AUTH = {
   sendMagicLink: sendMagicLink,
-  getCurrentUser: getCurrentUser
+  getCurrentUser: getCurrentUser,
+  login: login
 };
 
 
