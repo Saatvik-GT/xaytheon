@@ -1,0 +1,38 @@
+name: "✨ Feature Request"
+description: "Suggest an idea or enhancement for Xaytheon"
+title: "[FEATURE]: <short-description>"
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to make Xaytheon even better? Let us know!
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem Description"
+      description: "Is your feature request related to a problem? Please describe."
+      placeholder: "A clear and concise description of what the problem is..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed Solution"
+      description: "Describe the solution or feature you'd like to see implemented."
+      placeholder: "A clear and concise description of what you want to happen..."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered"
+      description: "Describe any alternative solutions or features you've considered."
+      placeholder: "e.g. using a different library or layout..."
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: "Contribution Intent"
+      options:
+        - label: "I am willing to work on this feature myself by opening a PR."
+          required: false
