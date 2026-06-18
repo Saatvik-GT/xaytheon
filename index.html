@@ -15,7 +15,7 @@
     <canvas id="three-canvas"></canvas>
     <!-- Loading spinner shown while the 3D scene sets up -->
     <div id="loading-screen" class="loading-screen">
-      <div class="loader"></div>
+      <div id="loader"></div>
       <p>Initializing XAYTHEON...</p>
     </div>
   </div>
@@ -106,6 +106,24 @@
         toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
     }
     </script>
+    <script>
+  window.addEventListener('load', function () {
+    const loader = document.getElementById('loader');
+    const mainContent = document.getElementById('main-content');
+
+    if (loader) {
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity 0.4s ease';
+      setTimeout(function () {
+        loader.style.display = 'none';
+      }, 400);
+    }
+
+    if (mainContent) {
+      mainContent.style.visibility = 'visible';
+    }
+  });
+</script>
 
 </body>
 </html>
