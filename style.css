@@ -968,3 +968,41 @@ section {
     padding: 8px 10px;
     font-size: 12px;
 }
+
+/* GitHub Dashboard - Dark Theme Repository & Link Styling */
+
+[data-theme="dark"] .repo-item {
+    background: #161b22;
+    border: 1px solid #30363d;
+}
+
+.repo-name a,
+.activity-item a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.repo-name a:hover,
+.activity-item a:hover {
+    text-decoration: underline;
+}
+
+[data-theme="dark"] .repo-name a,
+[data-theme="dark"] .activity-item a {
+    color: #58a6ff;
+}
+
+[data-theme="light"] .repo-name a,
+[data-theme="light"] .activity-item a {
+    color: #0969da;
+}
+
+[data-theme="dark"] .repo-desc {
+    color: #c9d1d9;
+}
+
+[data-theme="dark"] .repo-meta {
+    color: #8b949e;
+}
