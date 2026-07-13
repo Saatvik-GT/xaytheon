@@ -250,11 +250,17 @@ body.eightgon-page {
 }
 
 #theme-toggle{
-    padding: 10px;
-    border-width: 1px;
-    border-radius: 100%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
     background: none;
-    border-color: var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
 }
 /* Hero Section */
 .hero {
