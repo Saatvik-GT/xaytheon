@@ -208,7 +208,7 @@ function addMouseEffects() {
 // ============================================================
 // PART 2 — DATE-RANGE FILTER UI
 // ============================================================
- 
+
 /**
  * Inject the date-range filter bar into the GitHub Dashboard section.
  * Called once from initGithubDashboard() after the form is found.
@@ -221,14 +221,14 @@ function injectDateFilterStyles() {
     '#gh-date-filter-bar, #contrib-date-filter-bar {',
     '  width: 100%; margin: 0 0 24px 0; position: relative; z-index: 2;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-bar, #contrib-date-filter-bar .xf-bar {',
     '  display: flex !important; flex-wrap: wrap !important; align-items: center !important;',
     '  gap: 10px !important; padding: 14px 20px 14px 24px !important;',
     '  border-radius: 14px !important; position: relative !important;',
     '  border-left: 3px solid #0ea5e9 !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-label, #contrib-date-filter-bar .xf-label {',
     '  font-size: 11px !important; font-weight: 800 !important; letter-spacing: 1.2px !important;',
     '  text-transform: uppercase !important; color: #0ea5e9 !important;',
@@ -236,15 +236,15 @@ function injectDateFilterStyles() {
     '  background: none !important; border: none !important; padding: 0 !important;',
     '  box-shadow: none !important; margin: 0 !important; opacity: 1 !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-div, #contrib-date-filter-bar .xf-div {',
     '  width: 1px !important; height: 20px !important; opacity: 0.3 !important; flex-shrink: 0 !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-presets, #contrib-date-filter-bar .xf-presets {',
     '  display: flex !important; flex-wrap: wrap !important; gap: 5px !important; align-items: center !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-btn, #contrib-date-filter-bar .xf-btn {',
     '  display: inline-block !important; padding: 6px 14px !important;',
     '  font-size: 12.5px !important; font-family: inherit !important; font-weight: 700 !important;',
@@ -267,14 +267,14 @@ function injectDateFilterStyles() {
     '  color: #fff !important; box-shadow: 0 2px 10px rgba(14,165,233,0.4) !important;',
     '  transform: translateY(-1px) !important; opacity: 1 !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-badge, #contrib-date-filter-bar .xf-badge {',
     '  display: inline-flex !important; align-items: center !important; gap: 6px !important;',
     '  padding: 5px 12px !important; font-size: 12px !important; font-weight: 700 !important;',
     '  background: rgba(14,165,233,0.12) !important; border: 1px solid rgba(14,165,233,0.35) !important;',
     '  border-radius: 999px !important; color: #0ea5e9 !important; white-space: nowrap !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-clear, #contrib-date-filter-bar .xf-clear {',
     '  display: inline-flex !important; align-items: center !important; justify-content: center !important;',
     '  width: 16px !important; height: 16px !important; border-radius: 50% !important;',
@@ -285,13 +285,13 @@ function injectDateFilterStyles() {
     '#gh-date-filter-bar .xf-clear::before, #contrib-date-filter-bar .xf-clear::before {',
     '  display: none !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-custom, #contrib-date-filter-bar .xf-custom {',
     '  width: 100% !important; display: flex !important; flex-wrap: wrap !important;',
     '  align-items: flex-end !important; gap: 10px !important;',
     '  padding-top: 12px !important; border-top: 1px dashed rgba(14,165,233,0.3) !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-inp-wrap, #contrib-date-filter-bar .xf-inp-wrap {',
     '  display: flex !important; flex-direction: column !important; gap: 4px !important;',
     '}',
@@ -304,7 +304,7 @@ function injectDateFilterStyles() {
     '  border-radius: 8px !important; outline: none !important;',
     '  min-width: 148px !important; line-height: 1.4 !important; opacity: 1 !important;',
     '}',
- 
+
     '#gh-date-filter-bar .xf-apply, #contrib-date-filter-bar .xf-apply {',
     '  padding: 8px 20px !important; font-size: 13px !important; font-family: inherit !important;',
     '  font-weight: 800 !important; border-radius: 8px !important; border: none !important;',
@@ -318,7 +318,7 @@ function injectDateFilterStyles() {
     '#gh-date-filter-bar .xf-apply:hover, #contrib-date-filter-bar .xf-apply:hover {',
     '  opacity: 0.85 !important; transform: translateY(-1px) !important;',
     '}',
- 
+
     '#gh-filtered-count, #contrib-filter-count {',
     '  font-size: 12px !important; opacity: 0.5 !important; text-align: right !important;',
     '  margin: -16px 0 16px !important; font-style: italic !important;',
@@ -326,24 +326,45 @@ function injectDateFilterStyles() {
   ].join('\n');
   document.head.appendChild(style);
 }
- 
+
+/** Helper: reset all preset buttons in a filter bar to their inactive state,
+ *  then optionally highlight one button as active. Centralizing this avoids
+ *  the class-name drift that previously caused the Clear button to fail. */
+function resetFilterButtons(bar, activeDaysValue) {
+  bar.querySelectorAll('.xf-btn').forEach(function(b) {
+    b.classList.remove('xf-active');
+    b.style.background   = 'transparent';
+    b.style.color        = 'inherit';
+    b.style.borderColor  = '';
+  });
+  if (activeDaysValue !== undefined && activeDaysValue !== null) {
+    var target = bar.querySelector('[data-days="' + activeDaysValue + '"]');
+    if (target) {
+      target.classList.add('xf-active');
+      target.style.background  = '#0ea5e9';
+      target.style.color       = '#fff';
+      target.style.borderColor = '#0ea5e9';
+    }
+  }
+}
+
 function injectDateFilterBar() {
   var form = document.getElementById('github-form');
   if (!form) return;
- 
+
   // Inject styles via JS — bypasses all CSS file loading issues
   injectDateFilterStyles();
- 
+
   // Detect theme for dynamic colors
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   var bgColor     = isDark ? '#0d1117' : '#ffffff';
   var borderColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
   var textColor   = isDark ? '#ffffff' : '#000000';
   var divColor    = isDark ? '#ffffff' : '#000000';
- 
+
   var bar = document.createElement('div');
   bar.id = 'gh-date-filter-bar';
- 
+
   var barDiv = document.createElement('div');
   barDiv.className = 'xf-bar';
   barDiv.style.cssText = [
@@ -351,7 +372,7 @@ function injectDateFilterBar() {
     'border:1px solid ' + borderColor,
     'box-shadow: 0 2px 12px rgba(0,0,0,0.08)',
   ].join(';');
- 
+
   barDiv.innerHTML = [
     '<span class="xf-label">Filter range</span>',
     '<div class="xf-div" style="background:' + divColor + '"></div>',
@@ -379,9 +400,9 @@ function injectDateFilterBar() {
     '  <button class="xf-apply" id="gh-date-apply">Apply</button>',
     '</div>',
   ].join('\n');
- 
+
   bar.appendChild(barDiv);
- 
+
   // Insert BEFORE the github-grid
   var grid = document.querySelector('.github-grid');
   if (grid) {
@@ -389,26 +410,26 @@ function injectDateFilterBar() {
   } else {
     form.parentNode.insertBefore(bar, form.nextSibling);
   }
- 
+
   // Wire up preset buttons
   bar.querySelectorAll('.xf-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      bar.querySelectorAll('.xf-btn').forEach(function(b) { b.classList.remove('xf-active'); b.style.background = 'transparent'; b.style.color = 'inherit'; b.style.borderColor = ''; });
+      resetFilterButtons(bar, null);
       btn.classList.add('xf-active');
       btn.style.background = '#0ea5e9';
       btn.style.color = '#fff';
       btn.style.borderColor = '#0ea5e9';
- 
+
       var days = btn.getAttribute('data-days');
       var customRange = document.getElementById('gh-custom-range');
- 
+
       if (days === 'custom') {
         customRange.style.display = 'flex';
         return;
       }
- 
+
       customRange.style.display = 'none';
- 
+
       if (days === '0') {
         ghDateFilter = { start: null, end: null };
         updateFilterBadge(null, null);
@@ -418,16 +439,16 @@ function injectDateFilterBar() {
         ghDateFilter = { start: start, end: end };
         updateFilterBadge(start, end);
       }
- 
+
       applyDateFilterAndRender();
     });
   });
- 
+
   // Wire up custom range apply
   document.getElementById('gh-date-apply').addEventListener('click', function() {
     var startVal = document.getElementById('gh-date-start').value;
     var endVal   = document.getElementById('gh-date-end').value;
- 
+
     if (!startVal && !endVal) {
       ghDateFilter = { start: null, end: null };
       updateFilterBadge(null, null);
@@ -441,46 +462,44 @@ function injectDateFilterBar() {
       ghDateFilter = { start: start, end: end };
       updateFilterBadge(start, end);
     }
- 
+
     applyDateFilterAndRender();
   });
- 
+
   // Wire up clear button
   document.getElementById('gh-date-clear-filter').addEventListener('click', function() {
     ghDateFilter = { start: null, end: null };
     updateFilterBadge(null, null);
-    bar.querySelectorAll('.xf-btn').forEach(function(b) { b.classList.remove('xf-active'); b.style.background='transparent'; b.style.color='inherit'; b.style.borderColor=''; });
-    var allTime = bar.querySelector('[data-days="0"]');
-    if (allTime) { allTime.classList.add('xf-active'); allTime.style.background='#0ea5e9'; allTime.style.color='#fff'; allTime.style.borderColor='#0ea5e9'; }
+    resetFilterButtons(bar, '0');
     document.getElementById('gh-custom-range').style.display = 'none';
     applyDateFilterAndRender();
   });
 }
- 
+
 /** Update the "active filter" badge text */
 function updateFilterBadge(start, end) {
   var badge    = document.getElementById('gh-filter-badge');
   var badgeTxt = document.getElementById('gh-filter-badge-text');
   if (!badge || !badgeTxt) return;
- 
+
   if (!start && !end) {
     badge.style.display = 'none';
     badgeTxt.textContent = '';
     return;
   }
- 
+
   var fmt = function(d) {
     return d ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '…';
   };
   badgeTxt.textContent = fmt(start) + ' → ' + fmt(end);
   badge.style.display = 'inline-flex';
 }
- 
+
 /** Filter an array of GitHub events by the current ghDateFilter */
 function filterEventsByDate(events) {
   if (!events) return [];
   if (!ghDateFilter.start && !ghDateFilter.end) return events;
- 
+
   return events.filter(function(ev) {
     if (!ev.created_at) return true;
     var d = new Date(ev.created_at);
@@ -489,12 +508,12 @@ function filterEventsByDate(events) {
     return true;
   });
 }
- 
+
 /** Filter an array of repos by the current ghDateFilter (uses updated_at) */
 function filterReposByDate(repos) {
   if (!repos) return [];
   if (!ghDateFilter.start && !ghDateFilter.end) return repos;
- 
+
   return repos.filter(function(repo) {
     var d = new Date(repo.updated_at || repo.pushed_at || repo.created_at);
     if (ghDateFilter.start && d < ghDateFilter.start) return false;
@@ -502,14 +521,14 @@ function filterReposByDate(repos) {
     return true;
   });
 }
- 
+
 /** Re-render dashboard cards using cached data + current filter */
 function applyDateFilterAndRender() {
   if (!lastFetchedEvents && !lastFetchedRepos) return;
- 
+
   var filteredEvents = filterEventsByDate(lastFetchedEvents || []);
   var filteredRepos  = filterReposByDate(lastFetchedRepos  || []);
- 
+
   // Update activity count badge
   var countBadge = document.getElementById('gh-filtered-count');
   if (countBadge) {
@@ -519,7 +538,7 @@ function applyDateFilterAndRender() {
       ? filtered + ' / ' + total + ' events in range'
       : '';
   }
- 
+
   renderRepos(filteredRepos.slice(0, 8));
   renderActivity(filteredEvents.slice(0, 10));
   showContributionsChart(
@@ -589,12 +608,13 @@ function initGithubDashboard() {
     var countEl = document.getElementById('gh-filtered-count');
     if (countEl) countEl.textContent = '';
 
-    // Reset filter UI
+    // Reset filter UI — FIX: previously targeted ".date-preset-btn"/"active",
+    // classes that don't exist (the buttons use "xf-btn"/"xf-active"), so the
+    // Clear button never visually reset the preset selection. Now uses the
+    // shared resetFilterButtons() helper with the correct class names.
     var bar = document.getElementById('gh-date-filter-bar');
     if (bar) {
-      bar.querySelectorAll('.date-preset-btn').forEach(function(b) { b.classList.remove('active'); });
-      var allTimeBtn = bar.querySelector('[data-days="0"]');
-      if (allTimeBtn) allTimeBtn.classList.add('active');
+      resetFilterButtons(bar, '0');
       var customRange = document.getElementById('gh-custom-range');
       if (customRange) customRange.style.display = 'none';
       updateFilterBadge(null, null);
@@ -655,7 +675,15 @@ async function loadGithubDashboard(username) {
     setGithubStatus('Done');
 
   } catch (error) {
-    setGithubStatus(error.message || 'Failed to load GitHub data', true);
+    // FIX: surface a clearer message on GitHub's unauthenticated rate limit
+    // (60 requests/hour/IP) and 404s instead of a raw JSON blob.
+    if (error && error.status === 403 && error.rateLimited) {
+      setGithubStatus('GitHub API rate limit reached. Please wait a bit and try again.', true);
+    } else if (error && error.status === 404) {
+      setGithubStatus('User "' + username + '" not found on GitHub.', true);
+    } else {
+      setGithubStatus((error && error.message) || 'Failed to load GitHub data', true);
+    }
   }
 }
 
@@ -665,7 +693,10 @@ async function fetchFromGitHub(url) {
   });
   if (!response.ok) {
     var errorText = await response.text();
-    throw new Error('GitHub API ' + response.status + ': ' + errorText);
+    var err = new Error('GitHub API ' + response.status + ': ' + errorText);
+    err.status = response.status;
+    err.rateLimited = response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0';
+    throw err;
   }
   return response.json();
 }
@@ -689,7 +720,8 @@ function renderRepos(repos) {
 
     html +=
       '<div class="repo-item">' +
-        '<div class="repo-name"><a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
+        // FIX: escape html_url — it's an attribute value from API data.
+        '<div class="repo-name"><a href="' + safeHtml(repo.html_url) + '" target="_blank" rel="noopener">' +
           safeHtml(repo.full_name) + '</a></div>' +
         description +
         '<div class="repo-meta">' +
@@ -718,8 +750,9 @@ function renderActivity(events) {
     var repoName = ev.repo ? ev.repo.name : '';
     var desc     = describeEvent(ev);
     var time     = timeAgo(ev.created_at);
+    // FIX: escape repoName in the href, not just the link text.
     var repoLink = repoName
-      ? ' in <a href="https://github.com/' + repoName + '" target="_blank" rel="noopener">' +
+      ? ' in <a href="https://github.com/' + safeHtml(repoName) + '" target="_blank" rel="noopener">' +
           safeHtml(repoName) + '</a>' : '';
 
     html +=
@@ -1430,9 +1463,18 @@ document.addEventListener('DOMContentLoaded', function() {
   initMiniViewer();
   injectCompareUI();
 });
+
+
 /* ==========================================
    XAI OOD Validation Layer
    Fix for Issue #1041
+
+   NOTE: This block is currently self-contained and never invoked —
+   runPrediction() is not called anywhere and #xai-warning does not
+   exist in the rest of this file. Left intact below in case it's wired
+   up elsewhere (e.g. from HTML). If it's meant to be part of this
+   dashboard's flow, call runPrediction() from DOMContentLoaded above
+   and add a #xai-warning element to the page markup.
 ========================================== */
 
 function isOutOfDistribution(input) {
