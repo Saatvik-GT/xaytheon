@@ -665,7 +665,7 @@ async function fetchFromGitHub(url) {
   });
   if (!response.ok) {
     var errorText = await response.text();
-    throw new Error('GitHub API ' + response.status + ': ' + errorText);
+    throw new Error('GitHub API ' + response.status + ': ' + errorText.slice(0, 200));
   }
   return response.json();
 }
@@ -689,7 +689,7 @@ function renderRepos(repos) {
 
     html +=
       '<div class="repo-item">' +
-        '<div class="repo-name"><a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
+        '<div class="repo-name"><a href="' + safeAttr(repo.html_url) + '" target="_blank" rel="noopener">' +
           safeHtml(repo.full_name) + '</a></div>' +
         description +
         '<div class="repo-meta">' +
@@ -719,7 +719,7 @@ function renderActivity(events) {
     var desc     = describeEvent(ev);
     var time     = timeAgo(ev.created_at);
     var repoLink = repoName
-      ? ' in <a href="https://github.com/' + repoName + '" target="_blank" rel="noopener">' +
+      ? ' in <a href="https://github.com/' + safeAttr(repoName) + '" target="_blank" rel="noopener">' +
           safeHtml(repoName) + '</a>' : '';
 
     html +=
@@ -971,6 +971,11 @@ function safeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function safeAttr(str) {
+  if (str == null) return '';
+  return encodeURI(String(str)).replace(/'/g, '%27').replace(/"/g, '%22');
 }
 
 function setText(id, value) {
