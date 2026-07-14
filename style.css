@@ -968,3 +968,9 @@ section {
     padding: 8px 10px;
     font-size: 12px;
 }
+.range-btn.active {
+    background: #0ea5e9;
+    color: #ffffff;
+    border-color: #0ea5e9;
+    opacity: 100%;
+}
