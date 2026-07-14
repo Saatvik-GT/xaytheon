@@ -431,7 +431,7 @@
         </div>
         
         <div style="text-align: right; margin-top: -8px;">
-  <a href="forgot-password.html" style="color: var(--link-color); text-decoration: none; font-size: 0.9em;">
+  <a href="#" id="forgot-password-link" style="color: var(--link-color); text-decoration: none; font-size: 0.9em;">
     Forgot password?
   </a>
 </div>
@@ -455,7 +455,7 @@
 
         <div class="center" style="margin-top: 20px;">
           <span class="muted">Don't have an account?</span>
-          <a href="register.html" style="font-weight: 600; margin-left: 5px;">Create account</a>
+          <a href="#" id="create-account-link" style="font-weight: 600; margin-left: 5px;">Create account</a>
         </div>
 
         <div class="center muted" style="margin-top: 24px; font-size: 0.85em;">
@@ -529,8 +529,6 @@
     </div>
   </div>
 
-  /* Moved to head styles */
-
   <!-- Inline JS -->
   <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -578,6 +576,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const githubModal = document.getElementById("github-modal");
     const cancelGithub = document.getElementById("cancel-github");
     const confirmGithub = document.getElementById("confirm-github");
+    const forgotPasswordLink = document.getElementById("forgot-password-link");
+    const createAccountLink = document.getElementById("create-account-link");
+
+    function getAuthApiBase() {
+      const hasHttpOrigin = window.location.origin &&
+        window.location.origin !== "null" &&
+        /^https?:\/\//.test(window.location.origin);
+      const origin = hasHttpOrigin ? window.location.origin : "http://127.0.0.1:5000";
+      return `${origin}/api/auth`;
+    }
 
     if (githubBtn) {
       githubBtn.addEventListener("click", () => {
@@ -599,7 +607,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       confirmGithub.addEventListener("click", () => {
         // Redirect to backend auth initiation
-        const API_BASE = "http://127.0.0.1:5000/api/auth";
+        const API_BASE = getAuthApiBase();
         window.location.href = `${API_BASE}/github`;
       });
     }
@@ -628,9 +636,22 @@ document.addEventListener("DOMContentLoaded", function () {
       statusEl.setAttribute("role", "alert");
     }
 
+    function showComingSoonAuthMessage(event) {
+      event.preventDefault();
+      showError("This flow is coming soon. Please use email login or GitHub sign-in for now.");
+    }
+
     function showSuccess(message) {
       statusEl.className = "success-msg";
       statusEl.textContent = message;
+    }
+
+    function getAuthErrorMessage(err) {
+      if (window.XAYTHEON_AUTH &&
+          typeof window.XAYTHEON_AUTH.getAuthErrorMessage === "function") {
+        return window.XAYTHEON_AUTH.getAuthErrorMessage(err);
+      }
+      return (err && err.message) ? err.message : "Could not sign in. Please try again.";
     }
 
     function setLoading(isLoading) {
@@ -651,6 +672,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     emailEl.addEventListener("input", clearErrors);
     passwordEl.addEventListener("input", clearErrors);
+    if (forgotPasswordLink) {
+      forgotPasswordLink.addEventListener("click", showComingSoonAuthMessage);
+    }
+    if (createAccountLink) {
+      createAccountLink.addEventListener("click", showComingSoonAuthMessage);
+    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -690,6 +717,10 @@ document.addEventListener("DOMContentLoaded", function () {
       setLoading(true);
 
       try {
+        if (!window.XAYTHEON_AUTH || typeof window.XAYTHEON_AUTH.login !== "function") {
+          throw new Error("Authentication service is unavailable. Please refresh and try again.");
+        }
+
         await window.XAYTHEON_AUTH.login(email, password);
         showSuccess("Login successful!");
         setTimeout(() => {
@@ -711,7 +742,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
   </script>
-  <script src="theme.js?v=1.0.0"></script>
 <div id="footer-placeholder"></div>
 </body>
 </html>
