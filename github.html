@@ -6,6 +6,7 @@
   <title>GitHub Dashboard — XAYTHEON</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="github.css" />
 </head>
 <body class="eightgon-page">
   <div class="content">
@@ -13,19 +14,25 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="nav-container">
-        <a class="logo" href="index.html" aria-label="Back to Home">
+        <a class="logo" href="index.html" aria-label="XAYTHEON home">
           <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
         </a>
         <ul class="nav-menu">
           <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
           <li><a class="nav-link" href="contributions.html">Contributions</a></li>
         </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin:0px important!"></button>
-
+        <div style="display:flex; align-items:center; gap: 10px;">
+          <button id="theme-toggle" class="btn btn-primary" style="margin:0px !important; padding: 10px;"></button>
+          <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
       </div>
-
     </nav>
 
     <!-- GitHub Dashboard Section -->
@@ -162,6 +169,21 @@
 
     function updateButtonLabel(theme) {
         toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }));
     }
     </script>
 </body>

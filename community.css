@@ -1,0 +1,28 @@
+/* Community Specific Styles */
+
+/* Community form fields */
+.github-form select,
+.github-form input[type="number"],
+.github-form input[type="url"],
+.github-form input[type="date"] {
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+#trend-lang-group, #trend-topic-group, #trend-window-group {
+    grid-column: span 3;
+}
+
+#trend-k-group {
+    grid-column: span 2;
+}
+
+.btn-submit {
+    grid-column: span 2;
+}
+
+#trend-results {
+    margin-top: 20px;
+}

@@ -1,13 +1,22 @@
 <nav class="navbar" aria-label="Primary Navigation">
   <div class="nav-container">
-    <a class="logo" href="index.html">
-      <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON home" />
+    <a class="logo" href="index.html" aria-label="XAYTHEON home">
+      <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
     </a>
     <ul class="nav-menu">
+      <li><a class="nav-link" href="index.html">Home</a></li>
       <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
       <li><a class="nav-link" href="community.html">Community Highlights</a></li>
       <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
       <li><a class="nav-link" href="contributions.html">Contributions</a></li>
     </ul>
+    <div style="display:flex; align-items:center; gap: 10px;">
+      <button id="theme-toggle" class="btn btn-primary" style="margin:0px !important; padding: 10px;"></button>
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
   </div>
 </nav>
