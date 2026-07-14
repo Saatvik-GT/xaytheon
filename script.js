@@ -1234,14 +1234,28 @@ function injectCompareUI() {
   });
 
   // ── Wire compare button ──
-  document.getElementById('gh-compare-btn').addEventListener('click', function() {
-    var u1 = (document.getElementById('gh-username').value || '').trim();
-    var u2 = (document.getElementById('gh-compare-username').value || '').trim();
-    if (!u1) { alert('Please load a primary profile first.'); return; }
-    if (!u2) { alert('Please enter a username to compare with.'); return; }
-    runComparison(u1, u2);
-  });
+  document.getElementById('gh-compare-btn').addEventListener('click', function () {
+  var u1 = (document.getElementById('gh-username').value || '').trim();
+  var u2 = (document.getElementById('gh-compare-username').value || '').trim();
 
+  if (!u1) {
+    alert('Please load a primary profile first.');
+    return;
+  }
+
+  if (!u2) {
+    alert('Please enter a username to compare with.');
+    return;
+  }
+
+  // Prevent comparing the same GitHub profile
+  if (u1.toLowerCase() === u2.toLowerCase()) {
+    alert('Please enter a different GitHub username to compare.');
+    return;
+  }
+
+  runComparison(u1, u2);
+});
   // Also allow Enter key in the compare input
   document.getElementById('gh-compare-username').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') document.getElementById('gh-compare-btn').click();
