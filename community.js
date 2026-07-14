@@ -27,6 +27,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // Format: { "cacheKey": { time: timestamp, results: [repo, repo, ...] } }
   var searchCache       = {};
   var CACHE_MINUTES     = 5;  // how long to keep cached results
+  var currentTrendingRepos = [];
 
 
   // ============================================================
@@ -77,8 +78,20 @@ window.addEventListener('DOMContentLoaded', function() {
     return (stars * 0.5) + (forks * 0.3) + (recencyBonus * 5);
   }
 
+  // Watchlist LocalStorage helpers
+  function getWatchlist() {
+    return JSON.parse(localStorage.getItem('xaytheon:watchlist') || '[]');
+  }
+
+  function saveWatchlist(list) {
+    localStorage.setItem('xaytheon:watchlist', JSON.stringify(list));
+  }
+
   // Build the HTML for one repo card
-  function buildRepoCard(repo) {
+  function buildRepoCard(repo, isWatchlistCard) {
+    var watchlist = getWatchlist();
+    var isPinned = watchlist.some(function(r) { return r.full_name === repo.full_name; });
+
     // Optional description line
     var description = '';
     if (repo.description) {
@@ -91,12 +104,17 @@ window.addEventListener('DOMContentLoaded', function() {
       language = '<span>' + safeHtml(repo.language) + '</span>';
     }
 
+    var pinBtn = '<button class="pin-btn' + (isPinned ? ' pinned' : '') + '" data-full-name="' + repo.full_name + '" title="' + (isPinned ? 'Remove from Watchlist' : 'Add to Watchlist') + '">📌</button>';
+
     return (
       '<div class="repo-item">' +
-        '<div class="repo-name">' +
-          '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
-            safeHtml(repo.full_name) +
-          '</a>' +
+        '<div class="repo-header">' +
+          '<div class="repo-name">' +
+            '<a href="' + repo.html_url + '" target="_blank" rel="noopener">' +
+              safeHtml(repo.full_name) +
+            '</a>' +
+          '</div>' +
+          pinBtn +
         '</div>' +
         description +
         '<div class="repo-meta">' +
@@ -118,9 +136,64 @@ window.addEventListener('DOMContentLoaded', function() {
 
     var html = '';
     for (var i = 0; i < repos.length; i++) {
-      html += buildRepoCard(repos[i]);
+      html += buildRepoCard(repos[i], false);
     }
     resultsEl.innerHTML = html;
+    attachPinListeners();
+  }
+
+  function showWatchlist() {
+    var watchlistEl = document.getElementById('watchlist-results');
+    if (!watchlistEl) return;
+    var list = getWatchlist();
+    if (list.length === 0) {
+      watchlistEl.innerHTML = '<div class="muted">No repositories pinned yet. Click the 📌 icon on trending repositories to save them.</div>';
+      return;
+    }
+
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+      html += buildRepoCard(list[i], true);
+    }
+    watchlistEl.innerHTML = html;
+    attachPinListeners();
+  }
+
+  function attachPinListeners() {
+    document.querySelectorAll('.pin-btn').forEach(function(btn) {
+      btn.onclick = function(e) {
+        e.preventDefault();
+        var fullName = btn.getAttribute('data-full-name');
+        var list = getWatchlist();
+        var exists = list.some(function(r) { return r.full_name === fullName; });
+
+        if (exists) {
+          list = list.filter(function(r) { return r.full_name !== fullName; });
+        } else {
+          var repoObj = null;
+          // Search in current displayed list
+          if (currentTrendingRepos) {
+            repoObj = currentTrendingRepos.find(function(r) { return r.full_name === fullName; });
+          }
+          // Search in cache
+          if (!repoObj) {
+            for (var k in searchCache) {
+              var items = searchCache[k].results;
+              repoObj = items.find(function(r) { return r.full_name === fullName; });
+              if (repoObj) break;
+            }
+          }
+          if (repoObj) {
+            list.push(repoObj);
+          }
+        }
+        saveWatchlist(list);
+        showWatchlist();
+        if (currentTrendingRepos && currentTrendingRepos.length > 0) {
+          showResults(currentTrendingRepos);
+        }
+      };
+    });
   }
 
 
@@ -200,7 +273,9 @@ window.addEventListener('DOMContentLoaded', function() {
       var ageInMinutes = (Date.now() - searchCache[cacheKey].time) / (1000 * 60);
       if (ageInMinutes < CACHE_MINUTES) {
         // Use the cached results instead of fetching again
-        showResults(searchCache[cacheKey].results);
+        currentTrendingRepos = searchCache[cacheKey].results;
+        showResults(currentTrendingRepos);
+        showWatchlist();
         setStatus('Done (from cache)');
         return;
       }
@@ -217,7 +292,9 @@ window.addEventListener('DOMContentLoaded', function() {
       // Save to cache for next time
       searchCache[cacheKey] = { time: Date.now(), results: topRepos };
 
+      currentTrendingRepos = topRepos;
       showResults(topRepos);
+      showWatchlist();
       setStatus('Done');
 
     } catch (error) {
@@ -245,6 +322,18 @@ window.addEventListener('DOMContentLoaded', function() {
     kInput.value      = '10';
     loadTrending();
   });
+
+  // Watchlist clear button listener
+  var clearWatchlistBtn = document.getElementById('clear-watchlist-btn');
+  if (clearWatchlistBtn) {
+    clearWatchlistBtn.addEventListener('click', function() {
+      saveWatchlist([]);
+      showWatchlist();
+      if (currentTrendingRepos && currentTrendingRepos.length > 0) {
+        showResults(currentTrendingRepos);
+      }
+    });
+  }
 
   // Load results immediately when the page opens
   loadTrending();

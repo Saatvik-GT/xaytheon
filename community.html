@@ -32,52 +32,68 @@
       <div class="container">
         <h2 class="section-title">Community Highlights</h2>
 
-        <div class="card">
-          <div class="card-header">
-            <h3>Trending Repositories</h3>
+        <div class="community-grid">
+          <!-- Trending Repositories Card -->
+          <div class="card trend-main-card">
+            <div class="card-header">
+              <h3>Trending Repositories</h3>
+            </div>
+            <div class="card-body">
+
+              <!-- Filter form -->
+              <form id="trend-form" class="github-form" autocomplete="off">
+                <div class="field-group" style="grid-column: span 3;">
+                  <label for="trend-lang">Language</label>
+                  <select id="trend-lang">
+                    <option value="">Any</option>
+                    <option>JavaScript</option>
+                    <option>TypeScript</option>
+                    <option>Python</option>
+                    <option>Go</option>
+                    <option>Rust</option>
+                    <option>Java</option>
+                    <option>C#</option>
+                    <option>C++</option>
+                  </select>
+                </div>
+                <div class="field-group" style="grid-column: span 3;">
+                  <label for="trend-topic">Topic</label>
+                  <input id="trend-topic" type="text" placeholder="e.g. threejs, vite" />
+                </div>
+                <div class="field-group" style="grid-column: span 3;">
+                  <label for="trend-window">Time Window</label>
+                  <select id="trend-window">
+                    <option value="7">Last 7 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                  </select>
+                </div>
+                <div class="field-group" style="grid-column: span 2;">
+                  <label for="trend-k">Show Top</label>
+                  <input id="trend-k" type="number" value="10" min="1" max="20" />
+                </div>
+                <button class="btn btn-primary" type="submit" style="grid-column: span 2;">Update</button>
+                <button class="btn btn-outline" type="button" id="trend-reset">Reset</button>
+                <div id="trend-status" class="github-status" aria-live="polite" style="grid-column: 1 / -1;"></div>
+              </form>
+
+              <!-- Results appear here -->
+              <div id="trend-results" class="repo-list" style="margin-top: 20px;"></div>
+
+            </div>
           </div>
-          <div class="card-body">
 
-            <!-- Filter form -->
-            <form id="trend-form" class="github-form" autocomplete="off">
-              <div class="field-group" style="grid-column: span 3;">
-                <label for="trend-lang">Language</label>
-                <select id="trend-lang">
-                  <option value="">Any</option>
-                  <option>JavaScript</option>
-                  <option>TypeScript</option>
-                  <option>Python</option>
-                  <option>Go</option>
-                  <option>Rust</option>
-                  <option>Java</option>
-                  <option>C#</option>
-                  <option>C++</option>
-                </select>
+          <!-- Saved Watchlist Card -->
+          <div class="card watchlist-card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <h3>Saved Watchlist</h3>
+              <button id="clear-watchlist-btn" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8em; margin: 0;">Clear All</button>
+            </div>
+            <div class="card-body">
+              <div id="watchlist-results" class="repo-list">
+                <div class="muted">No repositories pinned yet. Click the 📌 icon on trending repositories to save them.</div>
               </div>
-              <div class="field-group" style="grid-column: span 3;">
-                <label for="trend-topic">Topic</label>
-                <input id="trend-topic" type="text" placeholder="e.g. threejs, vite" />
-              </div>
-              <div class="field-group" style="grid-column: span 3;">
-                <label for="trend-window">Time Window</label>
-                <select id="trend-window">
-                  <option value="7">Last 7 days</option>
-                  <option value="30" selected>Last 30 days</option>
-                  <option value="90">Last 90 days</option>
-                </select>
-              </div>
-              <div class="field-group" style="grid-column: span 2;">
-                <label for="trend-k">Show Top</label>
-                <input id="trend-k" type="number" value="10" min="1" max="20" />
-              </div>
-              <button class="btn btn-primary" type="submit" style="grid-column: span 2;">Update</button>
-              <button class="btn btn-outline" type="button" id="trend-reset">Reset</button>
-              <div id="trend-status" class="github-status" aria-live="polite" style="grid-column: 1 / -1;"></div>
-            </form>
-
-            <!-- Results appear here -->
-            <div id="trend-results" class="repo-list" style="margin-top: 20px;"></div>
-
+            </div>
           </div>
         </div>
       </div>

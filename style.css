@@ -968,3 +968,55 @@ section {
     padding: 8px 10px;
     font-size: 12px;
 }
+
+/* Community Highlights Watchlist Grid Layout */
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+    align-items: start;
+}
+.trend-main-card {
+    grid-column: span 8;
+}
+.watchlist-card {
+    grid-column: span 4;
+}
+@media (max-width: 1024px) {
+    .trend-main-card, .watchlist-card {
+        grid-column: span 12;
+    }
+}
+
+/* Pin / Unpin button styling inside repo-item */
+.repo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+.pin-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.15em;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: background 0.15s, transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+}
+.pin-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.1);
+}
+[data-theme="dark"] .pin-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+.pin-btn.pinned {
+    color: #f59e0b;
+    filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.4));
+}
