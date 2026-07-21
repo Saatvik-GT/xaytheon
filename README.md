@@ -1,12 +1,3 @@
-## Xaytheon 
-Selected in Social Winter of Code (SWoC)
-<img width="1300" height="400" alt="image" src="https://github.com/user-attachments/assets/6bf856a4-0da4-4505-a433-f54797283dc4" />
-
-This project has been selected for Social Winter of Code (SWoC), and is actively open to community contributions.
-Before contributing, please read CONTRIBUTION.md carefully.
-Contribution period ended on 1st March, Thank you everyone. 
-⭐ Please Star the Repository if you liked it, thank you! ⭐
-
 ## What is Xaytheon?
 
 **Xaytheon** is a comprehensive **GitHub analytics and open-source discovery platform** designed to help developers track their contributions, discover trending projects, and explore the open-source ecosystem. It serves as an intelligent layer on top of GitHub, providing enhanced visualization, filtering, and community insights.
