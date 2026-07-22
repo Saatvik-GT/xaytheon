@@ -600,6 +600,9 @@ function initGithubDashboard() {
     setHtml('gh-activity-list','');
     setHtml('gh-contrib-svg',  '');
 
+    var avatarEl = document.getElementById('gh-avatar');
+    if (avatarEl) avatarEl.removeAttribute('src');
+
     var noteEl = document.getElementById('gh-contrib-note');
     if (noteEl) noteEl.textContent = 'Enter a username and press Load Dashboard.';
 
