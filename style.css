@@ -631,8 +631,8 @@ section {
 
 /* Footer */
 .footer {
-    background: #000000;
-    color: #ffffff;
+    background: var(--bg-color);
+    color: var(--text-color);
     padding: 60px 0 30px;
 }
 
@@ -645,8 +645,8 @@ section {
 
 .footer-label {
     display: inline-block;
-    background: #000;
-    color: #fff;
+    background: var(--text-color);
+    color: var(--bg-color);
     border-radius: 999px;
     padding: 8px 14px;
     font-size: 0.85em;
@@ -655,7 +655,7 @@ section {
 }
 
 .footer-brand .logo-text {
-    color: #ffffff;
+    color: var(--text-color);
     font-size: 1.5em;
 }
 
@@ -670,7 +670,7 @@ section {
 }
 
 .footer-links a {
-    color: #ffffff;
+    color: var(--text-color);
     text-decoration: none;
     opacity: 0.7;
     transition: opacity 0.3s ease;
@@ -683,7 +683,7 @@ section {
 .footer-bottom {
     text-align: center;
     padding-top: 30px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border-color);
     opacity: 0.7;
 }
 
