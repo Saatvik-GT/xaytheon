@@ -9,7 +9,10 @@
 // --- Your Supabase project settings ---
 // These are public values (the "anon" key has limited permissions - it's safe here)
 var SUPABASE_URL = 'https://gqwohbqudbxahlssuohr.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdxd29oYnF1ZGJ4YWhsc3N1b2hyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MDM0OTgsImV4cCI6MjA3NjA3OTQ5OH0.KLkjEHdMM5xUpO-bLRhLGYF_x6XShzjso4Evwlxza2I';
+// IMPORTANT: Do NOT commit a service_role (admin) key. Use the public/anon key only for
+// client-side usage, and prefer supplying it at build-time or via a server-side proxy.
+// Replace this placeholder during deployment or set via your build system.
+var SUPABASE_KEY = 'REPLACE_WITH_YOUR_ANON_KEY';
 
 // This variable will hold our Supabase connection.
 // We set it up inside the DOMContentLoaded listener below.
@@ -137,19 +140,6 @@ async function sendMagicLink(email) {
   return true;  // success
 }
 
-// Login using email and password
-async function login(email, password) {
-  var result = await sb.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
-
-  if (result.error) {
-    throw result.error;
-  }
-
-  return result.data;
-}
 
 // ============================================================
 // EXPOSE FUNCTIONS TO OTHER SCRIPTS
@@ -157,6 +147,20 @@ async function login(email, password) {
 // login.html needs sendMagicLink.
 // contributions.js needs getCurrentUser.
 // We attach them to window.XAYTHEON_AUTH so any script can call them.
+
+async function login(email, password) {
+    const result = await sb.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (result.error) {
+        throw result.error;
+    }
+
+    return result.data;
+}
+
 window.XAYTHEON_AUTH = {
   sendMagicLink: sendMagicLink,
   getCurrentUser: getCurrentUser,
@@ -171,6 +175,12 @@ window.addEventListener('DOMContentLoaded', async function() {
   // Make sure the Supabase library loaded correctly
   if (!window.supabase || !window.supabase.createClient) {
     console.error('Supabase library not loaded. Check the <script> tag in your HTML.');
+    return;
+  }
+
+  // Guard: avoid initializing with the placeholder or an empty key.
+  if (!SUPABASE_KEY || SUPABASE_KEY.indexOf('REPLACE') === 0) {
+    console.error('Supabase anon key not configured. Aborting auth initialization to avoid using a privileged key from the client.');
     return;
   }
 
