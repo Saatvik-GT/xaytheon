@@ -259,12 +259,24 @@ body.eightgon-page {
     transition: 0.3s;
 }
 
-#theme-toggle{
-    padding: 10px;
-    border-width: 1px;
-    border-radius: 100%;
-    background: none;
-    border-color: var(--border-color);
+#theme-toggle {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+
+    background: transparent;
+
+    flex-shrink: 0;
 }
 /* Hero Section */
 .hero {
@@ -814,6 +826,11 @@ section {
         max-width: 300px;
         background-color: var(--text-color);
     }
+    #theme-toggle {
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+}
 
     .section-title {
         font-size: 2em;
@@ -849,6 +866,7 @@ section {
         gap: 10px;
     }
 }
+
 
 @media (max-width: 480px) {
     .container {
