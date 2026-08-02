@@ -392,6 +392,7 @@ function injectDateFilterBar() {
     '    <label>To</label>',
     '    <input type="date" id="gh-date-end" style="border:1px solid ' + borderColor + ';background:' + bgColor + ';color:' + textColor + '" />',
     '  </div>',
+    '  <div id="gh-date-error" style="display:none;color:#ef4444;font-size:12px;width:100%;margin-top:4px;"></div>',
     '  <button class="xf-apply" id="gh-date-apply">Apply</button>',
     '</div>',
   ].join('\n');
@@ -443,7 +444,19 @@ function injectDateFilterBar() {
   document.getElementById('gh-date-apply').addEventListener('click', function() {
     var startVal = document.getElementById('gh-date-start').value;
     var endVal   = document.getElementById('gh-date-end').value;
- 
+
+    var startInput = document.getElementById('gh-date-start');
+    var endInput = document.getElementById('gh-date-end');
+    var errorMsg = document.getElementById('gh-date-error');
+
+    errorMsg.style.display = 'none';
+
+    if (startInput.matches(":invalid") || endInput.matches(":invalid")) {
+      errorMsg.textContent = "Please enter a valid calendar date.";
+      errorMsg.style.display = "block";
+      return;
+    }
+
     if (!startVal && !endVal) {
       ghDateFilter = { start: null, end: null };
       updateFilterBadge(null, null);
@@ -518,7 +531,7 @@ function filterReposByDate(repos) {
     return true;
   });
 }
- 
+
 /** Re-render dashboard cards using cached data + current filter */
 function applyDateFilterAndRender() {
   if (!lastFetchedEvents && !lastFetchedRepos) return;
