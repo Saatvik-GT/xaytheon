@@ -51,7 +51,7 @@ html {
 }
 
 body {
-    font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Eightgon', 'Researcher', 'OriginTech', sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
     overflow-x: hidden;
