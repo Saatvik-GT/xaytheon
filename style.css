@@ -50,8 +50,8 @@ html {
     scroll-behavior: smooth;
 }
 
-body {
-    font-family: 'Researcher', 'OriginTech', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+body { 
+    font-family: 'Pixelify Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
     overflow-x: hidden;
@@ -194,6 +194,8 @@ body.eightgon-page {
 }
 
 .nav-link {
+    font-family: 'Pixelify Sans', sans-serif;
+    font-size: 1rem;
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
@@ -272,7 +274,8 @@ body.eightgon-page {
 }
 
 .hero-title {
-    margin-bottom: 40px;
+   font-family: 'Pixelify Sans', sans-serif;
+   font-weight: 700;
 }
 
 .title-line {
@@ -348,12 +351,12 @@ body.eightgon-page {
     border: none;
     border-radius: 8px;
     font-size: 1em;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
-    font-family: 'OriginTech', sans-serif;
+    font-family: 'Pixelify Sans', sans-serif;
 }
 
 .btn-primary {
