@@ -980,3 +980,15 @@ section {
 .copy-btn:hover{
     opacity:0.7;
 }
+/* Print Stylesheet */
+@media print {
+  .canvas-container, #three-canvas, .mini-3d, .navbar, .hamburger, .loading-screen, .skip-link, .shortcuts-modal, .xaytheon-toast-container, .copy-btn, .contrib-delete-btn, .contrib-actions, .xf-bar, .btn, .footer, .hero-buttons, #gh-date-filter-bar, #contrib-date-filter-bar, #theme-toggle, .user-menu, .graph-legend, .auto-refresh-bar { display:none !important; }
+  body { background:#fff !important; color:#000 !important; font-size:12pt; }
+  .content { position:static !important; z-index:auto !important; }
+  .card { box-shadow:none !important; border:1px solid #ccc !important; break-inside:avoid; margin-bottom:16px; }
+  .github-grid { display:block !important; }
+  .card.profile-card, .card.contributions-card, .card.repos-card, .card.activity-card { grid-column:span 12 !important; width:100%; }
+  a[href]::after { content:" (" attr(href) ")"; font-size:0.85em; color:#666; }
+  .nav-link[href]::after, .logo[href]::after { content:none; }
+  @page { margin:2cm; }
+}
