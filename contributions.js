@@ -418,3 +418,10 @@ window.addEventListener('DOMContentLoaded', function() {
   injectContribDateFilterBar();
   renderContributions();
 });
+
+// Batch Operations for Contributions
+var selectedContributions={};
+function toggleContributionSelection(id){if(selectedContributions[id])delete selectedContributions[id];else selectedContributions[id]=true;updateBatchUI();}
+function toggleSelectAll(){var all=loadContributionsFromStorage();var filtered=filterContributionsByDate(all);var cb=document.getElementById('contrib-select-all');var checked=cb&&cb.checked;selectedContributions={};if(checked){for(var i=0;i<filtered.length;i++)selectedContributions[filtered[i].id]=true;}updateBatchUI();renderContributions();}
+function deleteSelected(){var ids=Object.keys(selectedContributions);if(ids.length===0)return;if(!confirm('Delete '+ids.length+' selected contribution(s)?'))return;var c=loadContributionsFromStorage();var f=[];for(var i=0;i<c.length;i++){if(!selectedContributions[c[i].id])f.push(c[i]);}saveContributionsToStorage(f);selectedContributions={};updateBatchUI();renderContributions();if(window.XAYTHEON_TOAST)XAYTHEON_TOAST.success('Deleted '+ids.length+' contribution(s).');}
+function updateBatchUI(){var count=Object.keys(selectedContributions).length;var bar=document.getElementById('batch-bar');var countEl=document.getElementById('batch-count');var deleteBtn=document.getElementById('batch-delete-btn');if(bar)bar.style.display=count>0?'flex':'none';if(countEl)countEl.textContent=count+' selected';if(deleteBtn)deleteBtn.disabled=count===0;}
