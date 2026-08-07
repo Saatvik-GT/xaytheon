@@ -980,3 +980,8 @@ section {
 .copy-btn:hover{
     opacity:0.7;
 }
+/* Tooltip Component */
+.xaytheon-tooltip { position:absolute; z-index:10000; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; white-space:nowrap; pointer-events:none; opacity:0; transform:scale(0.95); transition:opacity 0.15s,transform 0.15s; max-width:280px; }
+.xaytheon-tooltip--visible { opacity:1; transform:scale(1); }
+[data-theme="light"] .xaytheon-tooltip, :root .xaytheon-tooltip { background:#1e293b; color:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+[data-theme="dark"] .xaytheon-tooltip { background:#334155; color:#f1f5f9; }
