@@ -243,7 +243,7 @@ Features:
 
 **Purpose**: Helps developers stay current with what's hot in the open-source world and discover popular projects in their areas of interest.
 
-### 4. **Explore by Topic** (explore.html)
+### 5. **Explore by Topic** (explore.html)
 **Advanced Repository Discovery & Mapping**
 
 Features:
@@ -268,7 +268,7 @@ Features:
 
 **Purpose**: Enables deep exploration of the GitHub ecosystem, helping you discover repositories through topic relationships and technology connections.
 
-### 5. **Your Open Source Contributions** (contributions.html)
+### 6. **Your Open Source Contributions** (contributions.html)
 **Personal Contribution Tracker**
 
 Features:
