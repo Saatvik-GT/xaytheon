@@ -75,7 +75,13 @@
             </form>
 
             <!-- List of saved contributions appears below the form -->
-            <div id="contrib-list" class="repo-list"></div>
+            
+<div id="batch-bar" class="batch-bar" style="display:none;">
+  <label class="batch-select-all"><input type="checkbox" id="contrib-select-all" onchange="toggleSelectAll()" /> Select All</label>
+  <span id="batch-count" class="batch-count">0 selected</span>
+  <button id="batch-delete-btn" class="btn btn-outline batch-delete" onclick="deleteSelected()" disabled>Delete Selected</button>
+</div>
+<div id="contrib-list" class="repo-list"></div>
 
           </div>
         </div>
