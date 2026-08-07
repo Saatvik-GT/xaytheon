@@ -980,3 +980,7 @@ section {
 .copy-btn:hover{
     opacity:0.7;
 }
+/* Infinite scroll loading */
+.scroll-loader { display:flex; justify-content:center; padding:20px; }
+.scroll-spinner { width:24px; height:24px; border:3px solid rgba(14,165,233,0.2); border-top-color:#0ea5e9; border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
