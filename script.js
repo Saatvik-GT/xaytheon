@@ -1482,7 +1482,277 @@ function fmtNum(n) {
 
 
 // ============================================================
-// PART 7 — START EVERYTHING
+// PART 7 — HOMEPAGE (COMMUNITY & OPPORTUNITIES)
+// ============================================================
+
+var HomepageContent = (function() {
+
+  var OPPORTUNITIES = [
+    {
+      icon: '🌱',
+      name: 'Google Summer of Code',
+      badge: 'Apply Mar–Apr',
+      accent: '#0ea5e9',
+      meta: 'Runs May – August · 200+ organizations',
+      desc: 'A global program that pairs new contributors with open source orgs for a paid, mentored coding project.',
+      url: 'https://summerofcode.withgoogle.com/'
+    },
+    {
+      icon: '🎃',
+      name: 'Hacktoberfest',
+      badge: 'All of October',
+      accent: '#f59e0b',
+      meta: 'Beginner friendly · Any project on GitHub/GitLab',
+      desc: 'A month-long celebration of open source — make qualifying pull requests and earn swag and recognition.',
+      url: 'https://hacktoberfest.com/'
+    },
+    {
+      icon: '🌍',
+      name: 'Outreachy',
+      badge: 'Apply twice a year',
+      accent: '#a855f7',
+      meta: '3-month paid remote internships',
+      desc: 'Paid internships in open source for people from groups underrepresented in tech, with a strong mentorship focus.',
+      url: 'https://www.outreachy.org/'
+    },
+    {
+      icon: '🐧',
+      name: 'LFX Mentorship',
+      badge: 'Rolling cohorts',
+      accent: '#10b981',
+      meta: 'Linux Foundation · Multiple project tracks',
+      desc: 'Structured, mentor-led projects across cloud, networking, and infrastructure open source communities.',
+      url: 'https://mentorship.lfx.linuxfoundation.org/'
+    },
+    {
+      icon: '🚀',
+      name: 'MLH Fellowship',
+      badge: 'Rolling cohorts',
+      accent: '#ef4444',
+      meta: '12-week remote open source track',
+      desc: 'Work alongside a team of peers and industry mentors contributing to real open source codebases.',
+      url: 'https://fellowship.mlh.io/'
+    },
+    {
+      icon: '🎄',
+      name: '24 Pull Requests',
+      badge: 'December',
+      accent: '#0ea5e9',
+      meta: 'Community tradition since 2012',
+      desc: 'A festive challenge to send 24 pull requests to open source projects before the new year.',
+      url: 'https://24pullrequests.com/'
+    }
+  ];
+
+  var COMMUNITIES = [
+    { name: 'Kubernetes', tagline: 'Container orchestration at planetary scale', contributors: '3,500+', stars: '~112k', milestone: 'CNCF graduated project' },
+    { name: 'VS Code', tagline: 'The editor millions of developers open every day', contributors: '1,700+', stars: '~168k', milestone: 'Monthly release cadence' },
+    { name: 'Rust', tagline: 'A systems language obsessed with safety and speed', contributors: '5,600+', stars: '~98k', milestone: 'Voted #1 loved language, 8 years running' },
+    { name: 'freeCodeCamp', tagline: 'Learn to code — for free, together', contributors: '4,000+', stars: '~410k', milestone: 'Millions of learners worldwide' },
+    { name: 'Home Assistant', tagline: 'Open source home automation that puts local control first', contributors: '3,000+', stars: '~75k', milestone: 'New release every month' }
+  ];
+
+  var NEWS = [
+    { date: 'Ongoing', source: 'GitHub', title: 'GitHub Trending refreshes daily', desc: 'Discover the repositories gaining the most stars right now across every language and topic.' },
+    { date: 'Recurring', source: 'Dev.to', title: 'Weekly "Call for Contributors" round-ups', desc: 'Community-curated lists of beginner-friendly issues looking for a first-time contributor.' },
+    { date: 'Recurring', source: 'r/opensource', title: 'New project launches shared daily', desc: 'Maintainers introduce fresh tools, libraries, and frameworks to the community for early feedback.' },
+    { date: 'Quarterly', source: 'CNCF', title: 'Cloud Native landscape updates', desc: 'Tracking graduations, incubations, and major releases across the cloud native ecosystem.' },
+    { date: 'Year-round', source: 'Community calendars', title: 'Conferences & meetups worldwide', desc: 'From regional meetups to flagship conferences like FOSDEM and All Things Open — open source never stops.' }
+  ];
+
+  var STATS = [
+    { number: 1240, suffix: '+', label: 'Projects tracked' },
+    { number: 8600, suffix: '+', label: 'Active contributors this month' },
+    { number: 342, suffix: '', label: 'PRs merged today' },
+    { number: 57, suffix: '', label: 'New projects this week' }
+  ];
+
+  function renderOpportunities() {
+    var grid = document.getElementById('opportunities-grid');
+    if (!grid) return;
+    grid.innerHTML = OPPORTUNITIES.map(function(o) {
+      return (
+        '<div class="opportunity-card animate-on-scroll" style="--opp-accent:' + safeHtml(o.accent) + '">' +
+          '<div class="opportunity-top">' +
+            '<span class="opportunity-icon" aria-hidden="true">' + o.icon + '</span>' +
+            '<span class="opportunity-name">' + safeHtml(o.name) + '</span>' +
+          '</div>' +
+          '<span class="opportunity-badge">' + safeHtml(o.badge) + '</span>' +
+          '<div class="opportunity-meta">' + safeHtml(o.meta) + '</div>' +
+          '<p class="opportunity-desc">' + safeHtml(o.desc) + '</p>' +
+          '<a class="opportunity-link" href="' + safeAttr(o.url) + '" target="_blank" rel="noopener noreferrer">Learn more →</a>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function renderNews() {
+    var list = document.getElementById('news-list');
+    if (!list) return;
+    list.innerHTML = NEWS.map(function(n) {
+      return (
+        '<div class="news-item animate-on-scroll">' +
+          '<div class="news-meta"><span>' + safeHtml(n.date) + '</span><span>·</span><span>' + safeHtml(n.source) + '</span></div>' +
+          '<div class="news-title">' + safeHtml(n.title) + '</div>' +
+          '<div class="news-desc">' + safeHtml(n.desc) + '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function renderStats() {
+    var grid = document.getElementById('stats-grid');
+    if (!grid) return;
+    grid.innerHTML = STATS.map(function(s, i) {
+      return (
+        '<div class="stat-card animate-on-scroll">' +
+          '<div class="stat-number" id="stat-num-' + i + '" data-target="' + s.number + '" data-suffix="' + safeHtml(s.suffix) + '">0</div>' +
+          '<div class="stat-label">' + safeHtml(s.label) + '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function initCarousel() {
+    var track    = document.getElementById('carousel-track');
+    var dotsWrap = document.getElementById('carousel-dots');
+    var prevBtn  = document.getElementById('carousel-prev');
+    var nextBtn  = document.getElementById('carousel-next');
+    if (!track || !dotsWrap) return;
+
+    track.innerHTML = COMMUNITIES.map(function(c) {
+      return (
+        '<div class="carousel-slide">' +
+          '<div class="community-card">' +
+            '<h3>' + safeHtml(c.name) + '</h3>' +
+            '<p class="community-tagline">' + safeHtml(c.tagline) + '</p>' +
+            '<div class="community-stats">' +
+              '<div><strong>' + safeHtml(c.contributors) + '</strong><span>Contributors</span></div>' +
+              '<div><strong>' + safeHtml(c.stars) + '</strong><span>GitHub Stars</span></div>' +
+            '</div>' +
+            '<span class="community-milestone">' + safeHtml(c.milestone) + '</span>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    dotsWrap.innerHTML = COMMUNITIES.map(function(_, i) {
+      return '<button class="carousel-dot' + (i === 0 ? ' active' : '') + '" data-index="' + i + '" aria-label="Go to slide ' + (i + 1) + '"></button>';
+    }).join('');
+
+    var index = 0;
+    var total = COMMUNITIES.length;
+    var dots  = dotsWrap.querySelectorAll('.carousel-dot');
+    var timer = null;
+
+    function goTo(i) {
+      index = (i + total) % total;
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      dots.forEach(function(d, di) { d.classList.toggle('active', di === index); });
+    }
+    function next() { goTo(index + 1); }
+    function prev() { goTo(index - 1); }
+    function startAutoplay() { stopAutoplay(); timer = setInterval(next, 5000); }
+    function stopAutoplay()  { if (timer) clearInterval(timer); }
+
+    if (nextBtn) nextBtn.addEventListener('click', function() { next(); startAutoplay(); });
+    if (prevBtn) prevBtn.addEventListener('click', function() { prev(); startAutoplay(); });
+    dots.forEach(function(d) {
+      d.addEventListener('click', function() {
+        goTo(parseInt(d.getAttribute('data-index'), 10));
+        startAutoplay();
+      });
+    });
+
+    var carousel = document.querySelector('.community-carousel');
+    if (carousel) {
+      carousel.addEventListener('mouseenter', stopAutoplay);
+      carousel.addEventListener('mouseleave', startAutoplay);
+    }
+
+    goTo(0);
+    startAutoplay();
+  }
+
+  function animateCounter(el) {
+    var target   = parseInt(el.getAttribute('data-target'), 10) || 0;
+    var suffix   = el.getAttribute('data-suffix') || '';
+    var duration = 1400;
+    var start    = null;
+
+    function step(timestamp) {
+      if (!start) start = timestamp;
+      var progress = Math.min((timestamp - start) / duration, 1);
+      var eased    = 1 - Math.pow(1 - progress, 3);
+      var value    = Math.floor(eased * target);
+      el.textContent = value.toLocaleString() + suffix;
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target.toLocaleString() + suffix;
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function initStatsAnimation() {
+    var statEls = document.querySelectorAll('.stat-number');
+    if (!statEls.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      statEls.forEach(animateCounter);
+      return;
+    }
+
+    var observer = new IntersectionObserver(function(entries, obs) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    statEls.forEach(function(el) { observer.observe(el); });
+  }
+
+  function initScrollReveal() {
+    var els = document.querySelectorAll('.home-section .animate-on-scroll');
+    if (!els.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function(el) { el.classList.add('animated'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function(entries, obs) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    els.forEach(function(el) { observer.observe(el); });
+  }
+
+  function init() {
+    if (!document.getElementById('opportunities-grid')) return;
+    renderOpportunities();
+    renderNews();
+    renderStats();
+    initCarousel();
+    initStatsAnimation();
+    initScrollReveal();
+  }
+
+  return { init: init };
+
+})();
+
+// ============================================================
+// PART 8 — START EVERYTHING
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1492,6 +1762,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initGithubDashboard();
   initMiniViewer();
   injectCompareUI();
+  HomepageContent.init();
 });
 /* ==========================================
    XAI OOD Validation Layer
