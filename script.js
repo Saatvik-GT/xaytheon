@@ -1564,3 +1564,7 @@ function runPrediction() {
         }
     }
 }
+
+// URL Hash State Persistence
+function readHashState() { var h=window.location.hash.substring(1); if(!h)return{}; var p={}; h.split('&').forEach(function(pair){var parts=pair.split('=');if(parts.length===2)p[decodeURIComponent(parts[0])]=decodeURIComponent(parts[1]);}); return p; }
+function writeHashState(params) { var parts=[]; for(var k in params){if(params[k]!==null&&params[k]!==undefined&&params[k]!=='')parts.push(encodeURIComponent(k)+'='+encodeURIComponent(params[k]));} var nh=parts.length>0?'#'+parts.join('&'):''; if(window.location.hash!==nh)history.replaceState(null,'',window.location.pathname+window.location.search+nh); }
