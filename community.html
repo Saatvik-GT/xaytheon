@@ -124,5 +124,21 @@
         toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
     }
     </script>
+
+<!-- Keyboard Shortcuts Modal -->
+<div id="shortcuts-modal" class="shortcuts-modal" aria-hidden="true" role="dialog" aria-label="Keyboard shortcuts">
+  <div class="shortcuts-modal__content">
+    <div class="shortcuts-modal__header">
+      <h3>Keyboard Shortcuts</h3>
+      <button class="shortcuts-modal__close" aria-label="Close">&times;</button>
+    </div>
+    <div class="shortcuts-modal__body">
+      <div class="shortcut-row"><kbd>?</kbd><span>Open this help</span></div>
+      <div class="shortcut-row"><kbd>/</kbd><span>Focus search input</span></div>
+      <div class="shortcut-row"><kbd>Esc</kbd><span>Close modal / dropdown</span></div>
+    </div>
+  </div>
+</div>
+<script src="shortcuts.js"></script>
 </body>
 </html>
