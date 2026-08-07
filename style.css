@@ -980,3 +980,11 @@ section {
 .copy-btn:hover{
     opacity:0.7;
 }
+/* Breadcrumb Navigation */
+.breadcrumb { padding:12px 0; margin-top:70px; }
+.breadcrumb__list { list-style:none; display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0; padding:0; font-size:0.85em; }
+.breadcrumb__item { display:flex; align-items:center; gap:6px; }
+.breadcrumb__item:not(:last-child)::after { content:'/'; opacity:0.4; }
+.breadcrumb__item a { color:var(--text-color,#000); text-decoration:none; opacity:0.6; }
+.breadcrumb__item a:hover { opacity:1; text-decoration:underline; }
+.breadcrumb__item--current { font-weight:600; opacity:0.85; }
