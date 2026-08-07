@@ -75,7 +75,13 @@
             </form>
 
             <!-- List of saved contributions appears below the form -->
-            <div id="contrib-list" class="repo-list"></div>
+            
+<div class="contrib-actions">
+  <button type="button" class="btn btn-outline" onclick="exportContributionsJSON()">Export JSON</button>
+  <button type="button" class="btn btn-outline" onclick="exportContributionsCSV()">Export CSV</button>
+  <button type="button" class="btn btn-outline" onclick="importContributionsJSON()">Import JSON</button>
+</div>
+<div id="contrib-list" class="repo-list"></div>
 
           </div>
         </div>
