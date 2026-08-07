@@ -980,3 +980,15 @@ section {
 .copy-btn:hover{
     opacity:0.7;
 }
+/* Keyboard Shortcuts Modal */
+.shortcuts-modal { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); justify-content:center; align-items:center; }
+.shortcuts-modal--visible { display:flex; }
+.shortcuts-modal__content { background:var(--card-color,#fff); color:var(--text-color,#000); border-radius:16px; max-width:420px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden; }
+.shortcuts-modal__header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid rgba(128,128,128,0.2); }
+.shortcuts-modal__header h3 { margin:0; font-size:1.1em; }
+.shortcuts-modal__close { background:none; border:none; font-size:24px; cursor:pointer; color:var(--text-color,#000); padding:4px 8px; border-radius:6px; }
+.shortcuts-modal__close:hover { background:rgba(128,128,128,0.15); }
+.shortcuts-modal__body { padding:20px; }
+.shortcut-row { display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid rgba(128,128,128,0.1); }
+.shortcut-row:last-child { border-bottom:none; }
+.shortcut-row kbd { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:28px; padding:0 8px; background:rgba(128,128,128,0.12); border:1px solid rgba(128,128,128,0.25); border-radius:6px; font-size:13px; font-weight:700; }
