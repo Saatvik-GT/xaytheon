@@ -980,3 +980,19 @@ section {
 .copy-btn:hover{
     opacity:0.7;
 }
+/* Reduced Motion Support - WCAG 2.1 SC 2.3.3 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .loader { animation: none; border-top-color: transparent; }
+  .loading-screen p { animation: none; }
+  .btn::before { display: none; }
+  .step-number::before { display: none; }
+  .fade-in-up { animation: none; opacity: 1; transform: none; }
+  .animate-on-scroll { opacity: 1; transform: none; transition: none; }
+  .btn:hover, .card:hover, .project-card:hover, .repo-item:hover, .activity-item:hover { transform: none; }
+}
