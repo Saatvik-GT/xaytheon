@@ -47,7 +47,8 @@ window.addEventListener('DOMContentLoaded', function() {
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   // Convert a date string to "X days ago" text
