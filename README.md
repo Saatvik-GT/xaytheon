@@ -309,7 +309,8 @@ xaytheon/
 │
 ├── docs/                    # Documentation
 │   ├── CONTRIBUTION.md
-│   └── windows_setup_guide.md
+│   ├── windows_setup_guide.md
+│   └── architecture_overview.md
 │
 ├── LICENSE.md               # License
 ├── SECURITY.md              # Security policy
@@ -385,6 +386,15 @@ The platform consists of **6 interconnected pages**:
 6. **Contributions** → Personal tracking
 
 Each page focuses on a specific aspect of the GitHub ecosystem while maintaining seamless navigation between features.
+
+---
+
+## 📖 Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Architecture Overview](docs/architecture_overview.md) | Deep architectural breakdown — rendering pipeline, API caching, state management |
+| [Contribution Guide](CONTRIBUTION.md) | How to contribute to Xaytheon |
 
 ---
 
