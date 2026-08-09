@@ -147,16 +147,21 @@ body.eightgon-page {
 /* Navigation */
 .navbar {
     position: fixed;
-    top: 0;
-    width: 100%;
-    background: var(--bg-color);
-    opacity: 95%;
-    backdrop-filter: blur(10px);
-    box-shadow: 0px 0px 10px var(--shadow-color);
-    z-index: 100;
-    transition: all 0.3s ease;
-}
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 1280px;
 
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -194,9 +199,10 @@ body.eightgon-page {
 }
 
 .nav-link {
+    font-weight: 600;
+    letter-spacing: 0.4px;
     text-decoration: none;
     color: var(--text-color);
-    font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
 }
@@ -207,6 +213,9 @@ body.eightgon-page {
 }
 
 .nav-link::after {
+    transform: scaleX(0);
+    transform-origin: left;
+    width: 100%;
     content: '';
     position: absolute;
     bottom: -5px;
@@ -218,6 +227,7 @@ body.eightgon-page {
 }
 
 .nav-link:hover::after {
+    transform: scaleX(1);
     width: 100%;
 }
 
@@ -249,26 +259,67 @@ body.eightgon-page {
     transition: 0.3s;
 }
 
-#theme-toggle{
-    padding: 10px;
-    border-width: 1px;
-    border-radius: 100%;
-    background: none;
-    border-color: var(--border-color);
+#theme-toggle {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+
+    background: transparent;
+
+    flex-shrink: 0;
 }
 /* Hero Section */
 .hero {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 20px 80px;
+    padding: 140px 20px 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+
+    background:rgba(14,165,233,.12);
+
+    filter:blur(120px);
+
+    top:-150px;
+    left:-100px;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:400px;
+    height:400px;
+    border-radius:50%;
+
+    background:rgba(59,130,246,.08);
+
+    filter:blur(100px);
+
+    bottom:-100px;
+    right:-100px;
 }
 
 .hero-content {
-    max-width: 900px;
-    margin: 0 auto;
+   max-width:1000px;
+    position:relative;
+    z-index:2;
 }
 
 .hero-title {
@@ -282,6 +333,8 @@ body.eightgon-page {
     margin-bottom: 15px;
     opacity: 0.8;
     letter-spacing: 1px;
+    text-transform:uppercase;
+    letter-spacing:4px;
 }
 
 .title-main {
@@ -308,7 +361,10 @@ body.eightgon-page {
     height: 64px; /* desktop default */
     width: auto;
     display: inline-block;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+    height:80px;
+    filter:
+      drop-shadow(0 0 10px rgba(14,165,233,.4))
+      drop-shadow(0 0 30px rgba(14,165,233,.25));
 }
 
 .title-subtitle {
@@ -317,6 +373,10 @@ body.eightgon-page {
     font-weight: 300;
     opacity: 0.7;
     margin-top: 10px;
+     max-width:800px;
+    margin:20px auto 0;
+    line-height:1.8;
+    font-size:1.4rem;
 }
 
 /* Light blue accent with subtle glow */
@@ -354,7 +414,35 @@ body.eightgon-page {
     text-decoration: none;
     display: inline-block;
     font-family: 'OriginTech', sans-serif;
+    transition:
+      transform .3s ease,
+      box-shadow .3s ease;
 }
+
+.btn:hover{
+    transform:translateY(-4px) scale(1.03);
+}
+
+.hero-content {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.title-logo-img {
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+.btn:hover {
+    transform: translateY(-4px) scale(1.03);
+}
+
 
 .btn-primary {
     background: #000000;
@@ -738,6 +826,11 @@ section {
         max-width: 300px;
         background-color: var(--text-color);
     }
+    #theme-toggle {
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+}
 
     .section-title {
         font-size: 2em;
@@ -773,6 +866,7 @@ section {
         gap: 10px;
     }
 }
+
 
 @media (max-width: 480px) {
     .container {
