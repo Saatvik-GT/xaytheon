@@ -197,6 +197,7 @@ body.eightgon-page {
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
+    font-family: 'Researcher', 'OriginTech', sans-serif;
     transition: all 0.3s ease;
     position: relative;
 }
