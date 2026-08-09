@@ -506,6 +506,17 @@ section {
     font-size: 0.95em;
 
 }
+/* Fix calendar icon visibility in dark mode */
+.github-form input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 1;
+}
+
+/* Improve dark mode support */
+[data-theme="dark"] .github-form input[type="date"] {
+    color-scheme: dark;
+}
 
 .github-form input:focus {
     border-color: var(--border-color);
