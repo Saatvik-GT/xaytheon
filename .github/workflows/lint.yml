@@ -1,0 +1,62 @@
+name: Code Quality CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Linting Tools
+        run: |
+          npm install -g htmlhint eslint stylelint stylelint-config-standard
+
+      - name: Create Lint Configurations
+        run: |
+          echo '{
+            "env": {
+              "browser": true,
+              "es2021": true
+            },
+            "extends": "eslint:recommended",
+            "parserOptions": {
+              "ecmaVersion": "latest",
+              "sourceType": "script"
+            },
+            "rules": {
+              "no-unused-vars": "warn",
+              "no-undef": "off",
+              "no-redeclare": "warn"
+            }
+          }' > .eslintrc.json
+
+          echo '{
+            "extends": "stylelint-config-standard",
+            "rules": {
+              "color-function-notation": null,
+              "alpha-value-notation": null,
+              "no-descending-specificity": null,
+              "selector-class-pattern": null
+            }
+          }' > .stylelintrc.json
+
+      - name: Lint HTML
+        run: htmlhint "**/*.html" --ignore "node_modules/**"
+
+      - name: Lint CSS
+        run: npx stylelint "**/*.css"
+
+      - name: Lint JavaScript
+        run: npx eslint "**/*.js"
