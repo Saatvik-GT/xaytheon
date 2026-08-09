@@ -697,6 +697,28 @@ async function fetchFromGitHub(url) {
   var response = await fetch(url, {
     headers: { 'Accept': 'application/vnd.github+json', 'User-Agent': 'XAYTHEON-Dashboard' }
   });
+
+  // Read rate limit headers
+  var remaining = response.headers.get('X-RateLimit-Remaining');
+  var resetTime = response.headers.get('X-RateLimit-Reset');
+
+  // Display remaining quota in status bar
+  if (remaining !== null) {
+    var statusEl = document.getElementById('github-status');
+    if (statusEl && parseInt(remaining) <= 10) {
+      var resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : null;
+      var minutesLeft = resetDate ? Math.max(1, Math.ceil((resetDate - Date.now()) / 60000)) : '?';
+      statusEl.textContent = '⚠️ API quota low: ' + remaining + ' requests remaining. Resets in ~' + minutesLeft + ' min.';
+      statusEl.style.color = '#d97706';
+    }
+  }
+
+  if (response.status === 403 && remaining === '0') {
+    var resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : null;
+    var minutesLeft = resetDate ? Math.max(1, Math.ceil((resetDate - Date.now()) / 60000)) : '?';
+    throw new Error('GitHub API rate limit reached (60/hr for unauthenticated). Resets in ~' + minutesLeft + ' minutes. Try again later.');
+  }
+
   if (!response.ok) {
     var errorText = await response.text();
     throw new Error('GitHub API ' + response.status + ': ' + errorText);
