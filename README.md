@@ -387,6 +387,53 @@ The platform consists of **6 interconnected pages**:
 Each page focuses on a specific aspect of the GitHub ecosystem while maintaining seamless navigation between features.
 
 ---
+🌟 How to Contribute
+
+We’re really happy to have you here! 🎉  
+Whether this is your first contribution or you’ve done this before, this guide will help you get started easily.
+
+Follow the steps below to contribute to the project:
+
+1. Fork the repository  
+   Click the **Fork** button on the top right of the repository page to create your own copy of the project.
+
+2. Clone your forked repository  
+   Copy your forked repository link and run:
+   git clone https://github.com/your-username/repository-name.git
+
+3. Navigate into the project folder  
+   cd repository-name
+
+4. Add the original repository as upstream (recommended)  
+   This helps you stay updated with the latest changes:
+   git remote add upstream https://github.com/original-owner/repository-name.git
+
+5. Create a new branch  
+   Always create a new branch before making changes:
+   git checkout -b your-branch-name
+
+6. Make your changes  
+   Open the project in your code editor and make the required changes.
+
+7. Check your changes (optional but recommended)  
+   git status
+
+8. Stage your changes  
+   git add .
+
+9. Commit your changes  
+   git commit -m "Describe your changes clearly"
+
+10. Push your changes  
+   git push origin your-branch-name
+
+11. Open a Pull Request  
+   Go to your forked repository on GitHub and click **Compare & pull request**. Add a proper title and description, then submit your pull request.
+
+---
+
+💡 Important Note:  
+Before contributing, please make sure to read the `CONTRIBUTION.md` file for detailed guidelines and best practices.
 
 ## Summary
 
