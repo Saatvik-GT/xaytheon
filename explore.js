@@ -17,6 +17,21 @@ window.addEventListener("DOMContentLoaded", function () {
   var nodesById = {};
   var linksArray = [];
   var linkSet = {};
+  var currentSimulation = null;
+  var resizeTimer = null;
+
+  // Debounced resize handler to re-center the D3 force graph
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (currentSimulation) {
+        var w = svg.node().clientWidth;
+        var h = svg.node().clientHeight;
+        currentSimulation.force("center", d3.forceCenter(w / 2, h / 2));
+        currentSimulation.alpha(0.3).restart();
+      }
+    }, 250);
+  });
 
   function getThemeColor(variableName, fallback) {
     return getComputedStyle(document.documentElement)
@@ -150,7 +165,7 @@ window.addEventListener("DOMContentLoaded", function () {
       .attr("font-size", 10)
       .attr("fill", textColor);
 
-    d3.forceSimulation(nodesArray)
+    currentSimulation = d3.forceSimulation(nodesArray)
       .force(
         "charge",
         d3.forceManyBody().strength(function (d) {
