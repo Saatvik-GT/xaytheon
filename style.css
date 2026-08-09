@@ -115,7 +115,7 @@ body.eightgon-page {
     width: 50px;
     height: 50px;
     border: 3px solid rgba(0, 0, 0, 0.1);
-    border-top: 3px solid #000000;
+    border-top: 3px solid var(--text-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
@@ -213,7 +213,7 @@ body.eightgon-page {
     left: 0;
     width: 0;
     height: 2px;
-    background: #000000;
+    background: var(--text-color);
     transition: width 0.3s ease;
 }
 
@@ -244,7 +244,7 @@ body.eightgon-page {
 .bar {
     width: 25px;
     height: 3px;
-    background: #000000;
+    background: var(--text-color);
     margin: 3px 0;
     transition: 0.3s;
 }
@@ -386,7 +386,7 @@ body.eightgon-page {
     background: transparent;
     color: var(--button-color);
     opacity: 50%;
-    border: 1px solid #000000;
+    border: 1px solid var(--border-color);
     padding: 10px 20px;
     font-size: 0.9em;
 }
@@ -698,7 +698,7 @@ section {
         left: -100%;
         top: 70px;
         flex-direction: column;
-        background-color: rgba(255, 255, 255, 0.95);
+        background-color: var(--bg-color);
         backdrop-filter: blur(10px);
         width: 100%;
         text-align: center;
@@ -870,7 +870,7 @@ section {
 /* Improved focus states for accessibility */
 .btn:focus,
 .nav-link:focus {
-    outline: 2px solid #000000;
+    outline: 2px solid var(--text-color);
     outline-offset: 2px;
 }
 
