@@ -1,0 +1,57 @@
+name: Xaytheon CI Code Quality Validation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Code Syntax and Lint Validation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Codebase
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-node: 20
+
+    - name: Validate HTML Syntax
+      run: |
+        echo "Validating HTML files..."
+        for file in *.html; do
+          if [ -f "$file" ]; then
+            echo "Checking $file..."
+            # Simple syntax check by ensuring tags open and close correctly
+            grep -q "<html" "$file" || (echo "Missing <html> tag in $file" && exit 1)
+            grep -q "</html>" "$file" || (echo "Missing </html> tag in $file" && exit 1)
+          fi
+        done
+
+    - name: Check JavaScript Syntax
+      run: |
+        echo "Checking JavaScript syntax..."
+        for file in *.js; do
+          if [ -f "$file" ]; then
+            echo "Checking syntax for $file..."
+            node -c "$file" || exit 1
+          fi
+        done
+
+    - name: Check Resource and Asset Path Validity
+      run: |
+        echo "Verifying local path and asset existence..."
+        # Scan HTML files for relative assets that should exist
+        grep -o 'src="assets/[^"]*"' *.html | while read -r line; do
+          path=$(echo "$line" | cut -d'"' -f2)
+          if [ ! -f "$path" ] && [ ! -d "$path" ]; then
+            echo "Warning: Asset $path mentioned in HTML does not exist locally!"
+          fi
+        done
