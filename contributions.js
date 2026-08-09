@@ -103,6 +103,8 @@ function injectDateFilterStyles() {
   ].join('\n');
   document.head.appendChild(style);
 }
+
+function injectContribDateFilterBar() {
   var listEl = document.getElementById('contrib-list');
   if (!listEl) return;
 
@@ -223,6 +225,7 @@ function injectDateFilterStyles() {
     document.getElementById('contrib-custom-range').style.display = 'none';
     renderContributions();
   });
+}
 
 function updateContribBadge(start, end) {
   var badge    = document.getElementById('contrib-filter-badge');
