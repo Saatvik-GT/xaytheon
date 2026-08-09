@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | XAYTHEON</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .error-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .error-code {
+      font-size: 8em;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .error-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .error-description {
+      font-size: 1.1em;
+      opacity: 0.7;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .error-actions .btn {
+      padding: 14px 28px;
+      font-size: 1em;
+      border-radius: 10px;
+    }
+
+    .error-home-btn {
+      background: #0ea5e9 !important;
+      color: #fff !important;
+      border: 2px solid #0ea5e9 !important;
+    }
+
+    .error-home-btn:hover {
+      background: #0284c7 !important;
+      border-color: #0284c7 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
+    }
+
+    .error-back-btn {
+      background: transparent !important;
+      color: var(--text-color) !important;
+      border: 2px solid var(--border-color) !important;
+      opacity: 0.7;
+    }
+
+    .error-back-btn:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    .error-footer {
+      margin-top: 48px;
+      font-size: 0.85em;
+      opacity: 0.4;
+    }
+
+    .error-footer a {
+      color: #0ea5e9;
+      text-decoration: none;
+    }
+
+    .error-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-wrap">
+    <div class="error-code">404</div>
+    <div class="error-title">Page Not Found</div>
+    <p class="error-description">
+      The page you're looking for doesn't exist or has been moved. 
+      Let's get you back on track.
+    </p>
+    <div class="error-actions">
+      <a href="index.html" class="btn error-home-btn">← Back to Home</a>
+      <button onclick="history.back()" class="btn error-back-btn">Go Back</button>
+    </div>
+    <div class="error-footer">
+      <a href="https://github.com/Saatvik-GT/xaytheon">XAYTHEON</a> — Open Source GitHub Analytics Platform
+    </div>
+  </div>
+</body>
+</html>
