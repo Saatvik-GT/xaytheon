@@ -388,6 +388,36 @@ Each page focuses on a specific aspect of the GitHub ecosystem while maintaining
 
 ---
 
+## 🤝 How to Contribute
+
+1. Fork the repository
+2. Clone your fork
+3. Create a new branch
+4. Make your changes
+5. Commit your changes
+6. Push the branch
+7. Open a Pull Request
+
+```bash
+git clone https://github.com/your-username/xaytheon.git
+cd xaytheon
+git checkout -b feature-name
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- HTML5
+- CSS3
+- JavaScript
+- Node.js
+- Express.js
+- Redis
+- Docker
+
+---
+
 ## Summary
 
 **Xaytheon** is essentially a **GitHub intelligence and discovery platform** that transforms how developers interact with the open-source ecosystem. It combines personal analytics, community trends, and advanced exploration tools into a unified interface, making it easier to navigate GitHub's vast repository landscape, discover meaningful projects, and track your open-source journey.
