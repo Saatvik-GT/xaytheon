@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy</title>
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+    :root{
+  --bg-primary:#f8fbff;
+  --bg-secondary:#ffffff;
+  --text-primary:#111827;
+  --text-secondary:#475569;
+  --card-bg:rgba(255,255,255,0.72);
+  --navbar-bg:rgba(255,255,255,0.75);
+}
+body{
+  font-family:"Inter",sans-serif;
+
+  background:linear-gradient(
+    135deg,
+    var(--bg-primary),
+    #1e293b,
+    var(--bg-primary)
+  );
+
+  color:var(--text-primary);
+
+  overflow-x:hidden;
+
+  transition:0.3s ease;
+}
+
+[data-theme="dark"]{
+  --bg-primary:#0f172a;
+  --bg-secondary:#1e293b;
+  --text-primary:#f8fafc;
+  --text-secondary:#cbd5e1;
+  --card-bg:rgba(30,41,59,0.72);
+  --navbar-bg:rgba(15,23,42,0.85);
+}
+    
+
+    /* ================= NAVBAR ================= */
+   
+    .navbar{
+      width:100%;
+      position:sticky;
+      top:0;
+      z-index:1000;
+
+      backdrop-filter:blur(18px);
+
+      background:var(--navbar-bg);
+
+      border-bottom:1px solid rgba(255,255,255,0.4);
+
+      box-shadow:0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    .nav-container{
+      width:90%;
+      max-width:1400px;
+      margin:auto;
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      padding:18px 0;
+    }
+
+    .logo-img{
+      width:220px;
+      object-fit:contain;
+    }
+
+    .nav-menu{
+      display:flex;
+      align-items:center;
+      gap:42px;
+      list-style:none;
+    }
+
+    .nav-link{
+      text-decoration:none;
+      color:var(--text-primary);
+      font-size:0.96rem;
+      font-weight:600;
+      position:relative;
+      transition:0.3s ease;
+    }
+
+    .nav-link:hover{
+      color:#2563eb;
+    }
+
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-6px;
+
+      width:0%;
+      height:2px;
+
+      background:#2563eb;
+
+      transition:0.3s ease;
+    }
+
+    .nav-link:hover::after{
+      width:100%;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero{
+      width:90%;
+      max-width:1400px;
+
+      margin:60px auto 0;
+
+      padding:70px;
+
+      border-radius:35px;
+
+      background:
+      linear-gradient(
+      135deg,
+      rgba(255,255,255,0.85),
+      rgba(255,255,255,0.65)
+      );
+
+      backdrop-filter:blur(18px);
+
+      border:1px solid rgba(255,255,255,0.4);
+
+      box-shadow:
+      0 20px 60px rgba(37,99,235,0.08),
+      0 10px 30px rgba(0,0,0,0.05);
+
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::before{
+      content:"";
+
+      position:absolute;
+
+      width:350px;
+      height:350px;
+
+      background:#3b82f6;
+
+      border-radius:50%;
+
+      top:-120px;
+      right:-100px;
+
+      opacity:0.08;
+    }
+
+    .back-btn{
+      text-decoration:none;
+      color:#2563eb;
+      font-weight:600;
+      display:inline-block;
+      margin-bottom:25px;
+      transition:0.3s;
+    }
+
+    .back-btn:hover{
+      transform:translateX(-5px);
+    }
+
+    .hero h1{
+      font-size:5rem;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-3px;
+
+      margin-bottom:20px;
+
+      color:#0f172a;
+    }
+
+    .hero p{
+      font-size:1.1rem;
+      color:#64748b;
+    }
+    .btn{
+  border:none;
+  outline:none;
+  cursor:pointer;
+
+  padding:10px 16px;
+
+  border-radius:12px;
+
+  font-size:1rem;
+  font-weight:600;
+
+  background:#2563eb;
+  color:white;
+
+  transition:0.3s ease;
+
+  box-shadow:
+  0 10px 25px rgba(37,99,235,0.25);
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+  0 18px 35px rgba(37,99,235,0.35);
+}
+    /* ================= MAIN SECTION ================= */
+
+    .privacy-wrapper{
+      width:90%;
+      max-width:1400px;
+
+      margin:50px auto 80px;
+
+      display:flex;
+      gap:50px;
+      align-items:flex-start;
+    }
+
+    /* ================= CONTENT CARD ================= */
+
+    .privacy-content{
+      flex:1.2;
+
+      background:
+      var(--card-bg);
+
+      backdrop-filter:blur(18px);
+
+      border:1px solid rgba(255,255,255,0.4);
+
+      border-radius:35px;
+
+      padding:50px;
+
+      box-shadow:
+      0 20px 60px rgba(0,0,0,0.05);
+    }
+
+    .policy-card{
+      background:var(--bg-secondary);
+
+      padding:30px;
+
+      border-radius:25px;
+
+      margin-bottom:25px;
+
+      transition:0.35s ease;
+
+      border:1px solid #eef2ff;
+
+      box-shadow:
+      0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    .policy-card:hover{
+      transform:translateY(-8px);
+
+      box-shadow:
+      0 25px 50px rgba(37,99,235,0.12);
+    }
+
+    .policy-card h2{
+      font-size:1.4rem;
+      margin-bottom:16px;
+      color:#0f172a;
+    }
+
+    .policy-card p{
+      color:#475569;
+      line-height:1.9;
+      margin-bottom:15px;
+    }
+
+    .policy-card ul{
+      padding-left:20px;
+    }
+
+    .policy-card li{
+      margin-bottom:12px;
+      color:#475569;
+      line-height:1.8;
+    }
+
+    /* ================= IMAGE SIDE ================= */
+
+    .privacy-image{
+      flex:0.9;
+
+      position:sticky;
+      top:120px;
+    }
+
+    .image-box{
+      background:
+      linear-gradient(
+      145deg,
+      rgba(255,255,255,0.9),
+      rgba(255,255,255,0.6)
+      );
+
+      backdrop-filter:blur(18px);
+
+      border-radius:35px;
+
+      padding:35px;
+
+      border:1px solid rgba(255,255,255,0.5);
+
+      box-shadow:
+      0 20px 60px rgba(0,0,0,0.05);
+
+      text-align:center;
+    }
+
+    .image-box img{
+      width:100%;
+      max-width:500px;
+
+      animation:float 5s ease-in-out infinite;
+    }
+
+    @keyframes float{
+
+      0%{
+        transform:translateY(0px);
+      }
+
+      50%{
+        transform:translateY(-18px);
+      }
+
+      100%{
+        transform:translateY(0px);
+      }
+    }
+
+    /* ================= FOOTER ================= */
+
+    .footer{
+      margin-top:40px;
+
+      padding:35px;
+
+      text-align:center;
+
+      color:#64748b;
+
+      border-top:1px solid rgba(0,0,0,0.05);
+
+      background:rgba(255,255,255,0.6);
+
+      backdrop-filter:blur(12px);
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:1100px){
+
+      .privacy-wrapper{
+        flex-direction:column;
+      }
+
+      .privacy-image{
+        width:100%;
+        position:relative;
+        top:0;
+      }
+
+      .image-box img{
+        max-width:350px;
+      }
+
+      .hero h1{
+        color:var(--text-primary);
+        font-size:4rem;
+      }
+    }
+
+    @media(max-width:768px){
+
+      .nav-menu{
+        display:none;
+      }
+
+      .hero{
+        padding:45px 30px;
+      }
+
+      .hero h1{
+        font-size:2.8rem;
+        letter-spacing:-1px;
+      }
+
+      .privacy-content{
+        padding:25px;
+      }
+
+      .policy-card{
+        padding:22px;
+      }
+
+      .logo-img{
+        width:170px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  
+  <!-- ================= NAVBAR ================= -->
+
+<nav class="navbar" aria-label="Primary Navigation">
+  <div class="nav-container">
+    <a class="logo" href="index.html">
+      <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON home" />
+    </a>
+    <ul class="nav-menu">
+      <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+      <li><a class="nav-link" href="community.html">Community Highlights</a></li>
+      <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
+      <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+      <li>
+  <a class="nav-link" href="privacypolicy.html">
+    Privacy Policy
+  </a>
+</li>
+    </ul>
+     <button id="theme-toggle" class="btn btn-primary"></button>
+  </div>
+</nav>
+
+  <!-- ================= HERO ================= -->
+
+  <section class="hero">
+
+    
+
+    <h1>
+      Privacy Policy
+    </h1>
+
+    <p>
+      Last Updated • May 2026
+    </p>
+
+  </section>
+
+  <!-- ================= MAIN CONTENT ================= -->
+
+  <section class="privacy-wrapper">
+
+    <!-- LEFT SIDE -->
+
+    <div class="privacy-content">
+
+      <div class="policy-card">
+
+        <h2>Introduction</h2>
+
+        <p>
+          Your privacy matters to us. This Privacy Policy explains
+          how XAYTHEON collects, uses, and safeguards your
+          information while using our platform and services.
+        </p>
+
+      </div>
+
+      <div class="policy-card">
+
+        <h2>Information We Collect</h2>
+
+        <ul>
+          <li>Basic account information like name and email</li>
+
+          <li>Browser, device, and analytics information</li>
+
+          <li>Contribution activity and platform interactions</li>
+
+          <li>Technical logs for security and performance</li>
+        </ul>
+
+      </div>
+
+      <div class="policy-card">
+
+        <h2>How We Use Information</h2>
+
+        <ul>
+          <li>Improve overall user experience</li>
+
+          <li>Maintain website security and moderation</li>
+
+          <li>Provide updates and platform notifications</li>
+
+          <li>Optimize performance and accessibility</li>
+        </ul>
+
+      </div>
+
+      <div class="policy-card">
+
+        <h2>Cookies & Tracking</h2>
+
+        <p>
+          We may use cookies and similar technologies
+          to personalize content and analyze traffic.
+        </p>
+
+      </div>
+
+      <div class="policy-card">
+
+        <h2>Third-Party Services</h2>
+
+        <p>
+          Some services including GitHub integrations,
+          hosting providers, and analytics platforms may
+          collect limited technical information.
+        </p>
+
+      </div>
+
+      <div class="policy-card">
+
+        <h2>Contact Us</h2>
+
+        <p>
+          Questions regarding this Privacy Policy can be
+          sent to:
+        </p>
+
+        <p>
+          support@xaytheon.com
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+
+    <div class="privacy-image">
+
+      <div class="image-box">
+
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/2491/2491913.png"
+          alt="Privacy Illustration"
+        />
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer class="footer">
+
+    © 2026 XAYTHEON • All Rights Reserved
+
+  </footer>
+ <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    const savedTheme = localStorage.getItem('theme') || 
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateButtonLabel(savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateButtonLabel(newTheme);
+        console.log(currentTheme);
+    });
+
+    function updateButtonLabel(theme) {
+        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    }
+    </script>
+
+</body>
+</html>
