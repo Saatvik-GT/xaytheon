@@ -96,6 +96,14 @@
             </div>
           </div>
 
+          <!-- Radar chart card (below Contributions, above Recent Activity) -->
+          <div class="card radar-card" id="gh-radar">
+            <div class="card-header"><h3>Contributions Radar</h3></div>
+            <div class="card-body">
+              <div id="radar-root" class="radar-root" aria-hidden="false"></div>
+            </div>
+          </div>
+
           <!-- Recent activity card -->
           <div class="card activity-card" id="gh-activity">
             <div class="card-header">
@@ -135,6 +143,37 @@
   <script src="contributions.js"></script>
   <!-- script.js: contains the GitHub Dashboard + mini 3D viewer logic -->
   <script src="script.js"></script>
+  <!-- Radar chart component -->
+  <script src="radar-chart.js"></script>
+  <script>
+    // Sample data for radar. Replace with real metrics when available.
+    (function(){
+      var sample = [
+        { label: 'Commits', value: 120 },
+        { label: 'Pull Requests', value: 45 },
+        { label: 'Issues', value: 32 },
+        { label: 'Code Reviews', value: 58 },
+        { label: 'Stars / Karma', value: 80 }
+      ];
+
+      document.addEventListener('DOMContentLoaded', function(){
+        var root = document.getElementById('radar-root');
+        if (!root) return;
+
+        function renderRadar() {
+          var containerWidth = Math.max(220, Math.min(360, root.clientWidth));
+          RadarChart.render('#radar-root', sample, { size: containerWidth, levels: 4, maxValue: 150, stroke: '#0b6b9a', fill: '#0b6b9a' });
+        }
+
+        // Initial render
+        renderRadar();
+
+        // Re-render on resize with debounce
+        var t;
+        window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(renderRadar, 120); });
+      });
+    })();
+  </script>
 
   <script>
     const toggleBtn = document.getElementById('theme-toggle');
