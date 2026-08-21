@@ -391,3 +391,107 @@ Each page focuses on a specific aspect of the GitHub ecosystem while maintaining
 ## Summary
 
 **Xaytheon** is essentially a **GitHub intelligence and discovery platform** that transforms how developers interact with the open-source ecosystem. It combines personal analytics, community trends, and advanced exploration tools into a unified interface, making it easier to navigate GitHub's vast repository landscape, discover meaningful projects, and track your open-source journey.
+
+# 🌟 How to Contribute
+
+Thank you for showing interest in contributing to Xaytheon!  
+Whether you're fixing bugs, improving documentation, or adding features — every contribution matters.
+
+If you're new to open source, don't worry. Follow these simple steps to make your first contribution 🚀
+
+---
+
+## 1. Fork the Repository
+
+Click the **Fork** button on the top-right corner of this repository on GitHub.
+
+This creates your own copy of the project:
+
+```text
+github.com/your-username/xaytheon
+```
+
+---
+
+## 2. Clone Your Fork
+
+Open VS Code terminal or Git Bash and run (replace the URL with your fork URL):
+
+```bash
+git clone https://github.com/your-username/xaytheon.git
+cd xaytheon
+```
+
+---
+
+## 3. Open the Project
+
+- Open VS Code
+- Click **File → Open Folder**
+- Select the cloned `xaytheon` folder
+
+You can now access files like `README.md`, `CONTRIBUTION.md`, and project source files.
+
+---
+
+## 4. Read Contribution Guidelines
+
+Before making changes, please read:
+
+```text
+docs/CONTRIBUTION.md
+```
+
+---
+
+## 5. Create a New Branch
+
+Create a separate branch for your work:
+
+```bash
+git checkout -b improve-readme-guide
+```
+
+---
+
+## 6. Make Your Changes
+
+You can now edit files, fix issues, improve UI, or update documentation.
+
+Save your changes after editing.
+
+---
+
+## 7. Commit Your Changes
+
+```bash
+git add .
+git commit -m "Improve contribution guide in README"
+```
+
+---
+
+## 8. Push Changes
+
+```bash
+git push origin improve-readme-guide
+```
+
+---
+
+## 9. Create a Pull Request
+
+Go to your fork on GitHub and click **Compare & Pull Request**.
+
+Add:
+- A clear PR title
+- A short description of your changes
+
+Then submit the Pull Request for review !!
+
+---
+
+## 💡 First Time Contributing?
+
+Don't hesitate to ask questions or start with small improvements.  
+Open source is all about learning, collaborating, and growing together.
