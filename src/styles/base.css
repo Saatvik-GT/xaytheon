@@ -1,0 +1,116 @@
+/*
+ * Xaytheon: a spectroscope for neural networks.
+ * Ground is true black (the viewing chamber). Chrome is white, grey and hairlines.
+ * The only colour is the visible spectrum, and it only ever encodes data:
+ * a layer's hue is where it falls between red (input side) and violet (output).
+ */
+:root {
+  --bg: #000;
+  --surface: #0a0a0a;
+  --surface-2: #111;
+  --surface-3: #191919;
+  --line: #1f1f1f;
+  --line-2: #2e2e2e;
+  --line-3: #474747;
+  --fg: #ededed;
+  --fg-2: #a1a1a1;
+  --fg-3: #8a8a8a;
+
+  --sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --serif: 'Spectral', 'Iowan Old Style', Georgia, serif;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(16px, 3vw, 32px);
+
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 14px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--fg);
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+button:disabled { cursor: default; }
+img, canvas, svg { display: block; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+h1, h2, h3, h4, p { margin: 0; }
+code, kbd, .mono { font-family: var(--mono); font-feature-settings: 'zero' 0; }
+.num, .mono, code { font-variant-numeric: tabular-nums; }
+
+/* Browser surfaces, themed. */
+::selection { background: rgb(255 255 255 / 0.24); color: #fff; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 4px; }
+* { scrollbar-width: thin; scrollbar-color: #2b2b2b transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2b2b2b; border: 3px solid transparent; background-clip: padding-box; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; border: 3px solid transparent; background-clip: padding-box; }
+::placeholder { color: var(--fg-3); opacity: 1; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 36px; padding: 0 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line-2); color: var(--fg);
+  font: 500 14px/1 var(--sans); white-space: nowrap; text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--line-3); }
+.btn:active { background: var(--surface-3); }
+.btn:disabled { opacity: 0.45; pointer-events: none; }
+.btn svg { width: 16px; height: 16px; flex: none; }
+.btn-primary { background: var(--fg); border-color: var(--fg); color: #000; }
+.btn-primary:hover { background: #fff; border-color: #fff; }
+.btn-primary:active { background: #d6d6d6; }
+.btn-sm { height: 28px; padding: 0 10px; gap: 6px; font-size: 13px; }
+.btn-sm svg { width: 14px; height: 14px; }
+.btn-lg { height: 44px; padding: 0 20px; font-size: 15px; }
+.btn-icon { width: 36px; padding: 0; }
+.btn-sm.btn-icon { width: 28px; }
+.btn-quiet { border-color: transparent; color: var(--fg-2); }
+.btn-quiet:hover { color: var(--fg); background: var(--surface-2); border-color: transparent; }
+.btn input[type='file'] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.btn:has(input[type='file']) { position: relative; }
+.btn:has(input[type='file']:focus-visible) { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* Segmented control */
+.seg {
+  display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--radius-sm);
+  background: var(--surface-2); border: 1px solid var(--line);
+}
+.seg button {
+  height: 26px; padding: 0 10px; border-radius: 4px; color: var(--fg-2);
+  font: 500 12.5px/1 var(--sans); white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: background-color 0.15s, color 0.15s;
+}
+.seg button svg { width: 13px; height: 13px; }
+.seg button:hover { color: var(--fg); }
+.seg button[aria-pressed='true'], .seg button[aria-selected='true'] { background: var(--surface-3); color: var(--fg); box-shadow: 0 1px 2px rgb(0 0 0 / 0.6), inset 0 0 0 1px var(--line-2); }
+
+/* The prism mark */
+.mark { width: 22px; height: 22px; color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

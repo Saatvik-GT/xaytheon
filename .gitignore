@@ -1,26 +1,33 @@
-# Dependencies
-node_modules/
-node_modules
-/node_modules
-./node_modules/
-
-# Environment / Secrets
-.env
-*.env
-
-# IDE / Editor folders
-.idea/
-.vscode/
-.DS_Store
-
-# Logs and DBs
+# Logs
+logs
 *.log
-*.db
-users.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Build folders
-dist/
-build/
+node_modules
+dist
+dist-ssr
+*.local
 
-# Miscellaneous
-TODO.md
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.data
+.scratch
+.impeccable/config.local.json
+.impeccable/review/
+__pycache__/
+.impeccable/build/
+.impeccable/hook.cache.json
+.impeccable/review/
+.impeccable/config.local.json
