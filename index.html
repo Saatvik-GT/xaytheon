@@ -1,111 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XAYTHEON - Collaborative Innovation Platform</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <div class="canvas-container">
-    <canvas id="three-canvas"></canvas>
-    <div id="loading-screen" class="loading-screen">
-      <div class="loader"></div>
-      <p>Initializing XAYTHEON...</p>
-    </div>
-  </div>
-
-  <div class="content">
-
-    <nav class="navbar">
-      <div class="nav-container">
-        <a class="logo" href="index.html" aria-label="XAYTHEON home">
-          <img class="logo-img" src="assets/logo/thelogo.png" alt="XAYTHEON logo" />
-        </a>
-        <ul class="nav-menu">
-          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
-          <li><a class="nav-link" href="community.html">Community Highlights</a></li>
-          <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
-          <li><a class="nav-link" href="contributions.html">Contributions</a></li>
-        </ul>
-        <button id="theme-toggle" class="btn btn-primary" style="margin: 0px !important;"></button>
-      </div>
-    </nav>
-
-    <section id="home" class="hero">
-      <div class="hero-content">
-
-        <div id="xai-warning"
-             style="
-                display:none;
-                margin-bottom:20px;
-                padding:12px;
-                border-radius:8px;
-                background:#fff3cd;
-                color:#856404;
-                font-weight:bold;">
-        </div>
-
-        <h1 class="hero-title">
-          <span class="title-line">Welcome to</span>
-          <span class="title-main title-main--logo">
-            <img src="assets/logo/thelogo.png" alt="XAYTHEON" class="title-logo-img" />
-          </span>
-          <span class="title-subtitle">
-            Where <span class="accent-glow">INNOVATION</span> Meets
-            <span class="accent-glow">COLLAB</span>ORATION
-          </span>
-        </h1>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <span class="logo-text">XAYTHEON</span>
-            <p>Empowering the next generation of innovators</p>
-          </div>
-          <span class="footer-label">XAYTHEON</span>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2025 XAYTHEON. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="script.js"></script>
-
-  <script>
-    const toggleBtn = document.getElementById('theme-toggle');
-
-    const savedTheme = localStorage.getItem('theme') || 
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateButtonLabel(savedTheme);
-
-    toggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateButtonLabel(newTheme);
-        console.log(currentTheme);
-    });
-
-    function updateButtonLabel(theme) {
-        toggleBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
-    }
-  </script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Xaytheon is an X-ray for neural networks: open any ONNX model in your browser, watch every layer respond to your input, and cut neurons to see what breaks." />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>Xaytheon · An X-ray for neural networks</title>
+  </head>
+  <body>
+    <!--
+      THESIS: Xaytheon is a spectroscope for neural networks. An input enters as white light, the model is the prism, and its layers leave as a spectrum you can read and cut. It refuses the category default of grey dashboard panels and node-graph diagrams.
+      OWN-WORLD: A true-black chamber, a laminated glass prism you steer by hand, a beam of twelve emission lines. The visible spectrum is the only colour and it only encodes data: a layer's hue runs red (input) to violet (output); positive activations glow black to hue to white, negatives a grey shade of that hue; cut units are black absorption lines. Spectral serif for the wordmark and section titles, Geist for UI, Geist Mono for every number, one hairline weight, no glass panels.
+      STORY: Visitors see light split, learn that it is a real model running in the tab, draw a digit, cut a channel and watch the damage spread downstream. Engineers then open their own .onnx.
+      FIRST VIEWPORT: Full-bleed black. The prism floats right of centre; the pointer's height steers the light along an arc beside it, its nine glass layers light up where the beam crosses them, twelve lines fan left beneath the copy, and a pass runs input to output every few seconds or on click. Left column: Xaytheon wordmark, "An X-ray for neural networks.", one-line lead, "Open the lab" and "Bring your own .onnx". A live optics readout runs along the hero's foot.
+      FORM: user-pinned optics world (vgpu.sh reference), seed 3a129897.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+    -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

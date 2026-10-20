@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-20T10:38:57.717Z",
+  "title": "Design System: Xaytheon",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Chamber Black",
+        "canonical": "#000",
+        "tonalRamp": [
+          "#000000",
+          "#0a0a0a",
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Soot",
+        "canonical": "#0a0a0a",
+        "tonalRamp": [
+          "#000000",
+          "#0a0a0a",
+          "#0d0d0d",
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#111",
+        "tonalRamp": [
+          "#000000",
+          "#0a0a0a",
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "Lit Graphite",
+        "canonical": "#191919",
+        "tonalRamp": [
+          "#000000",
+          "#0a0a0a",
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#1f1f1f",
+        "tonalRamp": [
+          "#0a0a0a",
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1"
+        ]
+      },
+      "line-2": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "#2e2e2e",
+        "tonalRamp": [
+          "#0a0a0a",
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1"
+        ]
+      },
+      "line-3": {
+        "role": "neutral",
+        "displayName": "Hairline Lit",
+        "canonical": "#474747",
+        "tonalRamp": [
+          "#111111",
+          "#191919",
+          "#1f1f1f",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1",
+          "#ededed"
+        ]
+      },
+      "fg": {
+        "role": "primary",
+        "displayName": "Paper / Beam White",
+        "canonical": "#ededed",
+        "tonalRamp": [
+          "#191919",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1",
+          "#d6d6d6",
+          "#ededed",
+          "#ffffff"
+        ]
+      },
+      "fg-2": {
+        "role": "neutral",
+        "displayName": "Ash",
+        "canonical": "#a1a1a1",
+        "tonalRamp": [
+          "#191919",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1",
+          "#d6d6d6",
+          "#ededed",
+          "#ffffff"
+        ]
+      },
+      "fg-3": {
+        "role": "neutral",
+        "displayName": "Smoke",
+        "canonical": "#8a8a8a",
+        "tonalRamp": [
+          "#191919",
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1",
+          "#d6d6d6",
+          "#ededed",
+          "#ffffff"
+        ]
+      },
+      "scrollbar-thumb": {
+        "role": "neutral",
+        "displayName": "Scrollbar Thumb",
+        "canonical": "#2b2b2b",
+        "tonalRamp": [
+          "#191919",
+          "#1f1f1f",
+          "#2b2b2b",
+          "#2e2e2e",
+          "#3a3a3a",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1"
+        ]
+      },
+      "scrollbar-thumb-hover": {
+        "role": "neutral",
+        "displayName": "Scrollbar Thumb Hover",
+        "canonical": "#3a3a3a",
+        "tonalRamp": [
+          "#191919",
+          "#1f1f1f",
+          "#2b2b2b",
+          "#2e2e2e",
+          "#3a3a3a",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1"
+        ]
+      },
+      "beam-white": {
+        "role": "primary",
+        "displayName": "Pure White",
+        "canonical": "#fff",
+        "tonalRamp": [
+          "#2e2e2e",
+          "#474747",
+          "#8a8a8a",
+          "#a1a1a1",
+          "#d6d6d6",
+          "#ededed",
+          "#f6f6f6",
+          "#ffffff"
+        ]
+      },
+      "spectrum-input-red": {
+        "role": "secondary",
+        "displayName": "Input Red (680nm)",
+        "canonical": "wavelengthRGB(680) in src/viz/spectrum.ts",
+        "tonalRamp": [
+          "#000000",
+          "#330000",
+          "#800000",
+          "#cc0000",
+          "#ff0000",
+          "#ff5555",
+          "#ffaaaa",
+          "#ffffff"
+        ]
+      },
+      "spectrum-output-violet": {
+        "role": "secondary",
+        "displayName": "Output Violet (415nm)",
+        "canonical": "wavelengthRGB(415) in src/viz/spectrum.ts",
+        "tonalRamp": [
+          "#000000",
+          "#18002f",
+          "#3b0077",
+          "#5e00be",
+          "#7600ee",
+          "#a055f3",
+          "#caaaf8",
+          "#ffffff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display (Wordmark)",
+        "purpose": "The Xaytheon wordmark in the hero only."
+      },
+      "headline": {
+        "displayName": "Headline (Section Title)",
+        "purpose": "Landing section titles; the serif voice of the instrument."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Lab model title; verdicts run the same voice at 30px."
+      },
+      "body-lead": {
+        "displayName": "Body Lead",
+        "purpose": "Section leads and pitch lines, 44-64ch, Ash on the landing."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base UI size."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Pane titles and control labels; sentence case, never uppercase."
+      },
+      "data": {
+        "displayName": "Data (Mono)",
+        "purpose": "Every number, shape, op name, index, axis tick and token, with tabular numerals."
+      },
+      "brand": {
+        "displayName": "Brand",
+        "purpose": "Spectral wordmark in the landing nav (22px; footer runs it at 18px)."
+      },
+      "brand-sm": {
+        "displayName": "Brand Small",
+        "purpose": "Spectral wordmark in the lab bar."
+      },
+      "card-title": {
+        "displayName": "Card Title",
+        "purpose": "Gallery model names."
+      },
+      "lead-lg": {
+        "displayName": "Lead Large",
+        "purpose": "Hero lead (40ch) and landing section leads (16px under 720px)."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "How-it-works step bodies."
+      },
+      "control-lg": {
+        "displayName": "Control Large",
+        "purpose": "Large buttons, including the hero actions."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Layer index/scope/meta, drift and delta readouts, token counts, model meta, rule caption, step numbers, spectrum axis ticks."
+      },
+      "micro-sm": {
+        "displayName": "Micro Small",
+        "purpose": "Spectrum drift labels, histogram captions, class-bar column headers, camera tags."
+      },
+      "micro-xs": {
+        "displayName": "Micro XS",
+        "purpose": "Indices on map and unit tiles, attention token rows."
+      },
+      "micro-caption": {
+        "displayName": "Micro Caption",
+        "purpose": "Drawpad model-input preview caption."
+      },
+      "micro-axis": {
+        "displayName": "Micro Axis",
+        "purpose": "Attention matrix row and column labels."
+      }
+    },
+    "spectrum": {
+      "layerWavelength": "680nm - t * 265nm, t = layer index / (count - 1)",
+      "positiveRamp": "black -> layer hue (at 62%) -> white",
+      "negativeRamp": "black -> grey shade of layer hue (82% grey, 18% hue, scaled 0.62), never white",
+      "cut": "black absorption line / map at 0.1-0.12 opacity with dashed Smoke border",
+      "brandMarkRays": [
+        "#ff4a3a",
+        "#4dff7a",
+        "#7a5cff"
+      ],
+      "emissionLines": [
+        {
+          "nm": 668,
+          "intensity": 0.5
+        },
+        {
+          "nm": 656,
+          "intensity": 1
+        },
+        {
+          "nm": 615,
+          "intensity": 0.55
+        },
+        {
+          "nm": 589,
+          "intensity": 0.95
+        },
+        {
+          "nm": 570,
+          "intensity": 0.5
+        },
+        {
+          "nm": 546,
+          "intensity": 0.9
+        },
+        {
+          "nm": 518,
+          "intensity": 0.6
+        },
+        {
+          "nm": 501,
+          "intensity": 0.75
+        },
+        {
+          "nm": 486,
+          "intensity": 0.85
+        },
+        {
+          "nm": 458,
+          "intensity": 0.55
+        },
+        {
+          "nm": 434,
+          "intensity": 0.75
+        },
+        {
+          "nm": 416,
+          "intensity": 0.5
+        }
+      ],
+      "emissionUse": "Hero prism and spectral rule only, as discrete lines (EMISSION_LINES in src/viz/spectrum.ts)."
+    },
+    "shadows": [
+      {
+        "name": "beam-lit-card",
+        "value": "0 40px 80px -48px rgb(255 255 255 / 0.07), 0 24px 48px -24px rgb(0 0 0 / 0.9)",
+        "purpose": "Landing demo and graph cards, lit from below by the beam."
+      },
+      {
+        "name": "floating-menu",
+        "value": "0 20px 48px -16px rgb(0 0 0 / 0.95), 0 2px 6px rgb(0 0 0 / 0.5)",
+        "purpose": "Dropdown menus."
+      },
+      {
+        "name": "toast",
+        "value": "0 16px 40px -16px rgb(0 0 0 / 0.9)",
+        "purpose": "Toasts."
+      },
+      {
+        "name": "tooltip",
+        "value": "0 8px 24px -8px rgb(0 0 0 / 0.9)",
+        "purpose": "Spectrum tooltips."
+      },
+      {
+        "name": "segment-selected",
+        "value": "0 1px 2px rgb(0 0 0 / 0.6), inset 0 0 0 1px #2e2e2e",
+        "purpose": "Selected segment in a segmented control."
+      },
+      {
+        "name": "band-selected",
+        "value": "inset 0 0 0 1px #fff, 0 0 18px rgb(255 255 255 / 0.22)",
+        "purpose": "Selected band in the Spectrum strip; light, not shadow."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The single easing curve for movement and reveals."
+      },
+      {
+        "name": "ui-transition",
+        "value": "0.15s",
+        "purpose": "Colour, background and border state changes."
+      },
+      {
+        "name": "menu-in",
+        "value": "0.18s var(--ease), translateY(-4px) + fade",
+        "purpose": "Dropdown entrance."
+      },
+      {
+        "name": "prism-fade",
+        "value": "opacity 1.4s var(--ease)",
+        "purpose": "Prism canvas fade-in once WebGL is ready."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "all durations 0.01ms",
+        "purpose": "prefers-reduced-motion collapses every animation and transition."
+      },
+      {
+        "name": "line-on",
+        "value": "opacity + scaleY 0.9s var(--ease), staggered 70ms per line, once on entry",
+        "purpose": "Spectral rule lines light up red to violet like a forward pass."
+      },
+      {
+        "name": "forward-pass",
+        "value": "every 7s or on click/tap, 13 scene units/s",
+        "purpose": "Pulse runs source -> glass -> lines, flaring each laminate plane."
+      },
+      {
+        "name": "glass-sway",
+        "value": "yaw ±0.09 rad, pitch ±0.035 rad, small bob, pointer parallax",
+        "purpose": "The prism floats."
+      },
+      {
+        "name": "light-glide",
+        "value": "arc (incidence ~34–64°); pointer height -> arc angle, horizontal -> radius; critically damped springs, ω 5.5 active / 1.2 idle",
+        "purpose": "The light glides along its arc and never snaps, even when the cursor jumps."
+      },
+      {
+        "name": "light-breathe",
+        "value": "±0.07 rad around the resting angle after 4s idle",
+        "purpose": "The idle light breathes in place instead of returning to a default spot."
+      },
+      {
+        "name": "fresnel-fade",
+        "value": "Fresnel averaged over ±0.05 rad of incidence",
+        "purpose": "Lines fade over a couple of degrees at the onset of total internal reflection instead of blinking."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "lab-compact",
+        "value": "1200px"
+      },
+      {
+        "name": "landing-two-col",
+        "value": "1100px"
+      },
+      {
+        "name": "lab-single-pane",
+        "value": "900px"
+      },
+      {
+        "name": "nav-collapse",
+        "value": "860px"
+      },
+      {
+        "name": "mobile",
+        "value": "720px"
+      },
+      {
+        "name": "small",
+        "value": "520px"
+      }
+    ],
+    "radiusMeta": {
+      "micro-1": "Neuron bars and the tops of spectral-rule lines.",
+      "micro-2": "Spectrum hit areas, sign-key swatches, progress bar, range tracks.",
+      "micro-3": "Probability-bar tracks, legend swatches, tokens.",
+      "tile": "Map tiles and op chips.",
+      "scrollbar": "Scrollbar thumb only.",
+      "frame": "Full-page drop frame only."
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary-lg",
+      "description": "The beam as a button: one per view, for opening a model.",
+      "html": "<button class=\"ds-btn ds-btn-primary ds-btn-lg\">Open Digits <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 6px; border: 1px solid #2e2e2e; color: #ededed; background: transparent; font: 500 14px/1 'Geist Variable', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s, border-color 0.15s, color 0.15s; } .ds-btn svg { width: 16px; height: 16px; } .ds-btn-primary { background: #ededed; border-color: #ededed; color: #000; } .ds-btn-primary:hover { background: #fff; border-color: #fff; } .ds-btn-primary:active { background: #d6d6d6; } .ds-btn-lg { height: 44px; padding: 0 20px; font-size: 15px; } .ds-btn:focus-visible { outline: 2px solid #ededed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Hairline-bordered secondary action.",
+      "html": "<button class=\"ds-btn-default\">Open lab</button>",
+      "css": ".ds-btn-default { display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 6px; border: 1px solid #2e2e2e; background: transparent; color: #ededed; font: 500 14px/1 'Geist Variable', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s, border-color 0.15s; } .ds-btn-default:hover { background: #111; border-color: #474747; } .ds-btn-default:active { background: #191919; } .ds-btn-default:focus-visible { outline: 2px solid #ededed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Borderless toolbar and icon action.",
+      "html": "<button class=\"ds-btn-quiet\">Reset cuts</button>",
+      "css": ".ds-btn-quiet { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid transparent; background: transparent; color: #a1a1a1; font: 500 13px/1 'Geist Variable', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s, color 0.15s; } .ds-btn-quiet:hover { color: #ededed; background: #111; } .ds-btn-quiet:focus-visible { outline: 2px solid #ededed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segmented",
+      "description": "View switches in the inspector and the one-pane tabs of the lab under 900px.",
+      "html": "<div class=\"ds-seg\" role=\"tablist\"><button aria-selected=\"true\">Input</button><button aria-selected=\"false\">Inspect</button><button aria-selected=\"false\">Layers</button></div>",
+      "css": ".ds-seg { display: inline-flex; padding: 2px; gap: 2px; border-radius: 6px; background: #111; border: 1px solid #1f1f1f; } .ds-seg button { height: 26px; padding: 0 10px; border: 0; border-radius: 4px; background: none; color: #a1a1a1; font: 500 12.5px/1 'Geist Variable', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s, color 0.15s; } .ds-seg button:hover { color: #ededed; } .ds-seg button[aria-selected='true'] { background: #191919; color: #ededed; box-shadow: 0 1px 2px rgb(0 0 0 / 0.6), inset 0 0 0 1px #2e2e2e; } .ds-seg button:focus-visible { outline: 2px solid #ededed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "Black mono text area for model inputs.",
+      "html": "<textarea class=\"ds-text-area\" rows=\"3\">to be or not to be</textarea>",
+      "css": ".ds-text-area { width: 280px; min-height: 92px; padding: 10px 12px; border-radius: 6px; border: 1px solid #2e2e2e; background: #000; color: #ededed; font: 400 13px/1.55 'Geist Mono Variable', ui-monospace, Menlo, monospace; resize: vertical; transition: border-color 0.15s; } .ds-text-area:focus { border-color: #8a8a8a; outline: none; }"
+    },
+    {
+      "name": "Error Alert",
+      "kind": "custom",
+      "refersTo": "lab-error",
+      "description": "Neutral inline error: no status colour, an icon carries the meaning.",
+      "html": "<div class=\"ds-alert\" role=\"alert\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"12\" x2=\"12\" y1=\"8\" y2=\"12\"/><line x1=\"12\" x2=\"12.01\" y1=\"16\" y2=\"16\"/></svg><span>This model has an input the lab cannot draw. Try the generic noise input.</span></div>",
+      "css": ".ds-alert { display: flex; align-items: flex-start; gap: 10px; max-width: 420px; padding: 10px 14px; border-radius: 6px; border: 1px solid #474747; background: #111; color: #ededed; font: 400 13px/1.5 'Geist Variable', ui-sans-serif, sans-serif; } .ds-alert svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }"
+    },
+    {
+      "name": "Op Chip",
+      "kind": "chip",
+      "refersTo": "op-chip",
+      "description": "Names a layer's op, lit by a dot of the layer's own hue.",
+      "html": "<span class=\"ds-op-chip\" style=\"--hue: rgb(255 140 0)\">Conv</span>",
+      "css": ".ds-op-chip { display: inline-flex; align-items: center; gap: 7px; height: 24px; padding: 0 9px; border-radius: 5px; font: 500 12px/1 'Geist Mono Variable', ui-monospace, monospace; color: #ededed; background: #111; border: 1px solid #2e2e2e; } .ds-op-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--hue, #8a8a8a); box-shadow: 0 0 8px var(--hue, transparent); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Soot card on the chamber, beam-lit from below, with a hairline header bar.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-bar\"><span>conv2 / relu</span><span class=\"ds-mono\">16 × 12 × 12</span></div><div class=\"ds-card-body\">Draw a digit, then cut a channel.</div></div>",
+      "css": ".ds-card { width: 320px; border: 1px solid #1f1f1f; border-radius: 8px; background: #0a0a0a; box-shadow: 0 40px 80px -48px rgb(255 255 255 / 0.07), 0 24px 48px -24px rgb(0 0 0 / 0.9); overflow: hidden; color: #ededed; font: 400 14px/1.5 'Geist Variable', ui-sans-serif, sans-serif; transition: border-color 0.2s; } .ds-card:hover { border-color: #474747; } .ds-card-bar { display: flex; justify-content: space-between; min-height: 44px; align-items: center; padding: 8px 16px; border-bottom: 1px solid #1f1f1f; font-size: 13px; color: #a1a1a1; } .ds-mono { font: 400 12px 'Geist Mono Variable', ui-monospace, monospace; font-variant-numeric: tabular-nums; color: #8a8a8a; } .ds-card-body { padding: 16px; }"
+    },
+    {
+      "name": "Unit Tile",
+      "kind": "custom",
+      "refersTo": "unit-map",
+      "description": "A square activation map; cut tiles go dashed and near-black.",
+      "html": "<div class=\"ds-tiles\"><button class=\"ds-unit\" style=\"background: radial-gradient(circle at 40% 45%, #fff 0, #ff7a00 30%, #000 70%)\"><span>3</span></button><button class=\"ds-unit is-cut\" style=\"background: radial-gradient(circle at 60% 50%, #fff 0, #ff7a00 30%, #000 70%)\"><span>4</span></button></div>",
+      "css": ".ds-tiles { display: flex; gap: 8px; } .ds-unit { position: relative; width: 74px; aspect-ratio: 1; border-radius: 6px; border: 1px solid #1f1f1f; overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); } .ds-unit span { position: absolute; left: 6px; bottom: 4px; font: 10px 'Geist Mono Variable', ui-monospace, monospace; color: rgb(255 255 255 / 0.78); text-shadow: 0 0 3px #000; } .ds-unit:hover { border-color: #474747; } .ds-unit:active { transform: scale(0.97); } .ds-unit.is-cut { border-style: dashed; border-color: #8a8a8a; filter: grayscale(1) brightness(0.15); } .ds-unit:focus-visible { outline: 2px solid #ededed; outline-offset: 2px; }"
+    },
+    {
+      "name": "Spectral Rule",
+      "kind": "custom",
+      "refersTo": "spectral-rule",
+      "description": "The hero's light landed: twelve emission lines laid flat on a hairline track, red (input) to violet (output).",
+      "html": "<div class=\"ds-rule\"><div class=\"ds-rule-track\"><i style=\"left:10.7%;height:18.0px;background:rgb(255 0 0);box-shadow:0 0 11.0px rgb(255 0 0)\"></i><i style=\"left:14.7%;height:26.0px;background:rgb(255 0 0);box-shadow:0 0 16.0px rgb(255 0 0)\"></i><i style=\"left:28.3%;height:18.8px;background:rgb(255 137 0);box-shadow:0 0 11.5px rgb(255 137 0)\"></i><i style=\"left:37.0%;height:25.2px;background:rgb(255 226 0);box-shadow:0 0 15.5px rgb(255 226 0)\"></i><i style=\"left:43.3%;height:18.0px;background:rgb(225 255 0);box-shadow:0 0 11.0px rgb(225 255 0)\"></i><i style=\"left:51.3%;height:24.4px;background:rgb(150 255 0);box-shadow:0 0 15.0px rgb(150 255 0)\"></i><i style=\"left:60.7%;height:19.6px;background:rgb(45 255 0);box-shadow:0 0 12.0px rgb(45 255 0)\"></i><i style=\"left:66.3%;height:22.0px;background:rgb(0 255 135);box-shadow:0 0 13.5px rgb(0 255 135)\"></i><i style=\"left:71.3%;height:23.6px;background:rgb(0 239 255);box-shadow:0 0 14.5px rgb(0 239 255)\"></i><i style=\"left:80.7%;height:18.8px;background:rgb(0 113 255);box-shadow:0 0 11.5px rgb(0 113 255)\"></i><i style=\"left:88.7%;height:22.0px;background:rgb(40 0 255);box-shadow:0 0 13.5px rgb(40 0 255)\"></i><i style=\"left:94.7%;height:18.0px;background:rgb(116 0 242);box-shadow:0 0 11.0px rgb(116 0 242)\"></i></div><div class=\"ds-rule-cap\"><span>input</span><span>output</span></div></div>",
+      "css": ".ds-rule { width: 420px; } .ds-rule-track { position: relative; height: 28px; border-bottom: 1px solid #2e2e2e; } .ds-rule-track i { position: absolute; bottom: 0; width: 2px; margin-left: -1px; border-radius: 1px 1px 0 0; } .ds-rule-cap { display: flex; justify-content: space-between; margin-top: 10px; font: 11px 'Geist Mono Variable', ui-monospace, monospace; color: #8a8a8a; }"
+    },
+    {
+      "name": "Hero Readout",
+      "kind": "custom",
+      "refersTo": "hero-readout",
+      "description": "Live optics readout along the foot of the hero.",
+      "html": "<div class=\"ds-readout\"><span>Move the light. Click to send a pass.</span><dl><div><dt>incidence</dt><dd>48.2°</dd></div><div><dt>deviation</dt><dd>41.7°</dd></div><div><dt>lines</dt><dd>12/12</dd></div></dl></div>",
+      "css": ".ds-readout { width: 560px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 12px; border-top: 1px solid rgb(255 255 255 / 0.08); font: 400 12px 'Geist Variable', ui-sans-serif, sans-serif; color: #8a8a8a; } .ds-readout dl { display: flex; gap: 22px; margin: 0; font-family: 'Geist Mono Variable', ui-monospace, monospace; font-variant-numeric: tabular-nums; } .ds-readout dl div { display: flex; gap: 8px; } .ds-readout dd { margin: 0; color: #a1a1a1; min-width: 44px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Spectroscope",
+    "overview": "Xaytheon is an optical instrument, not a dashboard. The ground is a true-black viewing chamber; the chrome is white, grey and 1px hairlines; and the only colour anywhere is the visible spectrum, which only ever encodes data. A layer's hue is where it falls in the network, red at the input and violet at the output. Activations are light: a unit that fires harder glows from black through its hue to white. Cut units are black absorption lines. You hold the light, the model is a laminated glass prism, and its layers leave as a spectrum of discrete emission lines.\n\nThe system has two surface modes in one world. The landing persuades: a full-bleed laminated glass prism (three.js, real dispersion) that you steer by hand carries the hero, a live optics readout runs along its foot, a Spectral serif speaks the section titles, and the same twelve emission lines land flat on the page as the spectral rule. The lab operates: a dense three-pane instrument (input/output, inspector, layers) under a spectrum strip that spans the top, set in Geist with every number in Geist Mono. Density is high in the lab and generous on the landing; the materials never change between them.\n\nIt refuses grey dashboard panels, node-graph diagrams and glass panels. Depth comes from tonal steps of near-black and a single hairline weight, never from frosted surfaces or decorative colour.",
+    "keyCharacteristics": [
+      "True-black ground (#000) with near-black tonal surfaces stepping up in 1–2% increments.",
+      "The visible spectrum is the only colour, and it is always data: layer position, activation, sign.",
+      "One hairline weight (1px) for every border and divider.",
+      "Spectral serif (300) for the wordmark and section titles only; Geist for UI; Geist Mono for every number.",
+      "White is the action colour: the primary button is the beam.",
+      "Restrained, slow optical motion on one easing curve; everything collapses under reduced motion."
+    ],
+    "rules": [
+      {
+        "name": "The Light Is Data Rule",
+        "body": "Spectral colour is never decoration. If a hue appears, it must answer \"where in the network\" or \"how strongly did it fire\". UI chrome stays black, white and grey.",
+        "section": "colors"
+      },
+      {
+        "name": "The Spectrum Only As Light Rule",
+        "body": "Fixed spectral colour appears only where the light itself is drawn: the twelve emission lines (hero prism and spectral rule) and the brand mark's three rays. Nothing else gets a hue that does not come from data.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Hue Per Layer Rule",
+        "body": "A layer owns exactly one hue. Sign is shown by brightness and greying of that hue, never by borrowing a second colour (no red/blue diverging maps).",
+        "section": "colors"
+      },
+      {
+        "name": "The Absorption Line Rule",
+        "body": "A cut is shown as black: a black line in a spectrum, a heatmap dimmed to near-black (opacity 0.1–0.12) inside a dashed Smoke border, or a striped Smoke bar. Never a red \"disabled\" colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Numbers Rule",
+        "body": "Any value an engineer might trust (counts, shapes, percentages, drift, coordinates, wavelengths) is set in Geist Mono with tabular numerals. Minus signs are true minus (−).",
+        "section": "typography"
+      },
+      {
+        "name": "The Serif Speaks Twice Rule",
+        "body": "Spectral appears only as the wordmark and section-level titles (plus the How-it-works step list on the landing). It never sets UI labels, buttons or data.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Glass Rule",
+        "body": "No frosted or blurred panels. A UI surface is opaque near-black; the only translucency is a black scrim laid over imagery or canvas.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the ground true black (#000) and build depth with Soot, Graphite and Lit Graphite plus 1px hairlines.",
+      "Do derive every colour that carries meaning from wavelength via `src/viz/spectrum.ts`: red (680nm) at the input, violet (415nm) at the output.",
+      "Do render activations as emission (black → hue → white) and negatives as a grey shade of the same hue.",
+      "Do show cuts as black absorption: black lines, near-black dimmed maps, dashed Smoke borders.",
+      "Do set every number in Geist Mono with tabular numerals.",
+      "Do use Spectral 300 only for the wordmark and section titles, with negative tracking.",
+      "Do make the primary action a Beam White button, one per view.",
+      "Do animate on `cubic-bezier(0.16, 1, 0.3, 1)`, keep UI transitions at 0.15s, and honour reduced motion.",
+      "Do use Lucide SVG icons at 13–18px, stroked, in currentColor.",
+      "Do keep errors and live indicators neutral (Graphite, Hairline Lit, Paper) and let an icon or a pulse carry the signal."
+    ],
+    "donts": [
+      "Don't use spectral hues for decoration, brand accents, status or links; colour is always data (the brand mark's three rays and the twelve emission lines are the light itself, not accents).",
+      "Don't draw the light as a continuous rainbow gradient; it is always discrete emission lines.",
+      "Don't use diverging two-hue colour maps; one hue per layer, sign by greying.",
+      "Don't build grey dashboard panels or node-graph diagrams to explain a model; show it running.",
+      "Don't use frosted glass panels or backdrop blur; translucent black scrims over imagery and canvases (overlays, captions, tag chips) are part of the chamber and allowed.",
+      "Don't introduce a second border weight; every border and divider is 1px (the 2px focus ring and the 2px spectral-rule ticks are not borders).",
+      "Don't set UI labels, buttons or numbers in the serif, or set numbers in proportional figures.",
+      "Don't use uppercase tracked labels, kickers or eyebrows above titles.",
+      "Don't smooth heatmaps; they render pixelated."
+    ]
+  }
+}

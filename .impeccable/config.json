@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-10-20T08:27:18.610Z",
+        "reason": "brief-pinned: the user asked for the vgpu.sh look (2026-10-20); vgpu.sh sets its UI in Geist and Geist Mono"
+      }
+    ]
+  }
+}
